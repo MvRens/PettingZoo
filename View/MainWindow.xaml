@@ -1,0 +1,19 @@
+﻿<Window x:Class="PettingZoo.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Petting Zoo - a RabbitMQ Message Viewer" Height="600" Width="800">
+    <DockPanel>
+        <ToolBarTray DockPanel.Dock="Top">
+            <ToolBar>
+                <Button Command=""></Button>
+            </ToolBar>
+        </ToolBarTray>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="200" />
+            </Grid.ColumnDefinitions>
+        </Grid>
+    </DockPanel>
+</Window>
