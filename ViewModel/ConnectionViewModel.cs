@@ -2,8 +2,10 @@
 
 namespace PettingZoo.ViewModel
 {
-    public class ConnectionWindowViewModel
+    public class ConnectionViewModel
     {
         public ConnectionInfo ConnectionInfo { get; set; }
+        public string Exchange { get; set; }
+        public string RoutingKey { get; set;  }
     }
 }

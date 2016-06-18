@@ -50,7 +50,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>PettingZoo.Program</StartupObject>
+    <StartupObject>
+    </StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SimpleInjector, Version=3.1.5.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
@@ -76,6 +77,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Style.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\ConnectionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -90,15 +95,16 @@
     </Compile>
     <Compile Include="Infrastructure\DelegateCommand.cs" />
     <Compile Include="Infrastructure\BaseViewModel.cs" />
+    <Compile Include="Infrastructure\GridLayout.cs" />
+    <Compile Include="Infrastructure\PasswordBoxAssistant.cs" />
     <Compile Include="Model\IConnection.cs" />
     <Compile Include="Model\IConnectionFactory.cs" />
     <Compile Include="Model\IConnectionInfoBuilder.cs" />
     <Compile Include="Model\ConnectionInfo.cs" />
     <Compile Include="Model\RabbitMQClientConnection.cs" />
     <Compile Include="Model\RabbitMQClientConnectionFactory.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="ViewModel\ConnectionWindowViewModel.cs" />
-    <Compile Include="ViewModel\MainBaseViewModel.cs" />
+    <Compile Include="ViewModel\ConnectionViewModel.cs" />
+    <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="View\ConnectionWindow.xaml.cs">
       <DependentUpon>ConnectionWindow.xaml</DependentUpon>
     </Compile>
@@ -122,7 +128,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="packages.config" />

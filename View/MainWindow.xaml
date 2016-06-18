@@ -1,13 +1,29 @@
 ﻿<Window x:Class="PettingZoo.View.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Petting Zoo - a RabbitMQ Message Viewer" Height="600" Width="800">
+        xmlns:res="clr-namespace:PettingZoo.Properties"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:viewModel="clr-namespace:PettingZoo.ViewModel"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance viewModel:MainViewModel}"
+        Width="800" 
+        Height="600"
+        ResizeMode="CanResizeWithGrip"
+        Style="{StaticResource WindowStyle}"
+        Title="{x:Static res:Resources.MainWindowTitle}">
     <DockPanel>
-        <ToolBarTray DockPanel.Dock="Top">
-            <ToolBar>
-                <Button Command=""></Button>
-            </ToolBar>
-        </ToolBarTray>
+        <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
+            <Button Command="{Binding ConnectCommand}" Content="Connect"></Button>
+            <Button Command="{Binding DisconnectCommand}" Content="Disconnect"></Button>
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+            <Button Command="{Binding ClearCommand}" Content="Clear messages"></Button>
+        </ToolBar>
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock />
+            </StatusBarItem>
+        </StatusBar>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />

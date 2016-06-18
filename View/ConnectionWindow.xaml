@@ -1,8 +1,61 @@
 ﻿<Window x:Class="PettingZoo.View.ConnectionWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="ConnectionWindow" Height="300" Width="300">
-    <Grid>
+        xmlns:res="clr-namespace:PettingZoo.Properties"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:viewModel="clr-namespace:PettingZoo.ViewModel"
+        xmlns:infrastructure="clr-namespace:PettingZoo.Infrastructure"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance viewModel:ConnectionViewModel}"
+        Width="500" 
+        SizeToContent="Height"
+        ResizeMode="NoResize"
+        WindowStyle="ToolWindow"
+        Style="{StaticResource WindowStyle}"
+        Title="{x:Static res:Resources.ConnectionWindowTitle}" 
+        FocusManager.FocusedElement="{Binding ElementName=HostTextBox}">
+    <DockPanel Margin="8">
+        <UniformGrid DockPanel.Dock="Bottom" HorizontalAlignment="Right" Rows="1" Columns="2" Style="{StaticResource FooterPanel}">
+            <Button IsDefault="True" Content="{x:Static res:Resources.ButtonOK}" Style="{StaticResource FooterButton}"/>
+            <Button IsCancel="True" Content="{x:Static res:Resources.ButtonCancel}" Style="{StaticResource FooterButton}"/>
+        </UniformGrid>
         
-    </Grid>
+        <infrastructure:GridLayout Style="{StaticResource Form}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="8"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Column="0" Grid.Row="0" Content="{x:Static res:Resources.ConnectionHost}"/>
+            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding ConnectionInfo.Host}" Name="HostTextBox" />
+
+            <Label Grid.Column="0" Grid.Row="1" Content="{x:Static res:Resources.ConnectionPort}"/>
+            
+            <Label Grid.Column="0" Grid.Row="2" Content="{x:Static res:Resources.ConnectionVirtualHost}"/>
+            <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding ConnectionInfo.VirtualHost}"/>
+            
+            <Label Grid.Column="0" Grid.Row="3" Content="{x:Static res:Resources.ConnectionUsername}"/>
+            <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding ConnectionInfo.Username}"/>
+
+            <Label Grid.Column="0" Grid.Row="4" Content="{x:Static res:Resources.ConnectionPassword}"/>
+            <PasswordBox Grid.Column="1" Grid.Row="4"  infrastructure:PasswordBoxAssistant.BindPassword="true"  infrastructure:PasswordBoxAssistant.BoundPassword="{Binding Path=ConnectionInfo.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Label Grid.Column="0" Grid.Row="6" Content="{x:Static res:Resources.ConnectionExchange}"/>
+            <TextBox Grid.Column="1" Grid.Row="6" Text="{Binding Exchange}"/>
+
+            <Label Grid.Column="0" Grid.Row="7" Content="{x:Static res:Resources.ConnectionRoutingKey}"/>
+            <TextBox Grid.Column="1" Grid.Row="7" Text="{Binding RoutingKey}"/>
+        </infrastructure:GridLayout>
+    </DockPanel>
 </Window>
+

@@ -1,15 +1,18 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using PettingZoo.ViewModel;
 
 namespace PettingZoo.View
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow(MainBaseViewModel viewModel)
+        public MainWindow(MainViewModel viewModel)
         {
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
             InitializeComponent();
             DataContext = viewModel;
         }

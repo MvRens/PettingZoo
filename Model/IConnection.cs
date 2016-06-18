@@ -1,6 +1,8 @@
-﻿namespace PettingZoo.Model
+﻿using System;
+
+namespace PettingZoo.Model
 {
-    public interface IConnection
+    public interface IConnection : IDisposable
     {
     }
 }

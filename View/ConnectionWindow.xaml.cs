@@ -8,7 +8,7 @@ namespace PettingZoo.View
     {
         public ConnectionInfo Build()
         {
-            var viewModel = new ConnectionWindowViewModel();
+            var viewModel = new ConnectionViewModel();
             var dialog = new ConnectionWindow(viewModel)
             {
                 Owner = Application.Current.MainWindow
@@ -24,8 +24,10 @@ namespace PettingZoo.View
 
     public partial class ConnectionWindow : Window
     {
-        public ConnectionWindow(ConnectionWindowViewModel viewModel)
+        public ConnectionWindow(ConnectionViewModel viewModel)
         {
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
             InitializeComponent();
             DataContext = viewModel;
         }
