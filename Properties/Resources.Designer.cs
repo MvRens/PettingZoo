@@ -9,9 +9,6 @@
 //------------------------------------------------------------------------------
 
 namespace PettingZoo.Properties {
-    using System;
-    
-    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -147,6 +144,24 @@ namespace PettingZoo.Properties {
         public static string ConnectionWindowTitle {
             get {
                 return ResourceManager.GetString("ConnectionWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Non-persistent.
+        /// </summary>
+        public static string DeliveryModeNonPersistent {
+            get {
+                return ResourceManager.GetString("DeliveryModeNonPersistent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Persistent.
+        /// </summary>
+        public static string DeliveryModePersistent {
+            get {
+                return ResourceManager.GetString("DeliveryModePersistent", resourceCulture);
             }
         }
         

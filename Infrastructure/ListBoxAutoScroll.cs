@@ -51,7 +51,7 @@ namespace PettingZoo.Infrastructure
                     ItemsSourcePropertyChanged));
 
         private readonly System.Windows.Controls.ListBox target;
-        private ScrollViewer scrollViewer = null;
+        private ScrollViewer scrollViewer;
 
         public AutoScrollHandler(System.Windows.Controls.ListBox target)
         {

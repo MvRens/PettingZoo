@@ -6,6 +6,7 @@ namespace PettingZoo.Model
     public class MessageInfo
     {
         public DateTime Timestamp { get; set;  }
+        public string Exchange { get; set; }
         public string RoutingKey { get; set; }
         public byte[] Body { get; set; }
 
@@ -15,8 +16,8 @@ namespace PettingZoo.Model
         {
             get
             {
-                return Properties != null && Properties.ContainsKey("content-type")
-                    ? Properties["content-type"]
+                return Properties != null && Properties.ContainsKey(RabbitMQProperties.ContentType)
+                    ? Properties[RabbitMQProperties.ContentType]
                     : "";
             }
         }

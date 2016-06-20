@@ -147,6 +147,12 @@
   <data name="ConnectionWindowTitle" xml:space="preserve">
     <value>Connection parameters</value>
   </data>
+  <data name="DeliveryModeNonPersistent" xml:space="preserve">
+    <value>Non-persistent</value>
+  </data>
+  <data name="DeliveryModePersistent" xml:space="preserve">
+    <value>Persistent</value>
+  </data>
   <data name="MainWindowTitle" xml:space="preserve">
     <value>Petting Zoo - a RabbitMQ Message Viewer</value>
   </data>

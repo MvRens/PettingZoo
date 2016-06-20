@@ -9,7 +9,7 @@ using PettingZoo.Model;
 
 namespace PettingZoo.ViewModel
 {
-    public class MainViewModel : BaseViewModel
+    public class MainViewModel : BaseViewModel, IDisposable
     {
         private readonly TaskScheduler uiScheduler;
         private readonly IConnectionInfoBuilder connectionInfoBuilder;
@@ -86,6 +86,16 @@ namespace PettingZoo.ViewModel
             connectCommand = new DelegateCommand(ConnectExecute);
             disconnectCommand = new DelegateCommand(DisconnectExecute, DisconnectCanExecute);
             clearCommand = new DelegateCommand(ClearExecute, ClearCanExecute);
+        }
+
+
+        public void Dispose()
+        {
+            if (connection != null)
+            {
+                connection.Dispose();
+                connection = null;
+            }
         }
 
 

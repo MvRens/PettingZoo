@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Markup;
 using PettingZoo.Model;
 using PettingZoo.View;
 using SimpleInjector;
@@ -11,8 +13,12 @@ namespace PettingZoo
     {
         public void ApplicationStartup(object sender, StartupEventArgs e)
         {
+            // WPF defaults to US for date formatting in bindings, this fixes it
+            FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(
+                XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
+
             var container = Bootstrap();
-            RunApplication(container);            
+            RunApplication(container);
         }
 
 
@@ -38,6 +44,8 @@ namespace PettingZoo
         private static void RunApplication(Container container) 
         {
             var mainWindow = container.GetInstance<MainWindow>();
+            mainWindow.Closed += (sender, args) => container.Dispose();
+
             mainWindow.Show();
         }
     }
