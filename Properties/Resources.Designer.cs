@@ -9,6 +9,9 @@
 //------------------------------------------------------------------------------
 
 namespace PettingZoo.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -166,7 +169,7 @@ namespace PettingZoo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Petting Zoo - a RabbitMQ Message Viewer.
+        ///   Looks up a localized string similar to Petting Zoo - a RabbitMQ live message viewer.
         /// </summary>
         public static string MainWindowTitle {
             get {

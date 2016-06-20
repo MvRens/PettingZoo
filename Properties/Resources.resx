@@ -154,7 +154,7 @@
     <value>Persistent</value>
   </data>
   <data name="MainWindowTitle" xml:space="preserve">
-    <value>Petting Zoo - a RabbitMQ Message Viewer</value>
+    <value>Petting Zoo - a RabbitMQ live message viewer</value>
   </data>
   <data name="PanelTitleBody" xml:space="preserve">
     <value>Body</value>
