@@ -158,5 +158,41 @@ namespace PettingZoo.Properties {
                 return ResourceManager.GetString("MainWindowTitle", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Body.
+        /// </summary>
+        public static string PanelTitleBody {
+            get {
+                return ResourceManager.GetString("PanelTitleBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Properties.
+        /// </summary>
+        public static string PanelTitleProperties {
+            get {
+                return ResourceManager.GetString("PanelTitleProperties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string PropertyName {
+            get {
+                return ResourceManager.GetString("PropertyName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value.
+        /// </summary>
+        public static string PropertyValue {
+            get {
+                return ResourceManager.GetString("PropertyValue", resourceCulture);
+            }
+        }
     }
 }

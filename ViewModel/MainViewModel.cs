@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using PettingZoo.Infrastructure;
 using PettingZoo.Model;
@@ -6,11 +11,14 @@ namespace PettingZoo.ViewModel
 {
     public class MainViewModel : BaseViewModel
     {
+        private readonly TaskScheduler uiScheduler;
         private readonly IConnectionInfoBuilder connectionInfoBuilder;
         private readonly IConnectionFactory connectionFactory;
 
         private ConnectionInfo connectionInfo;
         private IConnection connection;
+        private readonly ObservableCollection<MessageInfo> messages;
+        private MessageInfo selectedMessage;
 
         private readonly DelegateCommand connectCommand;
         private readonly DelegateCommand disconnectCommand;
@@ -18,18 +26,47 @@ namespace PettingZoo.ViewModel
 
 
         public ConnectionInfo ConnectionInfo {
-            get
-            {
-                return connectionInfo;
-            }
+            get { return connectionInfo; }
             private set
             {
-                if (value != connectionInfo)
-                {
-                    connectionInfo = value;
-                    RaisePropertyChanged();
-                }
+                if (value == connectionInfo) 
+                    return;
+
+                connectionInfo = value;
+                RaisePropertyChanged();
             }
+        }
+
+        public ObservableCollection<MessageInfo> Messages { get { return messages; } }
+
+        public MessageInfo SelectedMessage
+        {
+            get { return selectedMessage; }
+            set
+            {
+                if (value == selectedMessage)
+                    return;
+
+                selectedMessage = value;
+                RaisePropertyChanged();
+                RaiseOtherPropertyChanged("SelectedMessageBody");
+                RaiseOtherPropertyChanged("SelectedMessageProperties");
+            }
+        }
+
+        public string SelectedMessageBody
+        {
+            get
+            {
+                return SelectedMessage != null
+                    ? MessageBodyRenderer.Render(SelectedMessage.Body, SelectedMessage.ContentType)
+                    : "";
+            }
+        }
+
+        public Dictionary<string, string> SelectedMessageProperties
+        {
+            get { return SelectedMessage != null ? SelectedMessage.Properties : null; }
         }
 
         public ICommand ConnectCommand { get { return connectCommand; } }
@@ -39,8 +76,12 @@ namespace PettingZoo.ViewModel
 
         public MainViewModel(IConnectionInfoBuilder connectionInfoBuilder, IConnectionFactory connectionFactory)
         {
+            uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+
             this.connectionInfoBuilder = connectionInfoBuilder;
             this.connectionFactory = connectionFactory;
+
+            messages = new ObservableCollection<MessageInfo>();
 
             connectCommand = new DelegateCommand(ConnectExecute);
             disconnectCommand = new DelegateCommand(DisconnectExecute, DisconnectCanExecute);
@@ -56,6 +97,7 @@ namespace PettingZoo.ViewModel
 
             ConnectionInfo = newInfo;
             connection = connectionFactory.CreateConnection(connectionInfo);
+            connection.MessageReceived += ConnectionMessageReceived;
 
             disconnectCommand.RaiseCanExecuteChanged();
         }
@@ -70,6 +112,7 @@ namespace PettingZoo.ViewModel
             }
 
             ConnectionInfo = null;
+            disconnectCommand.RaiseCanExecuteChanged();
         }
 
 
@@ -87,6 +130,18 @@ namespace PettingZoo.ViewModel
         private bool ClearCanExecute()
         {
             return false;
+        }
+
+
+        private void ConnectionMessageReceived(object sender, MessageReceivedEventArgs e)
+        {
+            RunFromUiScheduler(() => messages.Add(e.MessageInfo));
+        }
+
+
+        private void RunFromUiScheduler(Action action)
+        {
+            Task.Factory.StartNew(action, CancellationToken.None, TaskCreationOptions.None, uiScheduler);            
         }
     }
 }

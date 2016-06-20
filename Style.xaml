@@ -11,6 +11,16 @@
     </Style>
 
     <!-- Explicit styling -->
+    <Style x:Key="SidePanel" TargetType="{x:Type Border}">
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
+    </Style>
+    
+    <Style x:Key="HeaderLabel" TargetType="{x:Type Label}">
+        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.InactiveCaptionBrushKey}}"/>
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.InactiveCaptionTextBrushKey}}"/>
+    </Style>
+    
     <Style x:Key="FooterPanel" TargetType="{x:Type Panel}">
         <Setter Property="Margin" Value="0,8,0,0" />
     </Style>
@@ -22,5 +32,12 @@
     
     <Style x:Key="Form" TargetType="{x:Type infrastructure:GridLayout}">
         <Setter Property="ChildMargin" Value="4"/>
+    </Style>
+    
+    
+    <Style x:Key="Properties" TargetType="{x:Type DataGrid}">
+        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+        <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <Setter Property="VerticalGridLinesBrush" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
     </Style>
 </ResourceDictionary>

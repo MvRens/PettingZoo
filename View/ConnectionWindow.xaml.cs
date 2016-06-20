@@ -8,16 +8,19 @@ namespace PettingZoo.View
     {
         public ConnectionInfo Build()
         {
-            var viewModel = new ConnectionViewModel();
+            var viewModel = new ConnectionViewModel(ConnectionInfo.Default());
+
             var dialog = new ConnectionWindow(viewModel)
             {
                 Owner = Application.Current.MainWindow
             };
 
-            if (!dialog.ShowDialog().GetValueOrDefault())
-                return null;
+            viewModel.CloseWindow += (sender, args) =>
+            {
+                dialog.DialogResult = true;
+            };
 
-            return viewModel.ConnectionInfo;
+            return dialog.ShowDialog().GetValueOrDefault() ? viewModel.ToModel() : null;
         }
     }
 

@@ -150,4 +150,16 @@
   <data name="MainWindowTitle" xml:space="preserve">
     <value>Petting Zoo - a RabbitMQ Message Viewer</value>
   </data>
+  <data name="PanelTitleBody" xml:space="preserve">
+    <value>Body</value>
+  </data>
+  <data name="PanelTitleProperties" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="PropertyName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="PropertyValue" xml:space="preserve">
+    <value>Value</value>
+  </data>
 </root>

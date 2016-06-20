@@ -17,7 +17,7 @@
         FocusManager.FocusedElement="{Binding ElementName=HostTextBox}">
     <DockPanel Margin="8">
         <UniformGrid DockPanel.Dock="Bottom" HorizontalAlignment="Right" Rows="1" Columns="2" Style="{StaticResource FooterPanel}">
-            <Button IsDefault="True" Content="{x:Static res:Resources.ButtonOK}" Style="{StaticResource FooterButton}"/>
+            <Button IsDefault="True" Content="{x:Static res:Resources.ButtonOK}" Style="{StaticResource FooterButton}" Command="{Binding OkCommand}"/>
             <Button IsCancel="True" Content="{x:Static res:Resources.ButtonCancel}" Style="{StaticResource FooterButton}"/>
         </UniformGrid>
         
@@ -37,18 +37,18 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Label Grid.Column="0" Grid.Row="0" Content="{x:Static res:Resources.ConnectionHost}"/>
-            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding ConnectionInfo.Host}" Name="HostTextBox" />
+            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Host}" Name="HostTextBox" />
 
             <Label Grid.Column="0" Grid.Row="1" Content="{x:Static res:Resources.ConnectionPort}"/>
             
             <Label Grid.Column="0" Grid.Row="2" Content="{x:Static res:Resources.ConnectionVirtualHost}"/>
-            <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding ConnectionInfo.VirtualHost}"/>
+            <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding VirtualHost}"/>
             
             <Label Grid.Column="0" Grid.Row="3" Content="{x:Static res:Resources.ConnectionUsername}"/>
-            <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding ConnectionInfo.Username}"/>
+            <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Username}"/>
 
             <Label Grid.Column="0" Grid.Row="4" Content="{x:Static res:Resources.ConnectionPassword}"/>
-            <PasswordBox Grid.Column="1" Grid.Row="4"  infrastructure:PasswordBoxAssistant.BindPassword="true"  infrastructure:PasswordBoxAssistant.BoundPassword="{Binding Path=ConnectionInfo.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <PasswordBox Grid.Column="1" Grid.Row="4"  infrastructure:PasswordBoxAssistant.BindPassword="true"  infrastructure:PasswordBoxAssistant.BoundPassword="{Binding Path=Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
             <Label Grid.Column="0" Grid.Row="6" Content="{x:Static res:Resources.ConnectionExchange}"/>
             <TextBox Grid.Column="1" Grid.Row="6" Text="{Binding Exchange}"/>

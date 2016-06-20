@@ -10,7 +10,15 @@ namespace PettingZoo.Infrastructure
         protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)
         {
             var handler = PropertyChanged;
-            if (handler != null) 
+            if (handler != null)
+                handler(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
+        protected virtual void RaiseOtherPropertyChanged(string propertyName)
+        {
+            var handler = PropertyChanged;
+            if (handler != null)
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }

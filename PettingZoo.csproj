@@ -54,6 +54,10 @@
     </StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=4.2.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>packages\AutoMapper.4.2.1\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="SimpleInjector, Version=3.1.5.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
       <HintPath>packages\SimpleInjector.3.1.5\lib\net45\SimpleInjector.dll</HintPath>
       <Private>True</Private>
@@ -101,6 +105,8 @@
     <Compile Include="Model\IConnectionFactory.cs" />
     <Compile Include="Model\IConnectionInfoBuilder.cs" />
     <Compile Include="Model\ConnectionInfo.cs" />
+    <Compile Include="Model\MessageBodyRenderer.cs" />
+    <Compile Include="Model\MessageInfo.cs" />
     <Compile Include="Model\RabbitMQClientConnection.cs" />
     <Compile Include="Model\RabbitMQClientConnectionFactory.cs" />
     <Compile Include="ViewModel\ConnectionViewModel.cs" />
