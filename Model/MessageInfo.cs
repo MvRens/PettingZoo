@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace PettingZoo.Model
 {
     public class MessageInfo
     {
+        public DateTime Timestamp { get; set;  }
         public string RoutingKey { get; set; }
         public byte[] Body { get; set; }
 
@@ -17,6 +19,12 @@ namespace PettingZoo.Model
                     ? Properties["content-type"]
                     : "";
             }
+        }
+
+
+        public MessageInfo()
+        {
+            Timestamp = DateTime.Now;
         }
     }
 }

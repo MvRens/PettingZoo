@@ -100,6 +100,7 @@
     <Compile Include="Infrastructure\DelegateCommand.cs" />
     <Compile Include="Infrastructure\BaseViewModel.cs" />
     <Compile Include="Infrastructure\GridLayout.cs" />
+    <Compile Include="Infrastructure\ListBoxAutoScroll.cs" />
     <Compile Include="Infrastructure\PasswordBoxAssistant.cs" />
     <Compile Include="Model\IConnection.cs" />
     <Compile Include="Model\IConnectionFactory.cs" />

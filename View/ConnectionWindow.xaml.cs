@@ -25,7 +25,7 @@ namespace PettingZoo.View
     }
 
 
-    public partial class ConnectionWindow : Window
+    public partial class ConnectionWindow
     {
         public ConnectionWindow(ConnectionViewModel viewModel)
         {

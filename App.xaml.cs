@@ -7,7 +7,7 @@ using SimpleInjector;
 
 namespace PettingZoo
 {
-    public partial class App : Application
+    public partial class App
     {
         public void ApplicationStartup(object sender, StartupEventArgs e)
         {
@@ -25,7 +25,7 @@ namespace PettingZoo
 
             // Automatically register all Window and BaseViewModel descendants
             foreach (var type in Assembly.GetExecutingAssembly().GetExportedTypes()
-                .Where(t => t.IsSubclassOf(typeof(System.Windows.Window)) ||
+                .Where(t => t.IsSubclassOf(typeof(Window)) ||
                             t.IsSubclassOf(typeof(Infrastructure.BaseViewModel))))
             {
                 container.Register(type);

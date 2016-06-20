@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:viewModel="clr-namespace:PettingZoo.ViewModel"
+        xmlns:infrastructure="clr-namespace:PettingZoo.Infrastructure"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance viewModel:MainViewModel}"
         Width="800" 
@@ -28,16 +29,22 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <ListBox Grid.Column="0" Grid.Row="0" 
                      HorizontalAlignment="Stretch" 
                      ItemsSource="{Binding Messages}" 
-                     SelectedItem="{Binding Path=SelectedMessage, Mode=TwoWay}">
+                     SelectedItem="{Binding Path=SelectedMessage, Mode=TwoWay}"
+                     infrastructure:ListBox.AutoScroll="True">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid>
-                            <TextBlock Text="{Binding RoutingKey}"></TextBlock>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" MinWidth="150"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding Timestamp}"></TextBlock>
+                            <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding RoutingKey}"></TextBlock>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

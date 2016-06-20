@@ -58,7 +58,7 @@ namespace PettingZoo.Infrastructure
             }
             foreach (UIElement element in InternalChildren)
             {
-                FrameworkElement fe = element as FrameworkElement;
+                var fe = element as FrameworkElement;
                 if (null != fe)
                 {
                     int row = GetRow(fe);

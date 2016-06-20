@@ -23,7 +23,7 @@ namespace PettingZoo.Model
                         break;
 
                     if (MessageReceived != null)
-                        MessageReceived(null, new MessageReceivedEventArgs(new MessageInfo()
+                        MessageReceived(null, new MessageReceivedEventArgs(new MessageInfo
                         {
                             RoutingKey = "test",
                             Body = Encoding.UTF8.GetBytes("{ \"hello\": \"world\" }"),
@@ -33,7 +33,7 @@ namespace PettingZoo.Model
                                 { "classType", "LEF.Messaging.Internal.ActieNewMessage" }
                             }
                         }));
-                    Thread.Sleep(1000);
+                    Thread.Sleep(200);
                 }
             }, token);
         }

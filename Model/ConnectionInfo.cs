@@ -14,7 +14,7 @@
 
         public static ConnectionInfo Default()
         {
-            return new ConnectionInfo()
+            return new ConnectionInfo
             {
                 Host = "localhost",
                 Port = 5672,

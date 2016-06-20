@@ -124,24 +124,30 @@ namespace PettingZoo.ViewModel
 
         private void ClearExecute()
         {
+            messages.Clear();
+            clearCommand.RaiseCanExecuteChanged();
         }
 
 
         private bool ClearCanExecute()
         {
-            return false;
+            return messages.Count > 0;
         }
 
 
         private void ConnectionMessageReceived(object sender, MessageReceivedEventArgs e)
         {
-            RunFromUiScheduler(() => messages.Add(e.MessageInfo));
+            RunFromUiScheduler(() =>
+            {
+                messages.Add(e.MessageInfo);
+                clearCommand.RaiseCanExecuteChanged();
+            });            
         }
 
 
         private void RunFromUiScheduler(Action action)
         {
-            Task.Factory.StartNew(action, CancellationToken.None, TaskCreationOptions.None, uiScheduler);            
+            Task.Factory.StartNew(action, CancellationToken.None, TaskCreationOptions.None, uiScheduler);
         }
     }
 }

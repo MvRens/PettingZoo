@@ -8,7 +8,7 @@ namespace PettingZoo.ViewModel
 {
     public class ConnectionViewModel
     {
-        private static IMapper modelMapper = new MapperConfiguration(cfg =>
+        private static readonly IMapper ModelMapper = new MapperConfiguration(cfg =>
         {
             cfg.CreateMap<ConnectionInfo, ConnectionViewModel>();
             cfg.CreateMap<ConnectionViewModel, ConnectionInfo>();
@@ -41,13 +41,13 @@ namespace PettingZoo.ViewModel
 
         public ConnectionViewModel(ConnectionInfo model) : this()
         {
-            modelMapper.Map(model, this);
+            ModelMapper.Map(model, this);
         }
 
 
         public ConnectionInfo ToModel()
         {
-            return modelMapper.Map<ConnectionInfo>(this);
+            return ModelMapper.Map<ConnectionInfo>(this);
         }
 
 
