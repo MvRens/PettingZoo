@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 using PettingZoo.Model;
 using PettingZoo.ViewModel;
 
@@ -33,6 +34,13 @@ namespace PettingZoo.View
 
             InitializeComponent();
             DataContext = viewModel;
+        }
+
+
+        private void NumericPreviewTextInput(object sender, TextCompositionEventArgs args)
+        {
+            if (!char.IsDigit(args.Text, args.Text.Length - 1))
+                args.Handled = true;
         }
     }
 }

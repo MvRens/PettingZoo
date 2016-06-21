@@ -17,27 +17,27 @@
         <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
             <Button Command="{Binding ConnectCommand}">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="/Images/Connect.png" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                    <Image Source="{StaticResource ConnectIcon}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
                     <TextBlock Margin="3,0,0,0">Connect</TextBlock>
                 </StackPanel>
             </Button>
             <Button Command="{Binding DisconnectCommand}">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="/Images/Disconnect.png" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                    <Image Source="{StaticResource DisconnectIcon}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
                     <TextBlock Margin="3,0,0,0">Disconnect</TextBlock>
                 </StackPanel>
             </Button>
             <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
             <Button Command="{Binding ClearCommand}">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="/Images/Disconnect.png" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                    <Image Source="{StaticResource ClearIcon}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
                     <TextBlock Margin="3,0,0,0">Clear messages</TextBlock>
                 </StackPanel>
             </Button>
         </ToolBar>
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem>
-                <TextBlock />
+                <TextBlock Text="{Binding ConnectionStatus}"/>
             </StatusBarItem>
         </StatusBar>
         <Grid Margin="4">

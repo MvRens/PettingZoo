@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using PettingZoo.Infrastructure;
 using PettingZoo.Model;
+using PettingZoo.Properties;
 
 namespace PettingZoo.ViewModel
 {
@@ -17,6 +18,7 @@ namespace PettingZoo.ViewModel
 
         private ConnectionInfo connectionInfo;
         private IConnection connection;
+        private string connectionStatus;
         private readonly ObservableCollection<MessageInfo> messages;
         private MessageInfo selectedMessage;
 
@@ -33,6 +35,19 @@ namespace PettingZoo.ViewModel
                     return;
 
                 connectionInfo = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public string ConnectionStatus
+        {
+            get { return connectionStatus; }
+            private set
+            {
+                if (value == connectionStatus)
+                    return;
+
+                connectionStatus = value;
                 RaisePropertyChanged();
             }
         }
@@ -81,6 +96,7 @@ namespace PettingZoo.ViewModel
             this.connectionInfoBuilder = connectionInfoBuilder;
             this.connectionFactory = connectionFactory;
 
+            connectionStatus = GetConnectionStatus(null);
             messages = new ObservableCollection<MessageInfo>();
 
             connectCommand = new DelegateCommand(ConnectExecute);
@@ -105,9 +121,13 @@ namespace PettingZoo.ViewModel
             if (newInfo == null) 
                 return;
 
+            if (connection != null)
+                connection.Dispose();
+
             ConnectionInfo = newInfo;
             connection = connectionFactory.CreateConnection(connectionInfo);
             connection.MessageReceived += ConnectionMessageReceived;
+            connection.StatusChanged += ConnectionStatusChanged;
 
             disconnectCommand.RaiseCanExecuteChanged();
         }
@@ -122,6 +142,8 @@ namespace PettingZoo.ViewModel
             }
 
             ConnectionInfo = null;
+            ConnectionStatus = GetConnectionStatus(null);
+
             disconnectCommand.RaiseCanExecuteChanged();
         }
 
@@ -145,13 +167,38 @@ namespace PettingZoo.ViewModel
         }
 
 
-        private void ConnectionMessageReceived(object sender, MessageReceivedEventArgs e)
+        private void ConnectionStatusChanged(object sender, StatusChangedEventArgs args)
+        {
+            ConnectionStatus = GetConnectionStatus(args);
+        }
+
+
+        private void ConnectionMessageReceived(object sender, MessageReceivedEventArgs args)
         {
             RunFromUiScheduler(() =>
             {
-                messages.Add(e.MessageInfo);
+                messages.Add(args.MessageInfo);
                 clearCommand.RaiseCanExecuteChanged();
             });            
+        }
+
+
+        private string GetConnectionStatus(StatusChangedEventArgs args)
+        {
+            if (args != null)
+                switch (args.Status)
+                {
+                    case Model.ConnectionStatus.Connecting:
+                        return String.Format(Resources.StatusConnecting, args.Context);
+
+                    case Model.ConnectionStatus.Connected:
+                        return String.Format(Resources.StatusConnected, args.Context);
+
+                    case Model.ConnectionStatus.Error:
+                        return String.Format(Resources.StatusError, args.Context);
+                }
+
+            return Resources.StatusDisconnected;
         }
 
 

@@ -12,11 +12,14 @@ namespace PettingZoo.Model
 {
     public class RabbitMQClientConnection : IConnection
     {
+        private const int ConnectRetryDelay = 5000;
+
         private readonly CancellationTokenSource connectionTaskToken;
         private RabbitMQ.Client.IConnection connection;
         private IModel model;
 
 
+        public event EventHandler<StatusChangedEventArgs> StatusChanged;
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
 
@@ -44,6 +47,9 @@ namespace PettingZoo.Model
                 connection.Dispose();
                 connection = null;
             }
+
+            StatusChanged = null;
+            MessageReceived = null;
         }
 
 
@@ -58,18 +64,34 @@ namespace PettingZoo.Model
                 Password = connectionInfo.Password
             };
 
-            // ToDo exception handling
-            connection = factory.CreateConnection();
-            model = connection.CreateModel();
+            var statusContext = String.Format(@"{0}:{1}{2}", connectionInfo.Host, connectionInfo.Port, connectionInfo.VirtualHost);
 
-            var queueName = model.QueueDeclare().QueueName;
-            model.QueueBind(queueName, connectionInfo.Exchange, connectionInfo.RoutingKey);
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                DoStatusChanged(ConnectionStatus.Connecting, statusContext);
+                try
+                {
+                    connection = factory.CreateConnection();
+                    model = connection.CreateModel();
+
+                    var queueName = model.QueueDeclare().QueueName;
+                    model.QueueBind(queueName, connectionInfo.Exchange, connectionInfo.RoutingKey);
 
 
-            var consumer = new EventingBasicConsumer(model);
-            consumer.Received += ClientReceived;
+                    var consumer = new EventingBasicConsumer(model);
+                    consumer.Received += ClientReceived;
 
-            model.BasicConsume(queueName, true, consumer);
+                    model.BasicConsume(queueName, true, consumer);
+                    DoStatusChanged(ConnectionStatus.Connected, statusContext);
+
+                    break;
+                }
+                catch (Exception e)
+                {
+                    DoStatusChanged(ConnectionStatus.Error, e.Message);
+                    Task.Delay(ConnectRetryDelay, cancellationToken).Wait(cancellationToken);
+                }
+            }
         }
 
 
@@ -87,6 +109,13 @@ namespace PettingZoo.Model
                     Properties = ConvertProperties(args.BasicProperties)
                 }
             ));
+        }
+
+
+        private void DoStatusChanged(ConnectionStatus status, string context = null)
+        {
+            if (StatusChanged != null)
+                StatusChanged(this, new StatusChangedEventArgs(status, context));
         }
 
 

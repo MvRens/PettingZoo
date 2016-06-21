@@ -168,4 +168,16 @@
   <data name="PropertyValue" xml:space="preserve">
     <value>Value</value>
   </data>
+  <data name="StatusConnected" xml:space="preserve">
+    <value>Connected</value>
+  </data>
+  <data name="StatusConnecting" xml:space="preserve">
+    <value>Connecting to {0}...</value>
+  </data>
+  <data name="StatusDisconnected" xml:space="preserve">
+    <value>Disconnected</value>
+  </data>
+  <data name="StatusError" xml:space="preserve">
+    <value>Error: {0}</value>
+  </data>
 </root>
