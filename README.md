@@ -1,4 +1,4 @@
-# Petting Zoo
+# ![Petting Zoo](https://raw.githubusercontent.com/PsychoMark/PettingZoo/master/Images/PettingZoo-48.png) Petting Zoo
 ##### A RabbitMQ live message viewer
 
 ToDo: explain how it brings you coffee, fame and world peace. Or maybe just makes watching the messages flow slightly more comfortable.
