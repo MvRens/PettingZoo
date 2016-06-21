@@ -6,7 +6,7 @@ ToDo: explain how it brings you coffee, fame and world peace. Or maybe just make
 
 #### Icons
 
-Icons are from the Interaction Assets pack by Madebyoliver
+Toolbar icons are from the Interaction Assets pack by Madebyoliver
 <http://www.flaticon.com/authors/madebyoliver>
 
 Designed by Freepik and distributed by Flaticon
