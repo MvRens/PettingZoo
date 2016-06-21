@@ -64,7 +64,7 @@ namespace PettingZoo.Model
                 Password = connectionInfo.Password
             };
 
-            var statusContext = String.Format(@"{0}:{1}{2}", connectionInfo.Host, connectionInfo.Port, connectionInfo.VirtualHost);
+            var statusContext = String.Format("{0}:{1}{2}", connectionInfo.Host, connectionInfo.Port, connectionInfo.VirtualHost);
 
             while (!cancellationToken.IsCancellationRequested)
             {

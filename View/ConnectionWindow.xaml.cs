@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using AutoMapper;
 using PettingZoo.Model;
 using PettingZoo.ViewModel;
 
@@ -7,9 +8,27 @@ namespace PettingZoo.View
 {
     public class WindowConnectionInfoBuilder : IConnectionInfoBuilder
     {
+        private readonly UserSettings userSettings;
+
+        private static readonly IMapper ConnectionInfoMapper = new MapperConfiguration(cfg =>
+        {
+            cfg.RecognizeDestinationPrefixes("Last");
+            cfg.RecognizePrefixes("Last");
+
+            cfg.CreateMap<ConnectionInfo, ConnectionWindowSettings>().ReverseMap();
+        }).CreateMapper();
+
+
+        public WindowConnectionInfoBuilder(UserSettings userSettings)
+        {
+            this.userSettings = userSettings;
+        }
+
+
         public ConnectionInfo Build()
         {
-            var viewModel = new ConnectionViewModel(ConnectionInfo.Default());
+            var connectionInfo = ConnectionInfoMapper.Map<ConnectionInfo>(userSettings.ConnectionWindow);
+            var viewModel = new ConnectionViewModel(connectionInfo);
 
             var dialog = new ConnectionWindow(viewModel)
             {
@@ -21,7 +40,14 @@ namespace PettingZoo.View
                 dialog.DialogResult = true;
             };
 
-            return dialog.ShowDialog().GetValueOrDefault() ? viewModel.ToModel() : null;
+            connectionInfo = dialog.ShowDialog().GetValueOrDefault() ? viewModel.ToModel() : null;
+            if (connectionInfo != null)
+            {
+                ConnectionInfoMapper.Map(connectionInfo, userSettings.ConnectionWindow);
+                userSettings.Save();
+            }
+
+            return connectionInfo;
         }
     }
 

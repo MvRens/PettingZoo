@@ -6,13 +6,11 @@ using PettingZoo.Model;
 
 namespace PettingZoo.ViewModel
 {
-    public class ConnectionViewModel
+    public class ConnectionViewModel : BaseViewModel
     {
-        private static readonly IMapper ModelMapper = new MapperConfiguration(cfg =>
-        {
-            cfg.CreateMap<ConnectionInfo, ConnectionViewModel>();
-            cfg.CreateMap<ConnectionViewModel, ConnectionInfo>();
-        }).CreateMapper();
+        private static readonly IMapper ModelMapper = new MapperConfiguration(cfg => 
+            cfg.CreateMap<ConnectionInfo, ConnectionViewModel>().ReverseMap()
+        ).CreateMapper();
 
 
         private readonly DelegateCommand okCommand;

@@ -10,19 +10,5 @@
 
         public string Exchange { get; set; }
         public string RoutingKey { get; set;  }
-
-
-        public static ConnectionInfo Default()
-        {
-            return new ConnectionInfo
-            {
-                Host = "localhost",
-                Port = 5672,
-                VirtualHost = "/",
-                Username = "guest",
-                Password = "guest",
-                RoutingKey = "#"
-            };
-        }
     }
 }

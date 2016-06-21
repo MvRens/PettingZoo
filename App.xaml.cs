@@ -1,10 +1,13 @@
-﻿using System.Globalization;
-using System.Linq;
+﻿using System;
+using System.Globalization;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Markup;
+using Newtonsoft.Json;
 using PettingZoo.Model;
 using PettingZoo.View;
+using PettingZoo.ViewModel;
 using SimpleInjector;
 
 namespace PettingZoo
@@ -26,16 +29,16 @@ namespace PettingZoo
         {
             var container = new Container();
 
+            container.RegisterSingleton(() => new UserSettings(new AppDataSettingsSerializer("Settings.json")));
+
             container.Register<IConnectionFactory, RabbitMQClientConnectionFactory>();
             container.Register<IConnectionInfoBuilder, WindowConnectionInfoBuilder>();
 
-            // Automatically register all Window and BaseViewModel descendants
-            foreach (var type in Assembly.GetExecutingAssembly().GetExportedTypes()
-                .Where(t => t.IsSubclassOf(typeof(Window)) ||
-                            t.IsSubclassOf(typeof(Infrastructure.BaseViewModel))))
-            {
-                container.Register(type);
-            }
+            container.Register<MainWindow>();
+            container.Register<MainViewModel>();
+
+            // Note: don't run Verify! It'll create a MainWindow which will then become
+            // Application.Current.MainWindow and prevent the process from shutting down.
 
             return container;
         }
@@ -47,6 +50,48 @@ namespace PettingZoo
             mainWindow.Closed += (sender, args) => container.Dispose();
 
             mainWindow.Show();
+        }
+
+
+        private class AppDataSettingsSerializer : IUserSettingsSerializer
+        {
+            private readonly string path;
+            private readonly string fullPath;
+
+
+            public AppDataSettingsSerializer(string filename)
+            {
+                var companyName = GetProductInfo<AssemblyCompanyAttribute>().Company;
+                var productName = GetProductInfo<AssemblyProductAttribute>().Product;
+
+                path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), 
+                                    companyName, productName);
+                fullPath = Path.Combine(path, filename);
+            }
+
+
+            public void Read(UserSettings settings)
+            {
+                if (File.Exists(fullPath))
+                    JsonConvert.PopulateObject(File.ReadAllText(fullPath), settings);
+            }
+
+
+            public void Write(UserSettings settings)
+            {
+                Directory.CreateDirectory(path);
+                File.WriteAllText(fullPath, JsonConvert.SerializeObject(settings, Formatting.Indented));
+            }
+
+
+            private T GetProductInfo<T>()
+            {
+                var attributes = GetType().Assembly.GetCustomAttributes(typeof(T), true);
+                if (attributes.Length == 0)
+                    throw new Exception("Missing product information in assembly");
+
+                return (T)attributes[0];
+            }
         }
     }
 }
