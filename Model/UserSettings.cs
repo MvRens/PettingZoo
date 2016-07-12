@@ -1,4 +1,4 @@
-﻿namespace PettingZoo.Infrastructure
+﻿namespace PettingZoo.Model
 {
     public interface IUserSettingsSerializer
     {

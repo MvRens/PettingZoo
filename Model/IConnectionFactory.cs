@@ -1,4 +1,4 @@
-﻿namespace PettingZoo.Connection
+﻿namespace PettingZoo.Model
 {
     public interface IConnectionFactory
     {

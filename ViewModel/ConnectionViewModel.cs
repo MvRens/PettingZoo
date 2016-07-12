@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Input;
 using AutoMapper;
-using PettingZoo.Connection;
 using PettingZoo.Infrastructure;
+using PettingZoo.Model;
 
 namespace PettingZoo.ViewModel
 {

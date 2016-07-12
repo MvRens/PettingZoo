@@ -5,8 +5,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Markup;
 using Newtonsoft.Json;
-using PettingZoo.Connection;
-using PettingZoo.Infrastructure;
+using PettingZoo.Model;
 using PettingZoo.View;
 using PettingZoo.ViewModel;
 using SimpleInjector;
@@ -34,10 +33,6 @@ namespace PettingZoo
 
             container.Register<IConnectionFactory, RabbitMQClientConnectionFactory>();
             container.Register<IConnectionInfoBuilder, WindowConnectionInfoBuilder>();
-
-            //container.Register<IConnectionFactory>(() => new MockConnectionFactory(10));
-            //container.Register<IConnectionInfoBuilder, MockConnectionInfoBuilder>();
-
 
             container.Register<MainWindow>();
             container.Register<MainViewModel>();

@@ -8,7 +8,7 @@ using PettingZoo.Properties;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace PettingZoo.Connection
+namespace PettingZoo.Model
 {
     public class RabbitMQClientConnection : IConnection
     {

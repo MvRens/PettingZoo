@@ -113,24 +113,21 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Connection\MockConnection.cs" />
-    <Compile Include="Connection\MockConnectionFactory.cs" />
-    <Compile Include="Connection\MockConnectionInfoBuilder.cs" />
     <Compile Include="Infrastructure\DelegateCommand.cs" />
     <Compile Include="Infrastructure\BaseViewModel.cs" />
     <Compile Include="Infrastructure\GridLayout.cs" />
     <Compile Include="Infrastructure\ListBoxAutoScroll.cs" />
     <Compile Include="Infrastructure\PasswordBoxAssistant.cs" />
-    <Compile Include="Infrastructure\UserSettings.cs" />
-    <Compile Include="Connection\IConnection.cs" />
-    <Compile Include="Connection\IConnectionFactory.cs" />
-    <Compile Include="Connection\IConnectionInfoBuilder.cs" />
-    <Compile Include="Connection\ConnectionInfo.cs" />
-    <Compile Include="Infrastructure\MessageBodyRenderer.cs" />
-    <Compile Include="Connection\MessageInfo.cs" />
-    <Compile Include="Connection\RabbitMQClientConnection.cs" />
-    <Compile Include="Connection\RabbitMQClientConnectionFactory.cs" />
-    <Compile Include="Connection\RabbitMQProperties.cs" />
+    <Compile Include="Model\UserSettings.cs" />
+    <Compile Include="Model\IConnection.cs" />
+    <Compile Include="Model\IConnectionFactory.cs" />
+    <Compile Include="Model\IConnectionInfoBuilder.cs" />
+    <Compile Include="Model\ConnectionInfo.cs" />
+    <Compile Include="Model\MessageBodyRenderer.cs" />
+    <Compile Include="Model\MessageInfo.cs" />
+    <Compile Include="Model\RabbitMQClientConnection.cs" />
+    <Compile Include="Model\RabbitMQClientConnectionFactory.cs" />
+    <Compile Include="Model\RabbitMQProperties.cs" />
     <Compile Include="ViewModel\ConnectionViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="View\ConnectionWindow.xaml.cs">

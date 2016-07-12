@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PettingZoo.Connection
+namespace PettingZoo.Model
 {
     public enum ConnectionStatus
     {
