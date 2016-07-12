@@ -1,4 +1,4 @@
-﻿namespace PettingZoo.Model
+﻿namespace PettingZoo.Connection
 {
     static class RabbitMQProperties
     {

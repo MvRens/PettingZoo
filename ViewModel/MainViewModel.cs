@@ -4,8 +4,8 @@ using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using PettingZoo.Connection;
 using PettingZoo.Infrastructure;
-using PettingZoo.Model;
 using PettingZoo.Properties;
 
 namespace PettingZoo.ViewModel
@@ -188,13 +188,13 @@ namespace PettingZoo.ViewModel
             if (args != null)
                 switch (args.Status)
                 {
-                    case Model.ConnectionStatus.Connecting:
+                    case Connection.ConnectionStatus.Connecting:
                         return String.Format(Resources.StatusConnecting, args.Context);
 
-                    case Model.ConnectionStatus.Connected:
+                    case Connection.ConnectionStatus.Connected:
                         return String.Format(Resources.StatusConnected, args.Context);
 
-                    case Model.ConnectionStatus.Error:
+                    case Connection.ConnectionStatus.Error:
                         return String.Format(Resources.StatusError, args.Context);
                 }
 

@@ -1,4 +1,4 @@
-﻿namespace PettingZoo.Model
+﻿namespace PettingZoo.Connection
 {
     public class RabbitMQClientConnectionFactory : IConnectionFactory
     {

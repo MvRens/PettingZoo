@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace PettingZoo.Model
+namespace PettingZoo.Connection
 {
     public class MessageInfo
     {

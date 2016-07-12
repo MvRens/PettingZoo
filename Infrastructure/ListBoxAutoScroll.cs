@@ -109,7 +109,7 @@ namespace PettingZoo.Infrastructure
                     return;
             }
 
-            if (Math.Abs(scrollViewer.VerticalOffset - scrollViewer.ScrollableHeight) < 1)
+            if (Math.Abs(scrollViewer.VerticalOffset - scrollViewer.ScrollableHeight) <= 1)
                 target.ScrollIntoView(e.NewItems[e.NewItems.Count - 1]);
         }
 

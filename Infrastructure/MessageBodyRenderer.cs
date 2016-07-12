@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace PettingZoo.Model
+namespace PettingZoo.Infrastructure
 {
     public class MessageBodyRenderer
     {
