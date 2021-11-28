@@ -10,9 +10,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PettingZoo.Core", "PettingZoo.Core\PettingZoo.Core.csproj", "{AD20CA14-6272-4C50-819D-F9FE6A963DB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PettingZoo.Core", "PettingZoo.Core\PettingZoo.Core.csproj", "{AD20CA14-6272-4C50-819D-F9FE6A963DB1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PettingZoo.RabbitMQ", "PettingZoo.RabbitMQ\PettingZoo.RabbitMQ.csproj", "{220149F3-A8D6-44ED-B3B6-DFE506EB018A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PettingZoo.RabbitMQ", "PettingZoo.RabbitMQ\PettingZoo.RabbitMQ.csproj", "{220149F3-A8D6-44ED-B3B6-DFE506EB018A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParseTapetiMessagesPrototype", "ParseTapetiMessagesPrototype\ParseTapetiMessagesPrototype.csproj", "{B06DDB4F-04D1-4325-9F7B-5FBA0AAE47E7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +34,10 @@ Global
 		{220149F3-A8D6-44ED-B3B6-DFE506EB018A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{220149F3-A8D6-44ED-B3B6-DFE506EB018A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{220149F3-A8D6-44ED-B3B6-DFE506EB018A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B06DDB4F-04D1-4325-9F7B-5FBA0AAE47E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B06DDB4F-04D1-4325-9F7B-5FBA0AAE47E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B06DDB4F-04D1-4325-9F7B-5FBA0AAE47E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B06DDB4F-04D1-4325-9F7B-5FBA0AAE47E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
