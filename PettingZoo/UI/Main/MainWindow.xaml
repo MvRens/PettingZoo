@@ -1,0 +1,97 @@
+﻿<Window x:Class="PettingZoo.UI.Main.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:main="clr-namespace:PettingZoo.UI.Main"
+        xmlns:tab="clr-namespace:PettingZoo.UI.Tab"
+        xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance main:DesignTimeMainWindowViewModel, IsDesignTimeCreatable=True}"
+        Width="800" 
+        Height="600"
+        ResizeMode="CanResizeWithGrip"
+        Style="{StaticResource WindowStyle}"
+        Title="{x:Static main:MainWindowStrings.WindowTitle}"
+        Loaded="MainWindow_OnLoaded"
+        Closed="MainWindow_OnClosed">
+    <Window.InputBindings>
+        <KeyBinding Modifiers="Control" Key="W" Command="{Binding CloseTabCommand}" />
+    </Window.InputBindings>
+    <DockPanel>
+        <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
+            <Button Command="{Binding ConnectCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{svgc:SvgImage Source=/Images/Connect.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                    <TextBlock Margin="3,0,0,0" Text="{x:Static main:MainWindowStrings.CommandConnect}" />
+                </StackPanel> 
+            </Button>
+            <Button Command="{Binding DisconnectCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{svgc:SvgImage Source=/Images/Disconnect.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                    <TextBlock Margin="3,0,0,0" Text="{x:Static main:MainWindowStrings.CommandDisconnect}" />
+                </StackPanel>
+            </Button>
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+            <Button Command="{Binding SubscribeCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{svgc:SvgImage Source=/Images/Subscribe.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                    <TextBlock Margin="3,0,0,0" Text="{x:Static main:MainWindowStrings.CommandSubscribe}" />
+                </StackPanel>
+            </Button>
+            <Button Command="{Binding PublishCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{svgc:SvgImage Source=/Images/Publish.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                    <TextBlock Margin="3,0,0,0" Text="{x:Static main:MainWindowStrings.CommandPublish}" />
+                </StackPanel>
+            </Button>
+
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Visibility="{Binding ToolbarCommandsSeparatorVisibility}" />
+            <ItemsControl ItemsSource="{Binding ToolbarCommands}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Command="{Binding Command}" Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{Binding Icon}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                                <TextBlock Margin="3,0,0,0" Text="{Binding Caption}" />
+                            </StackPanel>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ToolBar>
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock Text="{Binding ConnectionStatus}"/>
+            </StatusBarItem>
+        </StatusBar>
+        <TabControl 
+            Name="SubscriberTabs" 
+            ItemsSource="{Binding Tabs}" 
+            SelectedValue="{Binding ActiveTab}">
+            <TabControl.ItemContainerStyle>
+                <Style TargetType="{x:Type TabItem}">
+                    <Setter Property="Header" Value="{Binding Title}" />
+                    <Setter Property="ContextMenu">
+                        <Setter.Value>
+                            <ContextMenu>
+                                <MenuItem Header="{x:Static main:MainWindowStrings.ContextMenuCloseTab}" Command="{Binding CloseTabCommand}" InputGestureText="Ctrl+W" />
+                            </ContextMenu>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.ItemContainerStyle>
+            <TabControl.ContentTemplate>
+                <DataTemplate DataType="{x:Type tab:ITab}">
+                    <ContentControl Content="{Binding Content}" />
+                </DataTemplate>
+                    
+            </TabControl.ContentTemplate>
+        </TabControl>
+    </DockPanel>
+</Window>

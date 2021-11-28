@@ -1,0 +1,112 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Authors>Mark van Renswoude</Authors>
+    <Product>Petting Zoo</Product>
+    <Description>Petting Zoo - a live RabbitMQ message viewer</Description>
+    <Copyright />
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <StartupObject>PettingZoo.Program</StartupObject>
+    <PackageIcon></PackageIcon>
+    <PackageIconUrl />
+    <ApplicationIcon>PettingZoo.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\PublishSend.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\Clear.svg" />
+    <Resource Include="Images\Connect.svg" />
+    <Resource Include="Images\Disconnect.svg" />
+    <Resource Include="Images\Publish.svg" />
+    <Resource Include="Images\PublishSend.svg" />
+    <Resource Include="Images\Subscribe.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="SharpVectors" Version="1.7.6" />
+    <PackageReference Include="SimpleInjector" Version="5.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PettingZoo.Core\PettingZoo.Core.csproj" />
+    <ProjectReference Include="..\PettingZoo.RabbitMQ\PettingZoo.RabbitMQ.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="UI\Connection\ConnectionWindowStrings.Designer.cs">
+      <DependentUpon>ConnectionWindowStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="UI\Main\MainWindowStrings.Designer.cs">
+      <DependentUpon>MainWindowStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="UI\Subscribe\SubscribeWindowStrings.Designer.cs">
+      <DependentUpon>SubscribeWindowStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="UI\Tab\Publisher\PublisherViewStrings.Designer.cs">
+      <DependentUpon>PublisherViewStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="UI\Tab\Subscriber\SubscriberViewStrings.Designer.cs">
+      <DependentUpon>SubscriberViewStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="UI\Connection\ConnectionWindowStrings.resx">
+      <LastGenOutput>ConnectionWindowStrings.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Main\MainWindowStrings.resx">
+      <LastGenOutput>MainWindowStrings.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Subscribe\SubscribeWindowStrings.resx">
+      <LastGenOutput>SubscribeWindowStrings.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Tab\Publisher\PublisherViewStrings.resx">
+      <LastGenOutput>PublisherViewStrings.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Tab\Subscriber\SubscriberViewStrings.resx">
+      <LastGenOutput>SubscriberViewStrings.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="UI\Connection\ConnectionWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="UI\Main\MainWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="UI\Subscribe\SubscribeWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="UI\Tab\Publisher\PublisherView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="UI\Tab\Subscriber\SubscriberView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+  </ItemGroup>
+
+</Project>
