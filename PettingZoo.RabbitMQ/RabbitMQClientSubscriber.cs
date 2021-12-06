@@ -63,7 +63,7 @@ namespace PettingZoo.RabbitMQ
         private void ClientReceived(object? sender, BasicDeliverEventArgs args)
         {
             MessageReceived?.Invoke(this, new MessageReceivedEventArgs(
-                new MessageInfo(
+                new ReceivedMessageInfo(
                     args.Exchange, 
                     args.RoutingKey, 
                     args.Body.ToArray(), 

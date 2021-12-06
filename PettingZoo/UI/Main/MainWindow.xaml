@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance main:DesignTimeMainWindowViewModel, IsDesignTimeCreatable=True}"
         Width="800" 
-        Height="600"
+        Height="800"
         ResizeMode="CanResizeWithGrip"
         Style="{StaticResource WindowStyle}"
         Title="{x:Static main:MainWindowStrings.WindowTitle}"

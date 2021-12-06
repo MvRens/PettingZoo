@@ -37,7 +37,8 @@ namespace PettingZoo.UI.Main
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
-            viewModel.ConnectCommand.Execute(null);
+            // TODO support command-line parameters for easier testing
+            //viewModel.ConnectCommand.Execute(null);
         }
 
         

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Controls;
 using System.Windows.Input;
 using PettingZoo.Core.Connection;
 
@@ -16,6 +18,11 @@ namespace PettingZoo.UI.Tab.Publisher
         private readonly IConnection connection;
 
         private MessageType messageType;
+        private UserControl? messageTypeControl;
+        private ICommand? messageTypePublishCommand;
+
+        private UserControl? rawPublisherView;
+        private UserControl? tapetiPublisherView;
 
         private readonly DelegateCommand publishCommand;
         private readonly TabToolbarCommand[] toolbarCommands;
@@ -24,15 +31,20 @@ namespace PettingZoo.UI.Tab.Publisher
         public MessageType MessageType
         {
             get => messageType;
-            set => SetField(ref messageType, value,
-                otherPropertiesChanged: new[]
+            set
+            {
+                if (SetField(ref messageType, value,
+                    otherPropertiesChanged: new[]
+                    {
+                        nameof(MessageTypeRaw),
+                        nameof(MessageTypeTapeti)
+                    }))
                 {
-                    nameof(MessageTypeRaw),
-                    nameof(MessageTypeTapeti)
-                });
-
+                    SetMessageTypeControl(value);
+                }
+            }
         }
-        
+
         public bool MessageTypeRaw
         {
             get => MessageType == MessageType.Raw;
@@ -43,6 +55,13 @@ namespace PettingZoo.UI.Tab.Publisher
         {
             get => MessageType == MessageType.Tapeti;
             set { if (value) MessageType = MessageType.Tapeti; }
+        }
+
+
+        public UserControl? MessageTypeControl
+        {
+            get => messageTypeControl;
+            set => SetField(ref messageTypeControl, value);
         }
 
 
@@ -64,19 +83,49 @@ namespace PettingZoo.UI.Tab.Publisher
             {
                 new TabToolbarCommand(PublishCommand, PublisherViewStrings.CommandPublish, SvgIconHelper.LoadFromResource("/Images/PublishSend.svg"))
             };
+
+            SetMessageTypeControl(MessageType.Raw);
         }
 
 
         private void PublishExecute()
         {
-            // TODO
+            messageTypePublishCommand?.Execute(null);
         }
 
 
         private bool PublishCanExecute()
         {
-            // TODO validate input
-            return true;
+            return messageTypePublishCommand?.CanExecute(null) ?? false;
+        }
+
+
+        private void SetMessageTypeControl(MessageType value)
+        {
+            switch (value)
+            {
+                case MessageType.Raw:
+                    var rawPublisherViewModel = new RawPublisherViewModel(connection);
+                    rawPublisherView ??= new RawPublisherView(rawPublisherViewModel);
+                    MessageTypeControl = rawPublisherView;
+
+                    messageTypePublishCommand = rawPublisherViewModel.PublishCommand;
+                    publishCommand.RaiseCanExecuteChanged();
+                    break;
+                    
+                case MessageType.Tapeti:
+                    // TODO
+                    var tapetiPublisherViewModel = new RawPublisherViewModel(connection);
+                    tapetiPublisherView ??= new RawPublisherView(tapetiPublisherViewModel);
+                    MessageTypeControl = tapetiPublisherView;
+
+                    messageTypePublishCommand = tapetiPublisherViewModel.PublishCommand;
+                    publishCommand.RaiseCanExecuteChanged();
+                    break;
+                
+                default:
+                    throw new ArgumentException();
+            }
         }
     }
 

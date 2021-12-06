@@ -93,8 +93,11 @@ namespace PettingZoo.UI.Main
         
         private async void ConnectExecute()
         {
-            //var newParams = connectionDialog.Show(connectionDialogParams);
-            var newParams = new ConnectionDialogParams("localhost", "/", 5672, "guest", "guest", true, "lef", "#");
+            var newParams = connectionDialog.Show(connectionDialogParams);
+
+            // TODO support command-line parameters for easier testing
+            // var newParams = new ConnectionDialogParams("localhost", "/", 5672, "guest", "guest", true, "test", "#");
+
             if (newParams == null)
                 return;
 

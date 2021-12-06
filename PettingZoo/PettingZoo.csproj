@@ -56,6 +56,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="UI\Tab\Publisher\RawPublisherViewStrings.Designer.cs">
+      <DependentUpon>RawPublisherViewStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="UI\Tab\Publisher\PublisherViewStrings.Designer.cs">
       <DependentUpon>PublisherViewStrings.resx</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -79,6 +84,10 @@
     </EmbeddedResource>
     <EmbeddedResource Update="UI\Subscribe\SubscribeWindowStrings.resx">
       <LastGenOutput>SubscribeWindowStrings.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Tab\Publisher\RawPublisherViewStrings.resx">
+      <LastGenOutput>RawPublisherViewStrings.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="UI\Tab\Publisher\PublisherViewStrings.resx">

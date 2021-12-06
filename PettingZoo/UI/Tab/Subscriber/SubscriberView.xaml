@@ -28,8 +28,8 @@
                             <ColumnDefinition Width="Auto" MinWidth="150"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding Timestamp, StringFormat=g}" Style="{StaticResource Timestamp}"></TextBlock>
-                        <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding RoutingKey}" Style="{StaticResource Routingkey}"></TextBlock>
+                        <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding ReceivedTimestamp, StringFormat=g}" Style="{StaticResource Timestamp}"></TextBlock>
+                        <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding RoutingKey}" Style="{StaticResource RoutingKey}"></TextBlock>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>

@@ -1,136 +1,135 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
+﻿using System;
+using System.Linq;
 using System.Text;
+using PettingZoo.Core.Connection;
 using RabbitMQ.Client;
 
 namespace PettingZoo.RabbitMQ
 {
     public static class RabbitMQClientPropertiesConverter
     {
-        public static IDictionary<string, string> Convert(IBasicProperties basicProperties)
+        public static MessageProperties Convert(IBasicProperties basicProperties)
         {
-            var properties = new Dictionary<string, string>();
-
-            if (basicProperties.IsDeliveryModePresent())
-                properties.Add(RabbitMQProperties.DeliveryMode, basicProperties.DeliveryMode.ToString(CultureInfo.InvariantCulture));
-
-            if (basicProperties.IsContentTypePresent())
-                properties.Add(RabbitMQProperties.ContentType, basicProperties.ContentType);
-
-            if (basicProperties.IsContentEncodingPresent())
-                properties.Add(RabbitMQProperties.ContentEncoding, basicProperties.ContentEncoding);
-
-            if (basicProperties.IsPriorityPresent())
-                properties.Add(RabbitMQProperties.Priority, basicProperties.Priority.ToString(CultureInfo.InvariantCulture));
-
-            if (basicProperties.IsCorrelationIdPresent())
-                properties.Add(RabbitMQProperties.Priority, basicProperties.CorrelationId);
-
-            if (basicProperties.IsReplyToPresent())
-                properties.Add(RabbitMQProperties.ReplyTo, basicProperties.ReplyTo);
-
-            if (basicProperties.IsExpirationPresent())
-                properties.Add(RabbitMQProperties.Expiration, basicProperties.Expiration);
-
-            if (basicProperties.IsMessageIdPresent())
-                properties.Add(RabbitMQProperties.MessageId, basicProperties.MessageId);
-
-            if (basicProperties.IsTimestampPresent())
-                properties.Add(RabbitMQProperties.Timestamp, basicProperties.Timestamp.UnixTime.ToString(CultureInfo.InvariantCulture));
-
-            if (basicProperties.IsTypePresent())
-                properties.Add(RabbitMQProperties.Type, basicProperties.Type);
-
-            if (basicProperties.IsUserIdPresent())
-                properties.Add(RabbitMQProperties.UserId, basicProperties.UserId);
-
-            if (basicProperties.IsAppIdPresent())
-                properties.Add(RabbitMQProperties.UserId, basicProperties.AppId);
-
-            if (basicProperties.IsClusterIdPresent())
-                properties.Add(RabbitMQProperties.ClusterId, basicProperties.ClusterId);
-
-            // ReSharper disable once InvertIf
-            if (basicProperties.Headers != null)
+            return new MessageProperties(basicProperties.Headers?.ToDictionary(p => p.Key, p => Encoding.UTF8.GetString((byte[])p.Value)))
             {
-                foreach (var (key, value) in basicProperties.Headers)
-                    properties.Add(key, Encoding.UTF8.GetString((byte[]) value));
-            }
+                DeliveryMode = basicProperties.IsDeliveryModePresent()
+                    ? basicProperties.DeliveryMode == 2 ? MessageDeliveryMode.Persistent :
+                    MessageDeliveryMode.NonPersistent
+                    : null,
 
-            return properties;
+                ContentType = basicProperties.IsContentTypePresent()
+                    ? basicProperties.ContentType
+                    : null,
+
+                ContentEncoding = basicProperties.IsContentEncodingPresent()
+                    ? basicProperties.ContentEncoding
+                    : null,
+
+                Priority = basicProperties.IsPriorityPresent()
+                    ? basicProperties.Priority
+                    : null,
+
+                CorrelationId = basicProperties.IsCorrelationIdPresent()
+                    ? basicProperties.CorrelationId
+                    : null,
+
+                ReplyTo = basicProperties.IsReplyToPresent()
+                    ? basicProperties.ReplyTo
+                    : null,
+
+                Expiration = basicProperties.IsExpirationPresent()
+                    ? basicProperties.Expiration
+                    : null,
+
+                MessageId = basicProperties.IsMessageIdPresent()
+                    ? basicProperties.MessageId
+                    : null,
+
+                Timestamp = basicProperties.IsTimestampPresent()
+                    ? DateTimeOffset.FromUnixTimeMilliseconds(basicProperties.Timestamp.UnixTime).LocalDateTime
+                    : null,
+
+                Type = basicProperties.IsTypePresent()
+                    ? basicProperties.Type
+                    : null,
+
+                UserId = basicProperties.IsUserIdPresent()
+                    ? basicProperties.UserId
+                    : null,
+
+                AppId = basicProperties.IsAppIdPresent()
+                    ? basicProperties.AppId
+                    : null
+            };
         }
 
 
-        public static IBasicProperties Convert(IDictionary<string, string> properties, IBasicProperties targetProperties)
+        public static IBasicProperties Convert(MessageProperties properties, IBasicProperties targetProperties)
         {
-            foreach (var (key, value) in properties)
-            {
-                switch (key)
-                {
-                    case RabbitMQProperties.DeliveryMode:
-                        if (byte.TryParse(value, out var deliveryMode))
-                            targetProperties.DeliveryMode = deliveryMode;
+            if (properties.DeliveryMode != null)
+                targetProperties.DeliveryMode = properties.DeliveryMode == MessageDeliveryMode.Persistent ? (byte)2 : (byte)1;
+            else
+                targetProperties.ClearDeliveryMode();
 
-                        break;
+            if (properties.ContentType != null)
+                targetProperties.ContentType = properties.ContentType;
+            else
+                targetProperties.ClearContentType();
 
-                    case RabbitMQProperties.ContentType:
-                        targetProperties.ContentType = value;
-                        break;
+            if (properties.ContentEncoding != null)
+                targetProperties.ContentEncoding = properties.ContentEncoding;
+            else
+                targetProperties.ClearContentEncoding();
 
-                    case RabbitMQProperties.ContentEncoding:
-                        targetProperties.ContentEncoding = value;
-                        break;
+            if (properties.Priority != null)
+                targetProperties.Priority = properties.Priority.Value;
+            else
+                targetProperties.ClearPriority();
 
-                    case RabbitMQProperties.Priority:
-                        if (byte.TryParse(value, out var priority))
-                            targetProperties.Priority = priority;
-                        
-                        break;
+            if (properties.CorrelationId != null)
+                targetProperties.CorrelationId = properties.CorrelationId;
+            else
+                targetProperties.ClearCorrelationId();
 
-                    case RabbitMQProperties.CorrelationId:
-                        targetProperties.CorrelationId = value;
-                        break;
-                    
-                    case RabbitMQProperties.ReplyTo:
-                        targetProperties.ReplyTo = value;
-                        break;
+            if (properties.ReplyTo != null)
+                targetProperties.ReplyTo = properties.ReplyTo;
+            else
+                targetProperties.ClearReplyTo();
 
-                    case RabbitMQProperties.Expiration:
-                        targetProperties.Expiration = value;
-                        break;
+            if (properties.Expiration != null)
+                targetProperties.Expiration = properties.Expiration;
+            else
+                targetProperties.ClearExpiration();
 
-                    case RabbitMQProperties.MessageId:
-                        targetProperties.MessageId = value;
-                        break;
+            if (properties.MessageId != null)
+                targetProperties.MessageId = properties.MessageId;
+            else
+                targetProperties.ClearMessageId();
 
-                    case RabbitMQProperties.Timestamp:
-                        if (long.TryParse(value, out var timestamp))
-                            targetProperties.Timestamp = new AmqpTimestamp(timestamp);
-                        
-                        break;
+            if (properties.Timestamp != null)
+                targetProperties.Timestamp = new AmqpTimestamp(new DateTimeOffset(properties.Timestamp.Value).ToUnixTimeMilliseconds());
+            else
+                targetProperties.ClearTimestamp();
 
-                    case RabbitMQProperties.Type:
-                        targetProperties.Type = value;
-                        break;
+            if (properties.Type != null)
+                targetProperties.Type = properties.Type;
+            else
+                targetProperties.ClearType();
 
-                    case RabbitMQProperties.UserId:
-                        targetProperties.UserId = value;
-                        break;
+            if (properties.UserId != null)
+                targetProperties.UserId = properties.UserId;
+            else
+                targetProperties.ClearUserId();
 
-                    case RabbitMQProperties.AppId:
-                        targetProperties.AppId = value;
-                        break;
+            if (properties.AppId != null)
+                targetProperties.AppId = properties.AppId;
+            else
+                targetProperties.ClearAppId();
 
-                    case RabbitMQProperties.ClusterId:
-                        targetProperties.ClusterId = value;
-                        break;
-
-                    default:
-                        targetProperties.Headers ??= new Dictionary<string, object>();
-                        targetProperties.Headers.Add(key, Encoding.UTF8.GetBytes(value));
-                        break;
-                }
-            }
+            if (properties.Headers.Count > 0)
+                targetProperties.Headers = properties.Headers.ToDictionary(p => p.Key, p => (object)Encoding.UTF8.GetBytes(p.Value));
+            else
+                targetProperties.ClearHeaders();
             
             return targetProperties;
         }

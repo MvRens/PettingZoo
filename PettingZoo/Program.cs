@@ -12,7 +12,6 @@ using PettingZoo.UI.Connection;
 using PettingZoo.UI.Main;
 using PettingZoo.UI.Subscribe;
 using PettingZoo.UI.Tab;
-using PettingZoo.UI.Tab.Subscriber;
 using SimpleInjector;
 
 namespace PettingZoo

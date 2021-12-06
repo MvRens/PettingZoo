@@ -81,7 +81,7 @@ namespace PettingZoo.RabbitMQ
         }
 
         
-        public Task Publish(MessageInfo messageInfo)
+        public Task Publish(PublishMessageInfo messageInfo)
         {
             if (model == null)
                 throw new InvalidOperationException("Not connected");

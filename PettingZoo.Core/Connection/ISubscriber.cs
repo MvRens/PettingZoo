@@ -15,10 +15,10 @@ namespace PettingZoo.Core.Connection
 
     public class MessageReceivedEventArgs : EventArgs
     {
-        public MessageInfo MessageInfo { get; }
+        public ReceivedMessageInfo MessageInfo { get; }
 
 
-        public MessageReceivedEventArgs(MessageInfo messageInfo)
+        public MessageReceivedEventArgs(ReceivedMessageInfo messageInfo)
         {
             MessageInfo = messageInfo;
         }

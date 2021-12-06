@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using PettingZoo.Core.Connection;
 using PettingZoo.Core.Rendering;
-using PettingZoo.RabbitMQ;
 
 // TODO update title with unread message count if tab is not active
 
@@ -16,36 +15,36 @@ namespace PettingZoo.UI.Tab.Subscriber
     {
         private readonly ISubscriber subscriber;
         private readonly TaskScheduler uiScheduler;
-        private MessageInfo? selectedMessage;
+        private ReceivedMessageInfo? selectedMessage;
         private readonly DelegateCommand clearCommand;
         private readonly TabToolbarCommand[] toolbarCommands;
+        private IDictionary<string, string>? selectedMessageProperties;
 
 
         public ICommand ClearCommand => clearCommand;
 
-        public ObservableCollection<MessageInfo> Messages { get; }
+        public ObservableCollection<ReceivedMessageInfo> Messages { get; }
 
-        public MessageInfo? SelectedMessage
+        public ReceivedMessageInfo? SelectedMessage
         {
             get => selectedMessage;
             set
             {
-                if (value == selectedMessage)
-                    return;
-
-                selectedMessage = value;
-                RaisePropertyChanged();
-                RaiseOtherPropertyChanged(nameof(SelectedMessageBody));
-                RaiseOtherPropertyChanged(nameof(SelectedMessageProperties));
+                if (SetField(ref selectedMessage, value, otherPropertiesChanged: new[] { nameof(SelectedMessageBody) }))
+                    UpdateSelectedMessageProperties();
             }
         }
 
         public string SelectedMessageBody =>
             SelectedMessage != null
-                ? MessageBodyRenderer.Render(SelectedMessage.Body, SelectedMessage.Properties.ContentType())
+                ? MessageBodyRenderer.Render(SelectedMessage.Body, SelectedMessage.Properties.ContentType)
                 : "";
 
-        public IDictionary<string, string>? SelectedMessageProperties => SelectedMessage?.Properties;
+        public IDictionary<string, string>? SelectedMessageProperties
+        {
+            get => selectedMessageProperties;
+            set => SetField(ref selectedMessageProperties, value);
+        }
 
         public string Title => $"{subscriber.Exchange} - {subscriber.RoutingKey}";
         public IEnumerable<TabToolbarCommand> ToolbarCommands => toolbarCommands;
@@ -57,7 +56,7 @@ namespace PettingZoo.UI.Tab.Subscriber
             
             uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
-            Messages = new ObservableCollection<MessageInfo>();
+            Messages = new ObservableCollection<ReceivedMessageInfo>();
             clearCommand = new DelegateCommand(ClearExecute, ClearCanExecute);
 
             toolbarCommands = new[]
@@ -93,11 +92,18 @@ namespace PettingZoo.UI.Tab.Subscriber
         }
 
 
+        private void UpdateSelectedMessageProperties()
+        {
+            SelectedMessageProperties = SelectedMessage != null
+                ? MessagePropertiesRenderer.Render(SelectedMessage.Properties)
+                : null;
+        }
+
+
         private void RunFromUiScheduler(Action action)
         {
             _ = Task.Factory.StartNew(action, CancellationToken.None, TaskCreationOptions.None, uiScheduler);
         }
-
     }
     
     
@@ -116,9 +122,9 @@ namespace PettingZoo.UI.Tab.Subscriber
             }
 
 
-            public string Exchange { get; } = "dummy";
-            public string RoutingKey { get; } = "dummy";
-            
+            public string Exchange => "dummy";
+            public string RoutingKey => "dummy";
+
             #pragma warning disable CS0067
             public event EventHandler<MessageReceivedEventArgs>? MessageReceived;
             #pragma warning restore CS0067

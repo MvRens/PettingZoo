@@ -13,9 +13,9 @@ namespace PettingZoo.Core.Rendering
         };
 
 
-        public static string Render(byte[] body, string contentType = "")
+        public static string Render(byte[] body, string? contentType)
         {
-            return ContentTypeHandlers.TryGetValue(contentType, out var handler)
+            return (contentType != null) && ContentTypeHandlers.TryGetValue(contentType, out var handler)
                 ? handler(body) 
                 : Encoding.UTF8.GetString(body);
 
