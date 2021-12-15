@@ -134,77 +134,20 @@ namespace PettingZoo.UI.Tab.Publisher
 
         private void SetMessageTypeControl(ReceivedMessageInfo fromReceivedMessage)
         {
-            // TODO move to individual viewmodels?
-            if (IsTapetiMessage(fromReceivedMessage, out var assemblyName, out var className))
+            if (TapetiPublisherViewModel.IsTapetiMessage(fromReceivedMessage))
             {
-                var tapetiPublisherViewModel = new TapetiPublisherViewModel(connection)
-                {
-                    Exchange = fromReceivedMessage.Exchange,
-                    RoutingKey = fromReceivedMessage.RoutingKey,
+                var tapetiPublisherViewModel = new TapetiPublisherViewModel(connection, fromReceivedMessage);
+                tapetiPublisherView = new TapetiPublisherView(tapetiPublisherViewModel);
 
-                    AssemblyName = assemblyName,
-                    ClassName = className,
-                    CorrelationId = fromReceivedMessage.Properties.CorrelationId ?? "",
-                    ReplyTo = fromReceivedMessage.Properties.ReplyTo ?? "",
-                    Payload = Encoding.UTF8.GetString(fromReceivedMessage.Body)
-                };
-
-                tapetiPublisherView ??= new TapetiPublisherView(tapetiPublisherViewModel);
                 SetMessageTypeControl(MessageType.Tapeti);
             }
             else
             {
-                var rawPublisherViewModel = new RawPublisherViewModel(connection)
-                {
-                    Exchange = fromReceivedMessage.Exchange,
-                    RoutingKey = fromReceivedMessage.RoutingKey,
-
-                    CorrelationId = fromReceivedMessage.Properties.CorrelationId ?? "",
-                    ReplyTo = fromReceivedMessage.Properties.ReplyTo ?? "",
-                    Priority = fromReceivedMessage.Properties.Priority?.ToString() ?? "",
-                    AppId = fromReceivedMessage.Properties.AppId ?? "",
-                    ContentEncoding = fromReceivedMessage.Properties.ContentEncoding ?? "",
-                    ContentType = fromReceivedMessage.Properties.ContentType ?? "",
-                    Expiration = fromReceivedMessage.Properties.Expiration ?? "",
-                    MessageId = fromReceivedMessage.Properties.MessageId ?? "",
-                    Timestamp = fromReceivedMessage.Properties.Timestamp?.ToString() ?? "",
-                    TypeProperty = fromReceivedMessage.Properties.Type ?? "",
-                    UserId = fromReceivedMessage.Properties.UserId ?? "",
-
-                    Payload = Encoding.UTF8.GetString(fromReceivedMessage.Body)
-                };
-
-                foreach (var header in fromReceivedMessage.Properties.Headers)
-                    rawPublisherViewModel.Headers.Add(new RawPublisherViewModel.Header
-                    {
-                        Key = header.Key,
-                        Value = header.Value
-                    });
-
+                var rawPublisherViewModel = new RawPublisherViewModel(connection, fromReceivedMessage);
                 rawPublisherView = new RawPublisherView(rawPublisherViewModel);
+
                 SetMessageTypeControl(MessageType.Raw);
             }
-        }
-
-
-        private static bool IsTapetiMessage(ReceivedMessageInfo receivedMessage, out string assemblyName, out string className)
-        {
-            assemblyName = "";
-            className = "";
-
-            if (receivedMessage.Properties.ContentType != @"application/json")
-                return false;
-
-            if (!receivedMessage.Properties.Headers.TryGetValue(@"classType", out var classType))
-                return false;
-
-            var parts = classType.Split(':');
-            if (parts.Length != 2)
-                return false;
-
-            className = parts[0];
-            assemblyName = parts[1];
-            return true;
         }
     }
 

@@ -191,15 +191,42 @@ namespace PettingZoo.UI.Tab.Publisher
             : RawPublisherViewStrings.PropertiesExpand;
 
 
-        protected Header lastHeader;
+        protected Header LastHeader;
 
 
-        public RawPublisherViewModel(IConnection connection)
+        public RawPublisherViewModel(IConnection connection, ReceivedMessageInfo? receivedMessage = null)
         {
             this.connection = connection;
 
             publishCommand = new DelegateCommand(PublishExecute, PublishCanExecute);
             propertiesExpandCollapseCommand = new DelegateCommand(PropertiesExpandCollapseExecute);
+
+            if (receivedMessage != null)
+            {
+                Exchange = receivedMessage.Exchange;
+                RoutingKey = receivedMessage.RoutingKey;
+
+                CorrelationId = receivedMessage.Properties.CorrelationId ?? "";
+                ReplyTo = receivedMessage.Properties.ReplyTo ?? "";
+                Priority = receivedMessage.Properties.Priority?.ToString() ?? "";
+                AppId = receivedMessage.Properties.AppId ?? "";
+                ContentEncoding = receivedMessage.Properties.ContentEncoding ?? "";
+                ContentType = receivedMessage.Properties.ContentType ?? "";
+                Expiration = receivedMessage.Properties.Expiration ?? "";
+                MessageId = receivedMessage.Properties.MessageId ?? "";
+                Timestamp = receivedMessage.Properties.Timestamp?.ToString() ?? "";
+                TypeProperty = receivedMessage.Properties.Type ?? "";
+                UserId = receivedMessage.Properties.UserId ?? "";
+
+                Payload = Encoding.UTF8.GetString(receivedMessage.Body);
+
+                foreach (var header in receivedMessage.Properties.Headers)
+                    Headers.Add(new Header
+                    {
+                        Key = header.Key,
+                        Value = header.Value
+                    });
+            }
 
             AddHeader();
         }
@@ -207,17 +234,17 @@ namespace PettingZoo.UI.Tab.Publisher
 
         private void LastHeaderChanged(object? sender, PropertyChangedEventArgs e)
         {
-            lastHeader.PropertyChanged -= LastHeaderChanged;
+            LastHeader.PropertyChanged -= LastHeaderChanged;
             AddHeader();
         }
 
 
-        [MemberNotNull(nameof(lastHeader))]
+        [MemberNotNull(nameof(LastHeader))]
         private void AddHeader()
         {
-            lastHeader = new Header();
-            lastHeader.PropertyChanged += LastHeaderChanged;
-            Headers.Add(lastHeader);
+            LastHeader = new Header();
+            LastHeader.PropertyChanged += LastHeaderChanged;
+            Headers.Add(LastHeader);
         }
 
 
@@ -310,7 +337,7 @@ namespace PettingZoo.UI.Tab.Publisher
         {
             PropertiesExpanded = true;
 
-            var capturedLastHeader = lastHeader;
+            var capturedLastHeader = LastHeader;
             capturedLastHeader.Key = "Example";
             capturedLastHeader.Value = "header";
         }

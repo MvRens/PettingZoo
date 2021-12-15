@@ -114,11 +114,52 @@ namespace PettingZoo.UI.Tab.Publisher
         public ICommand PublishCommand => publishCommand;
 
 
-        public TapetiPublisherViewModel(IConnection connection)
+
+        public static bool IsTapetiMessage(ReceivedMessageInfo receivedMessage)
+        {
+            return IsTapetiMessage(receivedMessage, out _, out _);
+        }
+
+
+        public static bool IsTapetiMessage(ReceivedMessageInfo receivedMessage, out string assemblyName, out string className)
+        {
+            assemblyName = "";
+            className = "";
+
+            if (receivedMessage.Properties.ContentType != @"application/json")
+                return false;
+
+            if (!receivedMessage.Properties.Headers.TryGetValue(@"classType", out var classType))
+                return false;
+
+            var parts = classType.Split(':');
+            if (parts.Length != 2)
+                return false;
+
+            className = parts[0];
+            assemblyName = parts[1];
+            return true;
+        }
+
+
+        public TapetiPublisherViewModel(IConnection connection, ReceivedMessageInfo? receivedMessage = null)
         {
             this.connection = connection;
 
             publishCommand = new DelegateCommand(PublishExecute, PublishCanExecute);
+
+
+            if (receivedMessage == null) 
+                return;
+
+            Exchange = receivedMessage.Exchange;
+            RoutingKey = receivedMessage.RoutingKey;
+
+            AssemblyName = assemblyName;
+            ClassName = className;
+            CorrelationId = receivedMessage.Properties.CorrelationId ?? "";
+            ReplyTo = receivedMessage.Properties.ReplyTo ?? "";
+            Payload = Encoding.UTF8.GetString(receivedMessage.Body);
         }
 
 
