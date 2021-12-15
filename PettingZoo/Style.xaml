@@ -67,8 +67,9 @@
     <Style x:Key="RoutingKey">
     </Style>
 
-    <Style x:Key="TypeSelection" TargetType="{x:Type FrameworkElement}">
+    <Style x:Key="TypeSelection" TargetType="{x:Type ToggleButton}">
         <Setter Property="Margin" Value="0 0 8 0" />
+        <Setter Property="Padding" Value="8 4 8 4" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 

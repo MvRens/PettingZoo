@@ -15,10 +15,9 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="0">
-            <Label Content="{x:Static res:PublisherViewStrings.LabelMessageType}" Style="{StaticResource TypeSelection}" />
-            <RadioButton Content="{x:Static res:PublisherViewStrings.OptionMessageTypeRaw}" Style="{StaticResource TypeSelection}" IsChecked="{Binding MessageTypeRaw}" />
-            <RadioButton Content="{x:Static res:PublisherViewStrings.OptionMessageTypeTapeti}" Style="{StaticResource TypeSelection}" IsChecked="{Binding MessageTypeTapeti}" />
+        <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Center">
+            <ToggleButton Content="{x:Static res:PublisherViewStrings.OptionMessageTypeRaw}" Style="{StaticResource TypeSelection}" IsChecked="{Binding MessageTypeRaw}" />
+            <ToggleButton Content="{x:Static res:PublisherViewStrings.OptionMessageTypeTapeti}" Style="{StaticResource TypeSelection}" IsChecked="{Binding MessageTypeTapeti}" />
         </StackPanel>
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">

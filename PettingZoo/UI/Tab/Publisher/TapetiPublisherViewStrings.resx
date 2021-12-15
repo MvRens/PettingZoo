@@ -117,16 +117,49 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CommandPublish" xml:space="preserve">
-    <value>Publish</value>
+  <data name="ButtonBrowseClass" xml:space="preserve">
+    <value>...</value>
   </data>
-  <data name="LabelMessageType" xml:space="preserve">
-    <value>Message type: </value>
+  <data name="DeliveryModeNonPersistent" xml:space="preserve">
+    <value>Transient (non-persistent)</value>
   </data>
-  <data name="OptionMessageTypeRaw" xml:space="preserve">
-    <value>Raw message</value>
+  <data name="DeliveryModePersistent" xml:space="preserve">
+    <value>Persistent</value>
   </data>
-  <data name="OptionMessageTypeTapeti" xml:space="preserve">
-    <value>Tapeti message</value>
+  <data name="LabelAssemblyName" xml:space="preserve">
+    <value>Assembly name</value>
+  </data>
+  <data name="LabelClassName" xml:space="preserve">
+    <value>Class name (full)</value>
+  </data>
+  <data name="LabelCorrelationId" xml:space="preserve">
+    <value>Correlation ID</value>
+  </data>
+  <data name="LabelDeliveryMode" xml:space="preserve">
+    <value>Delivery mode</value>
+  </data>
+  <data name="LabelExchange" xml:space="preserve">
+    <value>Exchange</value>
+  </data>
+  <data name="LabelPayload" xml:space="preserve">
+    <value>Payload</value>
+  </data>
+  <data name="LabelProperties" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="LabelQueue" xml:space="preserve">
+    <value>Queue</value>
+  </data>
+  <data name="LabelReplyTo" xml:space="preserve">
+    <value>Reply To</value>
+  </data>
+  <data name="LabelRoutingKey" xml:space="preserve">
+    <value>Routing key</value>
+  </data>
+  <data name="LabelSendToExchange" xml:space="preserve">
+    <value>Publish to exchange (topic)</value>
+  </data>
+  <data name="LabelSendToQueue" xml:space="preserve">
+    <value>Publish to queue (direct)</value>
   </data>
 </root>

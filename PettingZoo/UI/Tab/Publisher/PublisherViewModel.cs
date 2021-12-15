@@ -110,22 +110,21 @@ namespace PettingZoo.UI.Tab.Publisher
                     MessageTypeControl = rawPublisherView;
 
                     messageTypePublishCommand = rawPublisherViewModel.PublishCommand;
-                    publishCommand.RaiseCanExecuteChanged();
                     break;
                     
                 case MessageType.Tapeti:
-                    // TODO
-                    var tapetiPublisherViewModel = new RawPublisherViewModel(connection);
-                    tapetiPublisherView ??= new RawPublisherView(tapetiPublisherViewModel);
+                    var tapetiPublisherViewModel = new TapetiPublisherViewModel(connection);
+                    tapetiPublisherView ??= new TapetiPublisherView(tapetiPublisherViewModel);
                     MessageTypeControl = tapetiPublisherView;
 
                     messageTypePublishCommand = tapetiPublisherViewModel.PublishCommand;
-                    publishCommand.RaiseCanExecuteChanged();
                     break;
                 
                 default:
-                    throw new ArgumentException();
+                    throw new ArgumentException($@"Unknown message type: {value}", nameof(value));
             }
+
+            publishCommand.RaiseCanExecuteChanged();
         }
     }
 

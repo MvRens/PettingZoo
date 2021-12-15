@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PettingZoo.UI.Tab.Publisher {
+namespace PettingZoo.UI.Example {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace PettingZoo.UI.Tab.Publisher {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class PublisherViewStrings {
+    public class ExamplePickerDialogStrings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal PublisherViewStrings() {
+        internal ExamplePickerDialogStrings() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace PettingZoo.UI.Tab.Publisher {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PettingZoo.UI.Tab.Publisher.PublisherViewStrings", typeof(PublisherViewStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PettingZoo.UI.Example.ExamplePickerDialogStrings", typeof(ExamplePickerDialogStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,38 +61,11 @@ namespace PettingZoo.UI.Tab.Publisher {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Publish.
+        ///   Looks up a localized string similar to Select example.
         /// </summary>
-        public static string CommandPublish {
+        public static string WindowTitle {
             get {
-                return ResourceManager.GetString("CommandPublish", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Message type: .
-        /// </summary>
-        public static string LabelMessageType {
-            get {
-                return ResourceManager.GetString("LabelMessageType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Raw message.
-        /// </summary>
-        public static string OptionMessageTypeRaw {
-            get {
-                return ResourceManager.GetString("OptionMessageTypeRaw", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Tapeti message.
-        /// </summary>
-        public static string OptionMessageTypeTapeti {
-            get {
-                return ResourceManager.GetString("OptionMessageTypeTapeti", resourceCulture);
+                return ResourceManager.GetString("WindowTitle", resourceCulture);
             }
         }
     }

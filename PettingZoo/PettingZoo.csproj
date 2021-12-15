@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <Authors>Mark van Renswoude</Authors>
     <Product>Petting Zoo</Product>
@@ -46,6 +46,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="UI\Example\ExamplePickerDialogStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ExamplePickerDialogStrings.resx</DependentUpon>
+    </Compile>
     <Compile Update="UI\Main\MainWindowStrings.Designer.cs">
       <DependentUpon>MainWindowStrings.resx</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -55,6 +60,14 @@
       <DependentUpon>SubscribeWindowStrings.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="UI\Tab\Publisher\TapetiPublisherViewStrings.Designer.cs">
+      <DependentUpon>TapetiPublisherViewStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="UI\Tab\Publisher\TapetiPublisherView.xaml.cs">
+      <SubType>Code</SubType>
     </Compile>
     <Compile Update="UI\Tab\Publisher\RawPublisherViewStrings.Designer.cs">
       <DependentUpon>RawPublisherViewStrings.resx</DependentUpon>
@@ -78,12 +91,20 @@
       <LastGenOutput>ConnectionWindowStrings.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="UI\Example\ExamplePickerDialogStrings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ExamplePickerDialogStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="UI\Main\MainWindowStrings.resx">
       <LastGenOutput>MainWindowStrings.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="UI\Subscribe\SubscribeWindowStrings.resx">
       <LastGenOutput>SubscribeWindowStrings.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Tab\Publisher\TapetiPublisherViewStrings.resx">
+      <LastGenOutput>TapetiPublisherViewStrings.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="UI\Tab\Publisher\RawPublisherViewStrings.resx">
@@ -112,6 +133,10 @@
     </Page>
     <Page Update="UI\Tab\Publisher\PublisherView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="UI\Tab\Publisher\TapetiPublisherView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
     </Page>
     <Page Update="UI\Tab\Subscriber\SubscriberView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>

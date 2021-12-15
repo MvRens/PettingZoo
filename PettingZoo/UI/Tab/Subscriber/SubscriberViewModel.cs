@@ -8,6 +8,8 @@ using PettingZoo.Core.Connection;
 using PettingZoo.Core.Rendering;
 
 // TODO update title with unread message count if tab is not active
+// TODO export option (to Tapeti.Cmd compatible format / command-line of course)
+// TODO send message to (new) publisher tab
 
 namespace PettingZoo.UI.Tab.Subscriber
 {

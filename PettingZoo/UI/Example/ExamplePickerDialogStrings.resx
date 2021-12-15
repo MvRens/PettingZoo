@@ -117,16 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CommandPublish" xml:space="preserve">
-    <value>Publish</value>
-  </data>
-  <data name="LabelMessageType" xml:space="preserve">
-    <value>Message type: </value>
-  </data>
-  <data name="OptionMessageTypeRaw" xml:space="preserve">
-    <value>Raw message</value>
-  </data>
-  <data name="OptionMessageTypeTapeti" xml:space="preserve">
-    <value>Tapeti message</value>
+  <data name="WindowTitle" xml:space="preserve">
+    <value>Select example</value>
   </data>
 </root>
