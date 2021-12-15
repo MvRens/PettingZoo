@@ -226,9 +226,17 @@ namespace PettingZoo.UI.Tab.Publisher
                         Key = header.Key,
                         Value = header.Value
                     });
+
+                PropertiesExpanded = AnyNotEmpty(AppId, ContentEncoding, Expiration, MessageId, Priority, Timestamp, TypeProperty, UserId);
             }
 
             AddHeader();
+        }
+
+
+        private static bool AnyNotEmpty(params string?[] values)
+        {
+            return values.Any(s => !string.IsNullOrEmpty(s));
         }
 
 

@@ -2,6 +2,7 @@
 using System.Windows.Input;
 
 // TODO validate input
+// TODO profiles
 
 namespace PettingZoo.UI.Connection
 {

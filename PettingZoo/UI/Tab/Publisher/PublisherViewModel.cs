@@ -139,14 +139,14 @@ namespace PettingZoo.UI.Tab.Publisher
                 var tapetiPublisherViewModel = new TapetiPublisherViewModel(connection, fromReceivedMessage);
                 tapetiPublisherView = new TapetiPublisherView(tapetiPublisherViewModel);
 
-                SetMessageTypeControl(MessageType.Tapeti);
+                MessageType = MessageType.Tapeti;
             }
             else
             {
                 var rawPublisherViewModel = new RawPublisherViewModel(connection, fromReceivedMessage);
                 rawPublisherView = new RawPublisherView(rawPublisherViewModel);
 
-                SetMessageTypeControl(MessageType.Raw);
+                MessageType = MessageType.Raw;
             }
         }
     }

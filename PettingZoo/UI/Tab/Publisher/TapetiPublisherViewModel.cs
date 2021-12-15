@@ -149,14 +149,15 @@ namespace PettingZoo.UI.Tab.Publisher
             publishCommand = new DelegateCommand(PublishExecute, PublishCanExecute);
 
 
-            if (receivedMessage == null) 
+            if (receivedMessage == null || !IsTapetiMessage(receivedMessage, out var receivedAssemblyName, out var receivedClassName)) 
                 return;
 
             Exchange = receivedMessage.Exchange;
             RoutingKey = receivedMessage.RoutingKey;
 
-            AssemblyName = assemblyName;
-            ClassName = className;
+
+            AssemblyName = receivedAssemblyName;
+            ClassName = receivedClassName;
             CorrelationId = receivedMessage.Properties.CorrelationId ?? "";
             ReplyTo = receivedMessage.Properties.ReplyTo ?? "";
             Payload = Encoding.UTF8.GetString(receivedMessage.Body);
