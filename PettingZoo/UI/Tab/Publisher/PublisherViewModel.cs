@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Windows.Controls;
 using System.Windows.Input;
 using PettingZoo.Core.Connection;
@@ -73,7 +74,7 @@ namespace PettingZoo.UI.Tab.Publisher
         public IEnumerable<TabToolbarCommand> ToolbarCommands => toolbarCommands;
 
 
-        public PublisherViewModel(IConnection connection)
+        public PublisherViewModel(IConnection connection, ReceivedMessageInfo? fromReceivedMessage = null)
         {
             this.connection = connection;
 
@@ -84,7 +85,10 @@ namespace PettingZoo.UI.Tab.Publisher
                 new TabToolbarCommand(PublishCommand, PublisherViewStrings.CommandPublish, SvgIconHelper.LoadFromResource("/Images/PublishSend.svg"))
             };
 
-            SetMessageTypeControl(MessageType.Raw);
+            if (fromReceivedMessage != null)
+                SetMessageTypeControl(fromReceivedMessage);
+            else
+                SetMessageTypeControl(MessageType.Raw);
         }
 
 
@@ -125,6 +129,82 @@ namespace PettingZoo.UI.Tab.Publisher
             }
 
             publishCommand.RaiseCanExecuteChanged();
+        }
+
+
+        private void SetMessageTypeControl(ReceivedMessageInfo fromReceivedMessage)
+        {
+            // TODO move to individual viewmodels?
+            if (IsTapetiMessage(fromReceivedMessage, out var assemblyName, out var className))
+            {
+                var tapetiPublisherViewModel = new TapetiPublisherViewModel(connection)
+                {
+                    Exchange = fromReceivedMessage.Exchange,
+                    RoutingKey = fromReceivedMessage.RoutingKey,
+
+                    AssemblyName = assemblyName,
+                    ClassName = className,
+                    CorrelationId = fromReceivedMessage.Properties.CorrelationId ?? "",
+                    ReplyTo = fromReceivedMessage.Properties.ReplyTo ?? "",
+                    Payload = Encoding.UTF8.GetString(fromReceivedMessage.Body)
+                };
+
+                tapetiPublisherView ??= new TapetiPublisherView(tapetiPublisherViewModel);
+                SetMessageTypeControl(MessageType.Tapeti);
+            }
+            else
+            {
+                var rawPublisherViewModel = new RawPublisherViewModel(connection)
+                {
+                    Exchange = fromReceivedMessage.Exchange,
+                    RoutingKey = fromReceivedMessage.RoutingKey,
+
+                    CorrelationId = fromReceivedMessage.Properties.CorrelationId ?? "",
+                    ReplyTo = fromReceivedMessage.Properties.ReplyTo ?? "",
+                    Priority = fromReceivedMessage.Properties.Priority?.ToString() ?? "",
+                    AppId = fromReceivedMessage.Properties.AppId ?? "",
+                    ContentEncoding = fromReceivedMessage.Properties.ContentEncoding ?? "",
+                    ContentType = fromReceivedMessage.Properties.ContentType ?? "",
+                    Expiration = fromReceivedMessage.Properties.Expiration ?? "",
+                    MessageId = fromReceivedMessage.Properties.MessageId ?? "",
+                    Timestamp = fromReceivedMessage.Properties.Timestamp?.ToString() ?? "",
+                    TypeProperty = fromReceivedMessage.Properties.Type ?? "",
+                    UserId = fromReceivedMessage.Properties.UserId ?? "",
+
+                    Payload = Encoding.UTF8.GetString(fromReceivedMessage.Body)
+                };
+
+                foreach (var header in fromReceivedMessage.Properties.Headers)
+                    rawPublisherViewModel.Headers.Add(new RawPublisherViewModel.Header
+                    {
+                        Key = header.Key,
+                        Value = header.Value
+                    });
+
+                rawPublisherView = new RawPublisherView(rawPublisherViewModel);
+                SetMessageTypeControl(MessageType.Raw);
+            }
+        }
+
+
+        private static bool IsTapetiMessage(ReceivedMessageInfo receivedMessage, out string assemblyName, out string className)
+        {
+            assemblyName = "";
+            className = "";
+
+            if (receivedMessage.Properties.ContentType != @"application/json")
+                return false;
+
+            if (!receivedMessage.Properties.Headers.TryGetValue(@"classType", out var classType))
+                return false;
+
+            var parts = classType.Split(':');
+            if (parts.Length != 2)
+                return false;
+
+            className = parts[0];
+            assemblyName = parts[1];
+            return true;
         }
     }
 

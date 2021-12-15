@@ -120,6 +120,9 @@
   <data name="CommandClear" xml:space="preserve">
     <value>Clear</value>
   </data>
+  <data name="ContextPublish" xml:space="preserve">
+    <value>Open in new Publisher tab</value>
+  </data>
   <data name="DeliveryModeNonPersistent" xml:space="preserve">
     <value>Non-persistent</value>
   </data>

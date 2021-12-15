@@ -12,7 +12,7 @@ using PettingZoo.UI.Tab;
 
 namespace PettingZoo.UI.Main
 {
-    public class MainWindowViewModel : BaseViewModel, IAsyncDisposable
+    public class MainWindowViewModel : BaseViewModel, IAsyncDisposable, ITabHost
     {
         private readonly IConnectionFactory connectionFactory;
         private readonly IConnectionDialog connectionDialog;
@@ -66,12 +66,11 @@ namespace PettingZoo.UI.Main
 
 
         public MainWindowViewModel(IConnectionFactory connectionFactory, IConnectionDialog connectionDialog, 
-            ISubscribeDialog subscribeDialog, ITabFactory tabFactory)
+            ISubscribeDialog subscribeDialog)
         {
             this.connectionFactory = connectionFactory;
             this.connectionDialog = connectionDialog;
             this.subscribeDialog = subscribeDialog;
-            this.tabFactory = tabFactory;
 
             connectionStatus = GetConnectionStatus(null);
 
@@ -81,6 +80,8 @@ namespace PettingZoo.UI.Main
             publishCommand = new DelegateCommand(PublishExecute, IsConnectedCanExecute);
             subscribeCommand = new DelegateCommand(SubscribeExecute, IsConnectedCanExecute);
             closeTabCommand = new DelegateCommand(CloseTabExecute, CloseTabCanExecute);
+
+            tabFactory = new ViewTabFactory(this, closeTabCommand);
         }
 
 
@@ -113,7 +114,7 @@ namespace PettingZoo.UI.Main
             if (connectionDialogParams.Subscribe)
             {
                 var subscriber = connection.Subscribe(connectionDialogParams.Exchange, connectionDialogParams.RoutingKey);
-                AddTab(tabFactory.CreateSubscriberTab(CloseTabCommand, subscriber));
+                AddTab(tabFactory.CreateSubscriberTab(connection, subscriber));
                 
             }
 
@@ -150,7 +151,7 @@ namespace PettingZoo.UI.Main
             subscribeDialogParams = newParams;
             
             var subscriber = connection.Subscribe(subscribeDialogParams.Exchange, subscribeDialogParams.RoutingKey);
-            AddTab(tabFactory.CreateSubscriberTab(CloseTabCommand, subscriber));
+            AddTab(tabFactory.CreateSubscriberTab(connection, subscriber));
         }
 
 
@@ -159,7 +160,7 @@ namespace PettingZoo.UI.Main
             if (connection == null)
                 return;
             
-            AddTab(tabFactory.CreatePublisherTab(CloseTabCommand, connection));
+            AddTab(tabFactory.CreatePublisherTab(connection));
         }
         
 
@@ -194,7 +195,7 @@ namespace PettingZoo.UI.Main
         }
 
 
-        private void AddTab(ITab tab)
+        public void AddTab(ITab tab)
         {
             Tabs.Add(tab);
             ActiveTab = tab;
@@ -233,7 +234,7 @@ namespace PettingZoo.UI.Main
     
     public class DesignTimeMainWindowViewModel : MainWindowViewModel
     {
-        public DesignTimeMainWindowViewModel() : base(null!, null!, null!, null!)
+        public DesignTimeMainWindowViewModel() : base(null!, null!, null!)
         {
         }
     }

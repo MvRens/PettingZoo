@@ -18,9 +18,13 @@
         </Grid.ColumnDefinitions>
         <ListBox Grid.Column="0" Grid.Row="0" 
                      HorizontalAlignment="Stretch" 
+                     HorizontalContentAlignment="Stretch"
                      ItemsSource="{Binding Messages}" 
                      SelectedItem="{Binding Path=SelectedMessage, Mode=TwoWay}"
                      ui:ListBox.AutoScroll="True">
+            <ListBox.Resources>
+                <ui:BindingProxy x:Key="ContextMenuProxy" Data="{Binding}" />
+            </ListBox.Resources>
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid>
@@ -30,6 +34,13 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding ReceivedTimestamp, StringFormat=g}" Style="{StaticResource Timestamp}"></TextBlock>
                         <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding RoutingKey}" Style="{StaticResource RoutingKey}"></TextBlock>
+
+                        <Grid.ContextMenu>
+                            <ContextMenu>
+                                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved - binding is correct, just weird because of the required proxy -->
+                                <MenuItem Header="{x:Static res:SubscriberViewStrings.ContextPublish}" Command="{Binding Data.CreatePublisherCommand, Source={StaticResource ContextMenuProxy}}" InputGestureText="Ctrl+P" />
+                            </ContextMenu>
+                        </Grid.ContextMenu>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
@@ -58,8 +69,10 @@
                     <Label DockPanel.Dock="Top" Style="{StaticResource HeaderLabel}" Content="{x:Static res:SubscriberViewStrings.PanelTitleProperties}"/>
                     <DataGrid ItemsSource="{Binding SelectedMessageProperties}" AutoGenerateColumns="False" IsReadOnly="True" Style="{StaticResource Properties}">
                         <DataGrid.Columns>
+                            <!-- ReSharper disable Xaml.BindingWithContextNotResolved - bindings are correct -->
                             <DataGridTextColumn Binding="{Binding Key}" Header="{x:Static res:SubscriberViewStrings.PropertyName}" Width="100"/>
                             <DataGridTextColumn Binding="{Binding Value}" Header="{x:Static res:SubscriberViewStrings.PropertyValue}" Width="*"/>
+                            <!-- ReSharper restore Xaml.BindingWithContextNotResolved -->
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>

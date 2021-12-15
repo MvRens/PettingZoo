@@ -42,7 +42,6 @@ namespace PettingZoo
             container.Register<IConnectionFactory, RabbitMQClientConnectionFactory>();
             container.Register<IConnectionDialog, WindowConnectionDialog>();
             container.Register<ISubscribeDialog, WindowSubscribeDialog>();
-            container.Register<ITabFactory, ViewTabFactory>();
 
             container.Register<MainWindow>();
             

@@ -9,12 +9,14 @@ using PettingZoo.Core.Rendering;
 
 // TODO update title with unread message count if tab is not active
 // TODO export option (to Tapeti.Cmd compatible format / command-line of course)
-// TODO send message to (new) publisher tab
 
 namespace PettingZoo.UI.Tab.Subscriber
 {
     public class SubscriberViewModel : BaseViewModel, ITabToolbarCommands
     {
+        private readonly ITabHost tabHost;
+        private readonly ITabFactory tabFactory;
+        private readonly IConnection connection;
         private readonly ISubscriber subscriber;
         private readonly TaskScheduler uiScheduler;
         private ReceivedMessageInfo? selectedMessage;
@@ -22,8 +24,11 @@ namespace PettingZoo.UI.Tab.Subscriber
         private readonly TabToolbarCommand[] toolbarCommands;
         private IDictionary<string, string>? selectedMessageProperties;
 
+        private readonly DelegateCommand createPublisherCommand;
+
 
         public ICommand ClearCommand => clearCommand;
+        public ICommand CreatePublisherCommand => createPublisherCommand;
 
         public ObservableCollection<ReceivedMessageInfo> Messages { get; }
 
@@ -52,8 +57,11 @@ namespace PettingZoo.UI.Tab.Subscriber
         public IEnumerable<TabToolbarCommand> ToolbarCommands => toolbarCommands;
 
 
-        public SubscriberViewModel(ISubscriber subscriber)
+        public SubscriberViewModel(ITabHost tabHost, ITabFactory tabFactory, IConnection connection, ISubscriber subscriber)
         {
+            this.tabHost = tabHost;
+            this.tabFactory = tabFactory;
+            this.connection = connection;
             this.subscriber = subscriber;
             
             uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
@@ -65,6 +73,8 @@ namespace PettingZoo.UI.Tab.Subscriber
             {
                 new TabToolbarCommand(ClearCommand, SubscriberViewStrings.CommandClear, SvgIconHelper.LoadFromResource("/Images/Clear.svg"))
             };
+
+            createPublisherCommand = new DelegateCommand(CreatePublisherExecute, CreatePublisherCanExecute);
 
             subscriber.MessageReceived += SubscriberMessageReceived;
             subscriber.Start();
@@ -84,6 +94,19 @@ namespace PettingZoo.UI.Tab.Subscriber
         }
 
 
+        private void CreatePublisherExecute()
+        {
+            var publisherTab = tabFactory.CreatePublisherTab(connection, SelectedMessage);
+            tabHost.AddTab(publisherTab);
+        }
+
+
+        private bool CreatePublisherCanExecute()
+        {
+            return SelectedMessage != null;
+        }
+
+
         private void SubscriberMessageReceived(object? sender, MessageReceivedEventArgs args)
         {
             RunFromUiScheduler(() =>
@@ -96,6 +119,8 @@ namespace PettingZoo.UI.Tab.Subscriber
 
         private void UpdateSelectedMessageProperties()
         {
+            createPublisherCommand.RaiseCanExecuteChanged();
+
             SelectedMessageProperties = SelectedMessage != null
                 ? MessagePropertiesRenderer.Render(SelectedMessage.Properties)
                 : null;
@@ -111,7 +136,7 @@ namespace PettingZoo.UI.Tab.Subscriber
     
     public class DesignTimeSubscriberViewModel : SubscriberViewModel
     {
-        public DesignTimeSubscriberViewModel() : base(new DesignTimeSubscriber())
+        public DesignTimeSubscriberViewModel() : base(null!, null!, null!, new DesignTimeSubscriber())
         {
         }
         

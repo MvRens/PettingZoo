@@ -1,5 +1,4 @@
-﻿using System.Windows.Input;
-using PettingZoo.Core.Connection;
+﻿using PettingZoo.Core.Connection;
 
 namespace PettingZoo.UI.Tab
 {
@@ -9,7 +8,7 @@ namespace PettingZoo.UI.Tab
     
     public interface ITabFactory
     {
-        ITab CreateSubscriberTab(ICommand closeTabCommand, ISubscriber subscriber);
-        ITab CreatePublisherTab(ICommand closeTabCommand, IConnection connection);
+        ITab CreateSubscriberTab(IConnection connection, ISubscriber subscriber);
+        ITab CreatePublisherTab(IConnection connection, ReceivedMessageInfo? fromReceivedMessage = null);
     }
 }

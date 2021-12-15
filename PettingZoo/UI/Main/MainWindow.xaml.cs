@@ -16,12 +16,12 @@ namespace PettingZoo.UI.Main
         private readonly MainWindowViewModel viewModel;
         
 
-        public MainWindow(IConnectionFactory connectionFactory, IConnectionDialog connectionDialog, ISubscribeDialog subscribeDialog, ITabFactory tabFactory)
+        public MainWindow(IConnectionFactory connectionFactory, IConnectionDialog connectionDialog, ISubscribeDialog subscribeDialog)
         {
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             InitializeComponent();
-            viewModel = new MainWindowViewModel(connectionFactory, connectionDialog, subscribeDialog, tabFactory);
+            viewModel = new MainWindowViewModel(connectionFactory, connectionDialog, subscribeDialog);
             DataContext = viewModel;
 
             Dispatcher.ShutdownStarted += OnDispatcherShutDownStarted;

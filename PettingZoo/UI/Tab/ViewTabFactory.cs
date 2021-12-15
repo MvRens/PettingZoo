@@ -7,9 +7,20 @@ namespace PettingZoo.UI.Tab
 {
     public class ViewTabFactory : ITabFactory
     {
-        public ITab CreateSubscriberTab(ICommand closeTabCommand, ISubscriber subscriber)
+        private readonly ITabHost tabHost;
+        private readonly ICommand closeTabCommand;
+
+
+        public ViewTabFactory(ITabHost tabHost, ICommand closeTabCommand)
         {
-            var viewModel = new SubscriberViewModel(subscriber);
+            this.tabHost = tabHost;
+            this.closeTabCommand = closeTabCommand;
+        }
+
+
+        public ITab CreateSubscriberTab(IConnection connection, ISubscriber subscriber)
+        {
+            var viewModel = new SubscriberViewModel(tabHost, this, connection, subscriber);
             return new ViewTab<SubscriberView, SubscriberViewModel>(
                 closeTabCommand,
                 new SubscriberView(viewModel),
@@ -18,9 +29,9 @@ namespace PettingZoo.UI.Tab
         }
 
         
-        public ITab CreatePublisherTab(ICommand closeTabCommand, IConnection connection)
+        public ITab CreatePublisherTab(IConnection connection, ReceivedMessageInfo? fromReceivedMessage = null)
         {
-            var viewModel = new PublisherViewModel(connection);
+            var viewModel = new PublisherViewModel(connection, fromReceivedMessage);
             return new ViewTab<PublisherView, PublisherViewModel>(
                 closeTabCommand,
                 new PublisherView(viewModel),
