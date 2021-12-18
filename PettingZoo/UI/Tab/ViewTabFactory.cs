@@ -8,13 +8,11 @@ namespace PettingZoo.UI.Tab
     public class ViewTabFactory : ITabFactory
     {
         private readonly ITabHost tabHost;
-        private readonly ICommand closeTabCommand;
 
 
-        public ViewTabFactory(ITabHost tabHost, ICommand closeTabCommand)
+        public ViewTabFactory(ITabHost tabHost)
         {
             this.tabHost = tabHost;
-            this.closeTabCommand = closeTabCommand;
         }
 
 
@@ -22,7 +20,6 @@ namespace PettingZoo.UI.Tab
         {
             var viewModel = new SubscriberViewModel(tabHost, this, connection, subscriber);
             return new ViewTab<SubscriberView, SubscriberViewModel>(
-                closeTabCommand,
                 new SubscriberView(viewModel),
                 viewModel,
                 vm => vm.Title);
@@ -33,7 +30,6 @@ namespace PettingZoo.UI.Tab
         {
             var viewModel = new PublisherViewModel(tabHost, this, connection, fromReceivedMessage);
             return new ViewTab<PublisherView, PublisherViewModel>(
-                closeTabCommand,
                 new PublisherView(viewModel),
                 viewModel,
                 vm => vm.Title);

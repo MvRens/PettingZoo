@@ -12,7 +12,6 @@ namespace PettingZoo.UI.Tab
     {
         public string Title => getTitle(viewModel);
         public ContentControl Content { get; }
-        public ICommand CloseTabCommand { get; }
 
         public IEnumerable<TabToolbarCommand> ToolbarCommands => viewModel is ITabToolbarCommands tabToolbarCommands 
             ? tabToolbarCommands.ToolbarCommands 
@@ -25,14 +24,13 @@ namespace PettingZoo.UI.Tab
         private readonly Func<TViewModel, string> getTitle;
 
         
-        public ViewTab(ICommand closeTabCommand, TView view, TViewModel viewModel, Expression<Func<TViewModel, string>> title)
+        public ViewTab(TView view, TViewModel viewModel, Expression<Func<TViewModel, string>> title)
         {
             if (title.Body is not MemberExpression titleMemberExpression)
                 throw new ArgumentException(@"Invalid expression type, expected viewModel => viewModel.TitlePropertyName", nameof(title));
 
             var titlePropertyName = titleMemberExpression.Member.Name;
 
-            CloseTabCommand = closeTabCommand;
             this.viewModel = viewModel;
             getTitle = title.Compile();
             Content = view;

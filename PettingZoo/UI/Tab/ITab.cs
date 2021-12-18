@@ -23,7 +23,6 @@ namespace PettingZoo.UI.Tab
     {
         string Title { get; }
         ContentControl Content { get; }
-        ICommand CloseTabCommand { get; }
     }
     
     

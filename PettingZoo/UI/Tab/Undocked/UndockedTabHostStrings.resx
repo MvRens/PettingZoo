@@ -117,49 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CommandConnect" xml:space="preserve">
-    <value>Connect</value>
-  </data>
-  <data name="CommandDisconnect" xml:space="preserve">
-    <value>Disconnect</value>
-  </data>
-  <data name="CommandPublish" xml:space="preserve">
-    <value>New Publisher</value>
-  </data>
-  <data name="CommandSubscribe" xml:space="preserve">
-    <value>New Subscriber...</value>
-  </data>
-  <data name="CommandUndock" xml:space="preserve">
-    <value>Undock tab</value>
-  </data>
-  <data name="ContextMenuCloseTab" xml:space="preserve">
-    <value>Close tab</value>
-  </data>
-  <data name="ContextMenuUndockTab" xml:space="preserve">
-    <value>Undock</value>
-  </data>
-  <data name="DeliveryModeNonPersistent" xml:space="preserve">
-    <value>Non-persistent</value>
-  </data>
-  <data name="DeliveryModePersistent" xml:space="preserve">
-    <value>Persistent</value>
-  </data>
-  <data name="StatusConnected" xml:space="preserve">
-    <value>Connected</value>
-  </data>
-  <data name="StatusConnecting" xml:space="preserve">
-    <value>Connecting to {0}...</value>
-  </data>
-  <data name="StatusDisconnected" xml:space="preserve">
-    <value>Disconnected</value>
-  </data>
-  <data name="StatusError" xml:space="preserve">
-    <value>Error: {0}</value>
-  </data>
-  <data name="TabsEmptyText" xml:space="preserve">
-    <value>No open tabs. Click on New Publisher or New Subscriber to open a new tab.</value>
-  </data>
-  <data name="WindowTitle" xml:space="preserve">
-    <value>Petting Zoo - a RabbitMQ live message viewer</value>
+  <data name="CommandDock" xml:space="preserve">
+    <value>Dock tab</value>
   </data>
 </root>

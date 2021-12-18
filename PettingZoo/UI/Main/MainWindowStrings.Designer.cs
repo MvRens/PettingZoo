@@ -19,7 +19,7 @@ namespace PettingZoo.UI.Main {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class MainWindowStrings {
@@ -97,11 +97,29 @@ namespace PettingZoo.UI.Main {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Undock tab.
+        /// </summary>
+        public static string CommandUndock {
+            get {
+                return ResourceManager.GetString("CommandUndock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Close tab.
         /// </summary>
         public static string ContextMenuCloseTab {
             get {
                 return ResourceManager.GetString("ContextMenuCloseTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undock.
+        /// </summary>
+        public static string ContextMenuUndockTab {
+            get {
+                return ResourceManager.GetString("ContextMenuUndockTab", resourceCulture);
             }
         }
         
@@ -156,6 +174,15 @@ namespace PettingZoo.UI.Main {
         public static string StatusError {
             get {
                 return ResourceManager.GetString("StatusError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No open tabs. Click on New Publisher or New Subscriber to open a new tab..
+        /// </summary>
+        public static string TabsEmptyText {
+            get {
+                return ResourceManager.GetString("TabsEmptyText", resourceCulture);
             }
         }
         

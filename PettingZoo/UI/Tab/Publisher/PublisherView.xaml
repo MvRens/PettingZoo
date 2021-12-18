@@ -10,54 +10,57 @@
              d:DesignWidth="800"
              d:DataContext="{d:DesignInstance res:DesignTimePublisherViewModel, IsDesignTimeCreatable=True}"
              Background="White">
-    <ui:GridLayout Style="{StaticResource Form}" Margin="4" Grid.IsSharedSizeScope="True">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="16"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="16"/>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <ui:GridLayout Style="{StaticResource Form}" Margin="4" Grid.IsSharedSizeScope="True">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="16"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="16"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-        <Label Grid.Row="0" Grid.Column="1">
-            <StackPanel Orientation="Horizontal">
-                <RadioButton Content="{x:Static res:PublisherViewStrings.LabelSendToExchange}" IsChecked="{Binding SendToExchange}" Style="{StaticResource TypeSelection}" />
-                <RadioButton Content="{x:Static res:PublisherViewStrings.LabelSendToQueue}" IsChecked="{Binding SendToQueue}" Style="{StaticResource TypeSelection}" />
+            <Label Grid.Row="0" Grid.Column="1">
+                <StackPanel Orientation="Horizontal">
+                    <RadioButton Content="{x:Static res:PublisherViewStrings.LabelSendToExchange}" IsChecked="{Binding SendToExchange}" Style="{StaticResource TypeSelection}" />
+                    <RadioButton Content="{x:Static res:PublisherViewStrings.LabelSendToQueue}" IsChecked="{Binding SendToQueue}" Style="{StaticResource TypeSelection}" />
+                </StackPanel>
+            </Label>
+
+            <Label Grid.Row="1" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelExchange}" Visibility="{Binding ExchangeVisibility}" />
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Exchange}" Visibility="{Binding ExchangeVisibility}" />
+
+            <Label Grid.Row="2" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelRoutingKey}" Visibility="{Binding ExchangeVisibility}" />
+            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding RoutingKey}" Visibility="{Binding ExchangeVisibility}" />
+
+            <Label Grid.Row="3" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelQueue}" Visibility="{Binding QueueVisibility}" />
+            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Queue}" Visibility="{Binding QueueVisibility}" />
+
+            <Label Grid.Row="5" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelReplyTo}" />
+            <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="1">
+                <RadioButton Content="{x:Static res:PublisherViewStrings.LabelReplyToSpecified}" IsChecked="{Binding ReplyToSpecified}" Style="{StaticResource TypeSelection}" />
+                <RadioButton Content="{x:Static res:PublisherViewStrings.LabelReplyToNewSubscriber}" IsChecked="{Binding ReplyToNewSubscriber}" Style="{StaticResource TypeSelection}" />
             </StackPanel>
-        </Label>
+            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding ReplyTo}" IsEnabled="{Binding ReplyToSpecified}" />
 
-        <Label Grid.Row="1" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelExchange}" Visibility="{Binding ExchangeVisibility}" />
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Exchange}" Visibility="{Binding ExchangeVisibility}" />
+            <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+                <ToggleButton Content="{x:Static res:PublisherViewStrings.OptionMessageTypeRaw}" Style="{StaticResource TypeSelection}" IsChecked="{Binding MessageTypeRaw}" />
+                <ToggleButton Content="{x:Static res:PublisherViewStrings.OptionMessageTypeTapeti}" Style="{StaticResource TypeSelection}" IsChecked="{Binding MessageTypeTapeti}" />
+            </StackPanel>
 
-        <Label Grid.Row="2" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelRoutingKey}" Visibility="{Binding ExchangeVisibility}" />
-        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding RoutingKey}" Visibility="{Binding ExchangeVisibility}" />
+            <ContentControl Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 8 0 0" Content="{Binding MessageTypeControl}" />
 
-        <Label Grid.Row="3" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelQueue}" Visibility="{Binding QueueVisibility}" />
-        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Queue}" Visibility="{Binding QueueVisibility}" />
-
-        <Label Grid.Row="5" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelReplyTo}" />
-        <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="1">
-            <RadioButton Content="{x:Static res:PublisherViewStrings.LabelReplyToSpecified}" IsChecked="{Binding ReplyToSpecified}" Style="{StaticResource TypeSelection}" />
-            <RadioButton Content="{x:Static res:PublisherViewStrings.LabelReplyToNewSubscriber}" IsChecked="{Binding ReplyToNewSubscriber}" Style="{StaticResource TypeSelection}" />
-        </StackPanel>
-        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding ReplyTo}" IsEnabled="{Binding ReplyToSpecified}" />
-
-        <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
-            <ToggleButton Content="{x:Static res:PublisherViewStrings.OptionMessageTypeRaw}" Style="{StaticResource TypeSelection}" IsChecked="{Binding MessageTypeRaw}" />
-            <ToggleButton Content="{x:Static res:PublisherViewStrings.OptionMessageTypeTapeti}" Style="{StaticResource TypeSelection}" IsChecked="{Binding MessageTypeTapeti}" />
-        </StackPanel>
-
-        <ScrollViewer Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto">
-            <ContentControl Margin="0 8 0 0" Content="{Binding MessageTypeControl}" />
-        </ScrollViewer>
-    </ui:GridLayout>
+            <Button Grid.Row="10" Grid.Column="1" Command="{Binding PublishCommand}" Content="{x:Static res:PublisherViewStrings.CommandPublish}" HorizontalAlignment="Left" />
+        </ui:GridLayout>
+    </ScrollViewer>
 </UserControl>

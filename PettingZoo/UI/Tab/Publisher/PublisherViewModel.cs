@@ -5,8 +5,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using PettingZoo.Core.Connection;
 
-// TODO publish button in page instead of just in toolbar
-
 namespace PettingZoo.UI.Tab.Publisher
 {
     public enum MessageType

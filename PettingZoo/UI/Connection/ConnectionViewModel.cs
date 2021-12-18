@@ -235,7 +235,6 @@ namespace PettingZoo.UI.Connection
 
         private bool SaveCanExecute()
         {
-            // TODO check changes in parameters (excluding password)
             return SelectedStoredConnection != null && 
                    SelectedStoredConnection.Id != Guid.Empty &&
                    ValidConnection(false) &&

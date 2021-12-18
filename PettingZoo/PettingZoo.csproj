@@ -18,13 +18,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\Dock.svg" />
     <None Remove="Images\PublishSend.svg" />
+    <None Remove="Images\Undock.svg" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Images\Clear.svg" />
     <Resource Include="Images\Connect.svg" />
     <Resource Include="Images\Disconnect.svg" />
+    <Resource Include="Images\Dock.svg" />
     <Resource Include="Images\Publish.svg" />
     <Resource Include="Images\PublishSend.svg" />
     <Resource Include="Images\Subscribe.svg" />
@@ -40,6 +43,10 @@
     <ProjectReference Include="..\PettingZoo.Core\PettingZoo.Core.csproj" />
     <ProjectReference Include="..\PettingZoo.RabbitMQ\PettingZoo.RabbitMQ.csproj" />
     <ProjectReference Include="..\PettingZoo.Settings.LiteDB\PettingZoo.Settings.LiteDB.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\Undock.svg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -91,6 +98,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="UI\Tab\Undocked\UndockedTabHostStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UndockedTabHostStrings.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -129,6 +141,10 @@
     <EmbeddedResource Update="UI\Tab\Subscriber\SubscriberViewStrings.resx">
       <LastGenOutput>SubscriberViewStrings.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Tab\Undocked\UndockedTabHostStrings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UndockedTabHostStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 
