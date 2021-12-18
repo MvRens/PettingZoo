@@ -24,7 +24,7 @@
         <ui:BindingProxy x:Key="ContextMenuProxy" Data="{Binding}" />
     </Window.Resources>
     <DockPanel>
-        <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
+        <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True" Loaded="Toolbar_Loaded">
             <Button Command="{Binding ConnectCommand}">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="{svgc:SvgImage Source=/Images/Connect.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>

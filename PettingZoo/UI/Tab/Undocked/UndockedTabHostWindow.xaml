@@ -12,7 +12,7 @@
         Width="800"
         WindowStyle="ThreeDBorderWindow">
     <DockPanel>
-        <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
+        <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True" Loaded="Toolbar_Loaded">
             <Button Command="{Binding DockCommand}">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="{svgc:SvgImage Source=/Images/Dock.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
