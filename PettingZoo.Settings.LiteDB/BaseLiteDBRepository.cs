@@ -24,7 +24,10 @@ namespace PettingZoo.Settings.LiteDB
 
         protected ILiteDatabaseAsync GetDatabase()
         {
-            return new LiteDatabaseAsync(databaseFilename);
+            return new LiteDatabaseAsync(databaseFilename, new BsonMapper
+            {
+                EmptyStringToNull = false
+            });
         }
     }
 }

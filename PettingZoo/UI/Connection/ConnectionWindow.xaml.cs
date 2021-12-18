@@ -38,7 +38,7 @@ namespace PettingZoo.UI.Connection
                 return null;
 
             var newSettings = viewModel.ToModel();
-            await connectionSettingsRepository.StoreLastUsed(newSettings);
+            await connectionSettingsRepository.StoreLastUsed(viewModel.StorePassword, newSettings);
 
             return newSettings;
         }

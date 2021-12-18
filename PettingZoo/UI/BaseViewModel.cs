@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -6,6 +7,8 @@ namespace PettingZoo.UI
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
+        private int commandsChangedDisabled;
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
@@ -30,6 +33,7 @@ namespace PettingZoo.UI
                     RaisePropertyChanged(otherProperty);
             }
 
+            // ReSharper disable once InvertIf
             if (delegateCommandsChanged != null)
             {
                 foreach (var delegateCommand in delegateCommandsChanged)
@@ -37,6 +41,25 @@ namespace PettingZoo.UI
             }
 
             return true;
+        }
+
+
+        protected void DisableCommandsChanged(Action updateFields, params DelegateCommand[] delegateCommandsChangedAfter)
+        {
+            commandsChangedDisabled++;
+            try
+            {
+                updateFields();
+            }
+            finally
+            {
+                commandsChangedDisabled--;
+                if (commandsChangedDisabled == 0)
+                {
+                    foreach (var delegateCommand in delegateCommandsChangedAfter)
+                        delegateCommand.RaiseCanExecuteChanged();
+                }
+            }
         }
     }
 }

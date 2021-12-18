@@ -42,9 +42,18 @@
         </UniformGrid>
 
         <ListBox Grid.Row="0" Grid.Column="0" Margin="0 0 8 0" Width="250" ItemsSource="{Binding StoredConnections}" SelectedValue="{Binding SelectedStoredConnection}">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding DisplayName}" />
+                    <TextBlock Text="{Binding DisplayName}">
+                        <TextBlock.InputBindings>
+                            <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DataContext.OkCommand, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}" />
+                        </TextBlock.InputBindings>
+                    </TextBlock>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
@@ -60,7 +69,8 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="8"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="24"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -79,14 +89,15 @@
 
             <Label Grid.Column="0" Grid.Row="4" Content="{x:Static connection:ConnectionWindowStrings.LabelPassword}"/>
             <PasswordBox Grid.Column="1" Grid.Row="4" ui:PasswordBoxAssistant.BindPassword="true" ui:PasswordBoxAssistant.BoundPassword="{Binding Path=Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" GotFocus="CaretToEnd"/>
+            <CheckBox Grid.Column="1" Grid.Row="5" Content="{x:Static connection:ConnectionWindowStrings.LabelStorePassword}" IsChecked="{Binding StorePassword}"/>
 
-            <CheckBox Grid.Column="1" Grid.Row="6" Content="{x:Static connection:ConnectionWindowStrings.LabelSubscribe}" IsChecked="{Binding Subscribe}"/>
+            <CheckBox Grid.Column="1" Grid.Row="7" Content="{x:Static connection:ConnectionWindowStrings.LabelSubscribe}" IsChecked="{Binding Subscribe}"/>
 
-            <Label Grid.Column="0" Grid.Row="7" Content="{x:Static connection:ConnectionWindowStrings.LabelExchange}"/>
-            <TextBox Grid.Column="1" Grid.Row="7" Text="{Binding Exchange, UpdateSourceTrigger=PropertyChanged}" GotFocus="CaretToEnd"/>
+            <Label Grid.Column="0" Grid.Row="8" Content="{x:Static connection:ConnectionWindowStrings.LabelExchange}"/>
+            <TextBox Grid.Column="1" Grid.Row="8" Text="{Binding Exchange, UpdateSourceTrigger=PropertyChanged}" GotFocus="CaretToEnd"/>
 
-            <Label Grid.Column="0" Grid.Row="8" Content="{x:Static connection:ConnectionWindowStrings.LabelRoutingKey}"/>
-            <TextBox Grid.Column="1" Grid.Row="8" Text="{Binding RoutingKey, UpdateSourceTrigger=PropertyChanged}" GotFocus="CaretToEnd"/>
+            <Label Grid.Column="0" Grid.Row="9" Content="{x:Static connection:ConnectionWindowStrings.LabelRoutingKey}"/>
+            <TextBox Grid.Column="1" Grid.Row="9" Text="{Binding RoutingKey, UpdateSourceTrigger=PropertyChanged}" GotFocus="CaretToEnd"/>
         </ui:GridLayout>
     </Grid>
 </Window>

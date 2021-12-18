@@ -15,33 +15,36 @@ namespace PettingZoo.Settings.LiteDB
         }
 
 
-        public async Task<ConnectionSettings> GetLastUsed()
+        public async Task<StoredConnectionSettings> GetLastUsed()
         {
             using var database = GetDatabase();
             var collection = database.GetCollection<ConnectionSettingsRecord>(CollectionLastUsed);
 
             var lastUsed = await collection.FindOneAsync(r => true);
             if (lastUsed == null)
-                return ConnectionSettings.Default;
+                return new StoredConnectionSettings(Guid.Empty, "", false, ConnectionSettings.Default);
 
-            return new ConnectionSettings(
+            return new StoredConnectionSettings(
+                Guid.Empty,
+                "",
+                lastUsed.Password != null,
                 lastUsed.Host,
                 lastUsed.VirtualHost,
                 lastUsed.Port,
                 lastUsed.Username,
-                lastUsed.Password,
+                lastUsed.Password ?? "",
                 lastUsed.Subscribe,
                 lastUsed.Exchange,
                 lastUsed.RoutingKey);
         }
 
 
-        public async Task StoreLastUsed(ConnectionSettings connectionSettings)
+        public async Task StoreLastUsed(bool storePassword, ConnectionSettings connectionSettings)
         {
             using var database = GetDatabase();
             var collection = database.GetCollection<ConnectionSettingsRecord>(CollectionLastUsed);
 
-            await collection.UpsertAsync(ConnectionSettingsRecord.FromConnectionSettings(LastUsedId, connectionSettings, ""));
+            await collection.UpsertAsync(ConnectionSettingsRecord.FromConnectionSettings(LastUsedId, connectionSettings, "", storePassword));
         }
 
 
@@ -51,30 +54,30 @@ namespace PettingZoo.Settings.LiteDB
             var collection = database.GetCollection<ConnectionSettingsRecord>(CollectionStored);
 
             return (await collection.FindAllAsync())
-                .Select(r => new StoredConnectionSettings(r.Id, r.DisplayName, r.Host, r.VirtualHost, r.Port, r.Username, r.Password, r.Subscribe, r.Exchange, r.RoutingKey))
+                .Select(r => new StoredConnectionSettings(r.Id, r.DisplayName, r.Password != null, r.Host, r.VirtualHost, r.Port, r.Username, r.Password ?? "", r.Subscribe, r.Exchange, r.RoutingKey))
                 .ToArray();
         }
 
 
-        public async Task<StoredConnectionSettings> Add(string displayName, ConnectionSettings connectionSettings)
+        public async Task<StoredConnectionSettings> Add(string displayName, bool storePassword, ConnectionSettings connectionSettings)
         {
             using var database = GetDatabase();
             var collection = database.GetCollection<ConnectionSettingsRecord>(CollectionStored);
 
             var id = Guid.NewGuid();
-            await collection.InsertAsync(ConnectionSettingsRecord.FromConnectionSettings(id, connectionSettings, displayName));
+            await collection.InsertAsync(ConnectionSettingsRecord.FromConnectionSettings(id, connectionSettings, displayName, storePassword));
 
-            return new StoredConnectionSettings(id, displayName, connectionSettings);
+            return new StoredConnectionSettings(id, displayName, storePassword, connectionSettings);
         }
 
 
-        public async Task<StoredConnectionSettings> Update(Guid id, string displayName, ConnectionSettings connectionSettings)
+        public async Task<StoredConnectionSettings> Update(Guid id, string displayName, bool storePassword, ConnectionSettings connectionSettings)
         {
             using var database = GetDatabase();
             var collection = database.GetCollection<ConnectionSettingsRecord>(CollectionStored);
 
-            await collection.UpdateAsync(ConnectionSettingsRecord.FromConnectionSettings(id, connectionSettings, displayName));
-            return new StoredConnectionSettings(id, displayName, connectionSettings);
+            await collection.UpdateAsync(ConnectionSettingsRecord.FromConnectionSettings(id, connectionSettings, displayName, storePassword));
+            return new StoredConnectionSettings(id, displayName, storePassword, connectionSettings);
         }
 
 
@@ -105,7 +108,7 @@ namespace PettingZoo.Settings.LiteDB
             public string RoutingKey { get; set; } = null!;
 
 
-            public static ConnectionSettingsRecord FromConnectionSettings(Guid id, ConnectionSettings connectionSettings, string displayName)
+            public static ConnectionSettingsRecord FromConnectionSettings(Guid id, ConnectionSettings connectionSettings, string displayName, bool storePassword)
             {
                 return new ConnectionSettingsRecord
                 {
@@ -116,7 +119,7 @@ namespace PettingZoo.Settings.LiteDB
                     VirtualHost = connectionSettings.VirtualHost,
                     Port = connectionSettings.Port,
                     Username = connectionSettings.Username,
-                    Password = connectionSettings.Password,
+                    Password = storePassword ? connectionSettings.Password : null,
 
                     Subscribe = connectionSettings.Subscribe,
                     Exchange = connectionSettings.Exchange,

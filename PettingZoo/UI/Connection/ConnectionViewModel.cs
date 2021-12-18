@@ -5,14 +5,12 @@ using System.Windows;
 using System.Windows.Input;
 using PettingZoo.Core.Settings;
 
-// TODO "save password" checkbox
-
 namespace PettingZoo.UI.Connection
 {
     public class ConnectionViewModel : BaseViewModel
     {
         private readonly IConnectionSettingsRepository connectionSettingsRepository;
-        private readonly ConnectionSettings defaultSettings;
+        private readonly StoredConnectionSettings defaultSettings;
         private string host = null!;
         private string virtualHost = null!;
         private int port;
@@ -22,6 +20,8 @@ namespace PettingZoo.UI.Connection
         private bool subscribe;
         private string exchange = null!;
         private string routingKey = null!;
+
+        private bool storePassword;
 
         private StoredConnectionSettings? selectedStoredConnection;
 
@@ -60,7 +60,7 @@ namespace PettingZoo.UI.Connection
         public string Password
         {
             get => password;
-            set => SetField(ref password, value);
+            set => SetField(ref password, value, delegateCommandsChanged: connectionChangedCommands);
         }
 
 
@@ -91,6 +91,13 @@ namespace PettingZoo.UI.Connection
         }
 
 
+        public bool StorePassword
+        {
+            get => storePassword;
+            set => SetField(ref storePassword, value, delegateCommandsChanged: connectionChangedCommands);
+        }
+
+
         public ObservableCollection<StoredConnectionSettings> StoredConnections { get; } = new();
 
         public StoredConnectionSettings? SelectedStoredConnection
@@ -104,15 +111,21 @@ namespace PettingZoo.UI.Connection
                 if (!SetField(ref selectedStoredConnection, value, delegateCommandsChanged: new [] { deleteCommand }))
                     return;
 
-                Host = value.Host;
-                VirtualHost = value.VirtualHost;
-                Port = value.Port;
-                Username = value.Username;
-                Password = value.Password ?? "";
+                DisableCommandsChanged(
+                    () =>
+                    {
+                        Host = value.Host;
+                        VirtualHost = value.VirtualHost;
+                        Port = value.Port;
+                        Username = value.Username;
+                        Password = value.Password;
+                        StorePassword = value.StorePassword;
 
-                Exchange = value.Exchange;
-                RoutingKey = value.RoutingKey;
-                Subscribe = value.Subscribe;
+                        Exchange = value.Exchange;
+                        RoutingKey = value.RoutingKey;
+                        Subscribe = value.Subscribe;
+                    },
+                    connectionChangedCommands);
             }
         }
 
@@ -125,7 +138,7 @@ namespace PettingZoo.UI.Connection
         public event EventHandler? OkClick;
 
 
-        public ConnectionViewModel(IConnectionSettingsRepository connectionSettingsRepository, ConnectionSettings defaultSettings)
+        public ConnectionViewModel(IConnectionSettingsRepository connectionSettingsRepository, StoredConnectionSettings defaultSettings)
         {
             this.connectionSettingsRepository = connectionSettingsRepository;
             this.defaultSettings = defaultSettings;
@@ -144,6 +157,7 @@ namespace PettingZoo.UI.Connection
             var defaultConnection = new StoredConnectionSettings(
                 Guid.Empty,
                 ConnectionWindowStrings.LastUsedDisplayName,
+                defaultSettings.StorePassword,
                 defaultSettings.Host,
                 defaultSettings.VirtualHost,
                 defaultSettings.Port,
@@ -157,7 +171,7 @@ namespace PettingZoo.UI.Connection
 
             foreach (var storedConnectionSettings in await connectionSettingsRepository.GetStored())
             {
-                if (!isStored && storedConnectionSettings.SameParameters(defaultConnection))
+                if (!isStored && storedConnectionSettings.SameParameters(defaultConnection, false))
                 {
                     SelectedStoredConnection = storedConnectionSettings;
                     isStored = true;
@@ -169,7 +183,7 @@ namespace PettingZoo.UI.Connection
             if (isStored)
             {
                 // The last used parameters match a stored connection, insert the "New connection" item with default parameters
-                StoredConnections.Insert(0, new StoredConnectionSettings(Guid.Empty, ConnectionWindowStrings.LastUsedDisplayName, ConnectionSettings.Default));
+                StoredConnections.Insert(0, new StoredConnectionSettings(Guid.Empty, ConnectionWindowStrings.LastUsedDisplayName, true, ConnectionSettings.Default));
             }
             else
             {
@@ -225,7 +239,7 @@ namespace PettingZoo.UI.Connection
 
             var selectedIndex = StoredConnections.IndexOf(SelectedStoredConnection);
 
-            var updatedStoredConnection = await connectionSettingsRepository.Update(SelectedStoredConnection.Id, SelectedStoredConnection.DisplayName, ToModel());
+            var updatedStoredConnection = await connectionSettingsRepository.Update(SelectedStoredConnection.Id, SelectedStoredConnection.DisplayName, StorePassword, ToModel());
 
 
             StoredConnections[selectedIndex] = updatedStoredConnection;
@@ -238,7 +252,10 @@ namespace PettingZoo.UI.Connection
             return SelectedStoredConnection != null && 
                    SelectedStoredConnection.Id != Guid.Empty &&
                    ValidConnection(false) &&
-                   !ToModel().SameParameters(SelectedStoredConnection, false);
+                   (
+                       !ToModel().SameParameters(SelectedStoredConnection, StorePassword) ||
+                       SelectedStoredConnection.StorePassword != StorePassword
+                   );
         }
 
 
@@ -250,7 +267,7 @@ namespace PettingZoo.UI.Connection
             if (!ConnectionDisplayNameDialog.Execute(ref displayName))
                 return;
 
-            var storedConnectionSettings = await connectionSettingsRepository.Add(displayName, ToModel());
+            var storedConnectionSettings = await connectionSettingsRepository.Add(displayName, StorePassword, ToModel());
 
             StoredConnections.Add(storedConnectionSettings);
             SelectedStoredConnection = storedConnectionSettings;
@@ -298,7 +315,7 @@ namespace PettingZoo.UI.Connection
     {
         public DesignTimeConnectionViewModel() : base(null!, null!)
         {
-            StoredConnections.Add(new StoredConnectionSettings(Guid.Empty, "Dummy", ConnectionSettings.Default));
+            StoredConnections.Add(new StoredConnectionSettings(Guid.Empty, "Dummy", true, ConnectionSettings.Default));
         }
     }
 }

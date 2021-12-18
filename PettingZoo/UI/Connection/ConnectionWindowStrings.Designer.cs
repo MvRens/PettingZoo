@@ -169,6 +169,15 @@ namespace PettingZoo.UI.Connection {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Store password.
+        /// </summary>
+        public static string LabelStorePassword {
+            get {
+                return ResourceManager.GetString("LabelStorePassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Subscribe.
         /// </summary>
         public static string LabelSubscribe {

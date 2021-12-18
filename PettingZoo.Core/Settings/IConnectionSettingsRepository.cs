@@ -6,12 +6,12 @@ namespace PettingZoo.Core.Settings
 {
     public interface IConnectionSettingsRepository
     {
-        Task<ConnectionSettings> GetLastUsed();
-        Task StoreLastUsed(ConnectionSettings connectionSettings);
+        Task<StoredConnectionSettings> GetLastUsed();
+        Task StoreLastUsed(bool storePassword, ConnectionSettings connectionSettings);
 
         Task<IEnumerable<StoredConnectionSettings>> GetStored();
-        Task<StoredConnectionSettings> Add(string displayName, ConnectionSettings connectionSettings);
-        Task<StoredConnectionSettings> Update(Guid id, string displayName, ConnectionSettings connectionSettings);
+        Task<StoredConnectionSettings> Add(string displayName, bool storePassword, ConnectionSettings connectionSettings);
+        Task<StoredConnectionSettings> Update(Guid id, string displayName, bool storePassword, ConnectionSettings connectionSettings);
         Task Delete(Guid id);
     }
 
@@ -22,7 +22,7 @@ namespace PettingZoo.Core.Settings
         public string VirtualHost { get; }
         public int Port { get; }
         public string Username { get; }
-        public string? Password { get; }
+        public string Password { get; }
 
         public bool Subscribe { get; }
         public string Exchange { get; }
@@ -32,7 +32,7 @@ namespace PettingZoo.Core.Settings
         public static readonly ConnectionSettings Default = new("localhost", "/", 5672, "guest", "guest", false, "", "#");
 
 
-        public ConnectionSettings(string host, string virtualHost, int port, string username, string? password,
+        public ConnectionSettings(string host, string virtualHost, int port, string username, string password, 
             bool subscribe, string exchange, string routingKey)
         {
             Host = host;
@@ -65,22 +65,26 @@ namespace PettingZoo.Core.Settings
     {
         public Guid Id { get; }
         public string DisplayName { get; }
+        public bool StorePassword { get; }
 
-        public StoredConnectionSettings(Guid id, string displayName, string host, string virtualHost, int port, string username,
-            string? password, bool subscribe, string exchange, string routingKey)
+
+        public StoredConnectionSettings(Guid id, string displayName, bool storePassword, string host, string virtualHost, int port, string username,
+            string password, bool subscribe, string exchange, string routingKey)
             : base(host, virtualHost, port, username, password, subscribe, exchange, routingKey)
         {
             Id = id;
             DisplayName = displayName;
+            StorePassword = storePassword;
         }
 
 
-        public StoredConnectionSettings(Guid id, string displayName, ConnectionSettings connectionSettings)
-            : base(connectionSettings.Host, connectionSettings.VirtualHost, connectionSettings.Port, connectionSettings.Username, connectionSettings.Password, 
-                connectionSettings.Subscribe, connectionSettings.Exchange, connectionSettings.RoutingKey)
+        public StoredConnectionSettings(Guid id, string displayName, bool storePassword, ConnectionSettings connectionSettings)
+            : base(connectionSettings.Host, connectionSettings.VirtualHost, connectionSettings.Port, connectionSettings.Username, 
+                connectionSettings.Password, connectionSettings.Subscribe, connectionSettings.Exchange, connectionSettings.RoutingKey)
         {
             Id = id;
             DisplayName = displayName;
+            StorePassword = storePassword;
         }
     }
 }

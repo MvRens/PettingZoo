@@ -153,6 +153,9 @@
   <data name="LabelRoutingKey" xml:space="preserve">
     <value>Routing key</value>
   </data>
+  <data name="LabelStorePassword" xml:space="preserve">
+    <value>Store password</value>
+  </data>
   <data name="LabelSubscribe" xml:space="preserve">
     <value>Subscribe</value>
   </data>
