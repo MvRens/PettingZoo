@@ -13,20 +13,15 @@ namespace PettingZoo.UI.Tab.Publisher
     public class RawPublisherViewModel : BaseViewModel
     {
         private readonly IConnection connection;
+        private readonly IPublishDestination publishDestination;
         private readonly DelegateCommand publishCommand;
         private readonly DelegateCommand propertiesExpandCollapseCommand;
         private bool propertiesExpanded;
-
-        private bool sendToExchange = true;
-        private string exchange = "";
-        private string routingKey = "";
-        private string queue = "";
 
         private MessageDeliveryMode deliveryMode;
 
         private string contentType = "application/json";
         private string correlationId = "";
-        private string replyTo = "";
         private string appId = "";
         private string contentEncoding = "";
         private string expiration = "";
@@ -37,44 +32,6 @@ namespace PettingZoo.UI.Tab.Publisher
         private string userId = "";
         private string payload = "";
 
-
-        public bool SendToExchange
-        {
-            get => sendToExchange;
-            set => SetField(ref sendToExchange, value, otherPropertiesChanged: new[] { nameof(SendToQueue), nameof(ExchangeVisibility), nameof(QueueVisibility) });
-        }
-
-
-        public bool SendToQueue
-        {
-            get => !SendToExchange;
-            set => SendToExchange = !value;
-        }
-
-
-        public string Exchange
-        {
-            get => exchange;
-            set => SetField(ref exchange, value);
-        }
-
-
-        public string RoutingKey
-        {
-            get => routingKey;
-            set => SetField(ref routingKey, value);
-        }
-
-
-        public string Queue
-        {
-            get => queue;
-            set => SetField(ref queue, value);
-        }
-
-
-        public virtual Visibility ExchangeVisibility => SendToExchange ? Visibility.Visible : Visibility.Collapsed;
-        public virtual Visibility QueueVisibility => SendToQueue ? Visibility.Visible : Visibility.Collapsed;
 
 
         public int DeliveryModeIndex
@@ -95,13 +52,6 @@ namespace PettingZoo.UI.Tab.Publisher
         {
             get => correlationId;
             set => SetField(ref correlationId, value);
-        }
-
-
-        public string ReplyTo
-        {
-            get => replyTo;
-            set => SetField(ref replyTo, value);
         }
 
 
@@ -194,20 +144,17 @@ namespace PettingZoo.UI.Tab.Publisher
         protected Header LastHeader;
 
 
-        public RawPublisherViewModel(IConnection connection, ReceivedMessageInfo? receivedMessage = null)
+        public RawPublisherViewModel(IConnection connection, IPublishDestination publishDestination, ReceivedMessageInfo? receivedMessage = null)
         {
             this.connection = connection;
+            this.publishDestination = publishDestination;
 
             publishCommand = new DelegateCommand(PublishExecute, PublishCanExecute);
             propertiesExpandCollapseCommand = new DelegateCommand(PropertiesExpandCollapseExecute);
 
             if (receivedMessage != null)
             {
-                Exchange = receivedMessage.Exchange;
-                RoutingKey = receivedMessage.RoutingKey;
-
                 CorrelationId = receivedMessage.Properties.CorrelationId ?? "";
-                ReplyTo = receivedMessage.Properties.ReplyTo ?? "";
                 Priority = receivedMessage.Properties.Priority?.ToString() ?? "";
                 AppId = receivedMessage.Properties.AppId ?? "";
                 ContentEncoding = receivedMessage.Properties.ContentEncoding ?? "";
@@ -270,15 +217,14 @@ namespace PettingZoo.UI.Tab.Publisher
             }
             
             // TODO check parsing of priority and timestamp
-            // TODO support for Reply To to dynamic queue which waits for a message (or opens a new subscriber tab?)
-
+            
             var headers = Headers.Where(h => h.IsValid()).ToDictionary(h => h.Key, h => h.Value);
 
             // TODO background worker / async
 
             connection.Publish(new PublishMessageInfo(
-                SendToExchange ? Exchange : "", 
-                SendToExchange ? RoutingKey : Queue,
+                publishDestination.Exchange, 
+                publishDestination.RoutingKey,
                 Encoding.UTF8.GetBytes(Payload),
                 new MessageProperties(headers)
                 {
@@ -290,7 +236,7 @@ namespace PettingZoo.UI.Tab.Publisher
                     Expiration = NullIfEmpty(Expiration),
                     MessageId = NullIfEmpty(MessageId),
                     Priority = !string.IsNullOrEmpty(Priority) && byte.TryParse(Priority, out var priorityValue) ? priorityValue : null,
-                    ReplyTo = NullIfEmpty(ReplyTo),
+                    ReplyTo = publishDestination.GetReplyTo(),
                     Timestamp = !string.IsNullOrEmpty(Timestamp) && DateTime.TryParse(Timestamp, out var timestampValue) ? timestampValue : null,
                     Type = NullIfEmpty(TypeProperty),
                     UserId = NullIfEmpty(UserId)
@@ -341,7 +287,7 @@ namespace PettingZoo.UI.Tab.Publisher
 
     public class DesignTimeRawPublisherViewModel : RawPublisherViewModel
     {
-        public DesignTimeRawPublisherViewModel() : base(null!)
+        public DesignTimeRawPublisherViewModel() : base(null!, null!)
         {
             PropertiesExpanded = true;
 
@@ -349,9 +295,5 @@ namespace PettingZoo.UI.Tab.Publisher
             capturedLastHeader.Key = "Example";
             capturedLastHeader.Value = "header";
         }
-
-
-        public override Visibility ExchangeVisibility => Visibility.Visible;
-        public override Visibility QueueVisibility => Visibility.Visible;
     }
 }

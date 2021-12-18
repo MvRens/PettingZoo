@@ -9,8 +9,8 @@ namespace PettingZoo.UI.Tab.Publisher
     {
         public PublisherView(PublisherViewModel viewModel)
         {
-            InitializeComponent();
             DataContext = viewModel;
+            InitializeComponent();
 
             if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
                 Background = Brushes.Transparent;

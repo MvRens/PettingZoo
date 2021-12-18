@@ -30,8 +30,8 @@ namespace PettingZoo.UI.Subscribe
         {
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
-            InitializeComponent();
             DataContext = viewModel;
+            InitializeComponent();
         }
     }
 }

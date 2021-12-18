@@ -19,7 +19,6 @@ namespace PettingZoo.UI.Main
         private readonly ISubscribeDialog subscribeDialog;
         private readonly ITabFactory tabFactory;
 
-        private ConnectionDialogParams? connectionDialogParams;
         private SubscribeDialogParams? subscribeDialogParams;
         private IConnection? connection;
         private string connectionStatus;
@@ -44,11 +43,16 @@ namespace PettingZoo.UI.Main
         public ITab? ActiveTab
         {
             get => activeTab;
-            set => SetField(ref activeTab, value, otherPropertiesChanged: new []
+            set
             {
-                nameof(ToolbarCommands), 
-                nameof(ToolbarCommandsSeparatorVisibility)
-            });
+                var currentTab = activeTab;
+
+                if (!SetField(ref activeTab, value, otherPropertiesChanged: new[] { nameof(ToolbarCommands), nameof(ToolbarCommandsSeparatorVisibility) }))
+                    return;
+
+                currentTab?.Deactivate();
+                activeTab?.Activate();
+            }
         }
 
         public ICommand ConnectCommand => connectCommand;
@@ -87,6 +91,8 @@ namespace PettingZoo.UI.Main
 
         public async ValueTask DisposeAsync()
         {
+            GC.SuppressFinalize(this);
+
             if (connection != null)
                 await connection.DisposeAsync();
         }
@@ -94,28 +100,22 @@ namespace PettingZoo.UI.Main
         
         private async void ConnectExecute()
         {
-            var newParams = connectionDialog.Show(connectionDialogParams);
-
-            // TODO support command-line parameters for easier testing
-            // var newParams = new ConnectionDialogParams("localhost", "/", 5672, "guest", "guest", true, "test", "#");
-
-            if (newParams == null)
+            var connectionSettings = await connectionDialog.Show();
+            if (connectionSettings == null)
                 return;
 
             if (connection != null)
                 await connection.DisposeAsync();
 
-            connectionDialogParams = newParams;
             connection = connectionFactory.CreateConnection(new ConnectionParams(
-                connectionDialogParams.Host, connectionDialogParams.VirtualHost, connectionDialogParams.Port,
-                connectionDialogParams.Username, connectionDialogParams.Password));
+                connectionSettings.Host, connectionSettings.VirtualHost, connectionSettings.Port,
+                connectionSettings.Username, connectionSettings.Password!));
             connection.StatusChanged += ConnectionStatusChanged;
 
-            if (connectionDialogParams.Subscribe)
+            if (connectionSettings.Subscribe)
             {
-                var subscriber = connection.Subscribe(connectionDialogParams.Exchange, connectionDialogParams.RoutingKey);
+                var subscriber = connection.Subscribe(connectionSettings.Exchange, connectionSettings.RoutingKey);
                 AddTab(tabFactory.CreateSubscriberTab(connection, subscriber));
-                
             }
 
             ConnectionChanged();
@@ -132,9 +132,7 @@ namespace PettingZoo.UI.Main
                 connection = null;
             }
 
-            connectionDialogParams = null;
             ConnectionStatus = GetConnectionStatus(null);
-
             ConnectionChanged();
         }
 

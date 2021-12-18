@@ -14,14 +14,9 @@ namespace PettingZoo.UI
         }
 
 
-        protected virtual void RaiseOtherPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-
         protected bool SetField<T>(ref T field, T value, IEqualityComparer<T>? comparer = null, [CallerMemberName] string? propertyName = null,
-            params string[]? otherPropertiesChanged)
+            DelegateCommand[]? delegateCommandsChanged = null,
+            string[]? otherPropertiesChanged = null)
         {
             if ((comparer ?? EqualityComparer<T>.Default).Equals(field, value))
                 return false;
@@ -29,12 +24,18 @@ namespace PettingZoo.UI
             field = value;
             RaisePropertyChanged(propertyName);
 
-            if (otherPropertiesChanged == null)
-                return true;
-            
-            foreach (var otherProperty in otherPropertiesChanged)
-                RaisePropertyChanged(otherProperty);
-            
+            if (otherPropertiesChanged != null)
+            {
+                foreach (var otherProperty in otherPropertiesChanged)
+                    RaisePropertyChanged(otherProperty);
+            }
+
+            if (delegateCommandsChanged != null)
+            {
+                foreach (var delegateCommand in delegateCommandsChanged)
+                    delegateCommand.RaiseCanExecuteChanged();
+            }
+
             return true;
         }
     }

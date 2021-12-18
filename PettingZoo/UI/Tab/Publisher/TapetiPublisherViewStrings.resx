@@ -138,28 +138,10 @@
   <data name="LabelDeliveryMode" xml:space="preserve">
     <value>Delivery mode</value>
   </data>
-  <data name="LabelExchange" xml:space="preserve">
-    <value>Exchange</value>
-  </data>
   <data name="LabelPayload" xml:space="preserve">
     <value>Payload</value>
   </data>
   <data name="LabelProperties" xml:space="preserve">
     <value>Properties</value>
-  </data>
-  <data name="LabelQueue" xml:space="preserve">
-    <value>Queue</value>
-  </data>
-  <data name="LabelReplyTo" xml:space="preserve">
-    <value>Reply To</value>
-  </data>
-  <data name="LabelRoutingKey" xml:space="preserve">
-    <value>Routing key</value>
-  </data>
-  <data name="LabelSendToExchange" xml:space="preserve">
-    <value>Publish to exchange (topic)</value>
-  </data>
-  <data name="LabelSendToQueue" xml:space="preserve">
-    <value>Publish to queue (direct)</value>
   </data>
 </root>

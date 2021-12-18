@@ -7,12 +7,11 @@ using System.Windows.Input;
 using PettingZoo.Core.Connection;
 using PettingZoo.Core.Rendering;
 
-// TODO update title with unread message count if tab is not active
-// TODO export option (to Tapeti.Cmd compatible format / command-line of course)
+// TODO visual hint of where the last read message was when activating the tab again
 
 namespace PettingZoo.UI.Tab.Subscriber
 {
-    public class SubscriberViewModel : BaseViewModel, ITabToolbarCommands
+    public class SubscriberViewModel : BaseViewModel, ITabToolbarCommands, ITabActivate
     {
         private readonly ITabHost tabHost;
         private readonly ITabFactory tabFactory;
@@ -26,8 +25,13 @@ namespace PettingZoo.UI.Tab.Subscriber
 
         private readonly DelegateCommand createPublisherCommand;
 
+        private bool tabActive;
+        private int unreadCount;
+
 
         public ICommand ClearCommand => clearCommand;
+
+        // ReSharper disable once UnusedMember.Global - it is, but via a proxy
         public ICommand CreatePublisherCommand => createPublisherCommand;
 
         public ObservableCollection<ReceivedMessageInfo> Messages { get; }
@@ -53,7 +57,9 @@ namespace PettingZoo.UI.Tab.Subscriber
             set => SetField(ref selectedMessageProperties, value);
         }
 
-        public string Title => $"{subscriber.Exchange} - {subscriber.RoutingKey}";
+        public string Title => 
+            (subscriber.Exchange != null ? $"{subscriber.Exchange} - {subscriber.RoutingKey}" : $"{subscriber.QueueName}") +
+            (tabActive || unreadCount == 0 ? "" : $" ({unreadCount})");
         public IEnumerable<TabToolbarCommand> ToolbarCommands => toolbarCommands;
 
 
@@ -111,6 +117,12 @@ namespace PettingZoo.UI.Tab.Subscriber
         {
             RunFromUiScheduler(() =>
             {
+                if (!tabActive)
+                {
+                    unreadCount++;
+                    RaisePropertyChanged(nameof(Title));
+                }
+
                 Messages.Add(args.MessageInfo);
                 clearCommand.RaiseCanExecuteChanged();
             });
@@ -131,6 +143,20 @@ namespace PettingZoo.UI.Tab.Subscriber
         {
             _ = Task.Factory.StartNew(action, CancellationToken.None, TaskCreationOptions.None, uiScheduler);
         }
+
+
+        public void Activate()
+        {
+            tabActive = true;
+            unreadCount = 0;
+
+            RaisePropertyChanged(nameof(Title));
+        }
+
+        public void Deactivate()
+        {
+            tabActive = false;
+        }
     }
     
     
@@ -149,6 +175,7 @@ namespace PettingZoo.UI.Tab.Subscriber
             }
 
 
+            public string QueueName => "dummy";
             public string Exchange => "dummy";
             public string RoutingKey => "dummy";
 

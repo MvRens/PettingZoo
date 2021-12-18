@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using System.Windows;
 using System.Windows.Input;
 using PettingZoo.Core.Connection;
 using IConnection = PettingZoo.Core.Connection.IConnection;
@@ -10,79 +9,19 @@ namespace PettingZoo.UI.Tab.Publisher
     public class TapetiPublisherViewModel : BaseViewModel
     {
         private readonly IConnection connection;
+        private readonly IPublishDestination publishDestination;
         private readonly DelegateCommand publishCommand;
 
-        private bool sendToExchange = true;
-        private string exchange = "";
-        private string routingKey = "";
-        private string queue = "";
-
-        private MessageDeliveryMode deliveryMode;
-
         private string correlationId = "";
-        private string replyTo = "";
         private string payload = "";
         private string className = "";
         private string assemblyName = "";
-
-
-        public bool SendToExchange
-        {
-            get => sendToExchange;
-            set => SetField(ref sendToExchange, value, otherPropertiesChanged: new[] { nameof(SendToQueue), nameof(ExchangeVisibility), nameof(QueueVisibility) });
-        }
-
-
-        public bool SendToQueue
-        {
-            get => !SendToExchange;
-            set => SendToExchange = !value;
-        }
-
-
-        public string Exchange
-        {
-            get => exchange;
-            set => SetField(ref exchange, value);
-        }
-
-
-        public string RoutingKey
-        {
-            get => routingKey;
-            set => SetField(ref routingKey, value);
-        }
-
-
-        public string Queue
-        {
-            get => queue;
-            set => SetField(ref queue, value);
-        }
-
-
-        public virtual Visibility ExchangeVisibility => SendToExchange ? Visibility.Visible : Visibility.Collapsed;
-        public virtual Visibility QueueVisibility => SendToQueue ? Visibility.Visible : Visibility.Collapsed;
-
-
-        public int DeliveryModeIndex
-        {
-            get => deliveryMode == MessageDeliveryMode.Persistent ? 1 : 0;
-            set => SetField(ref deliveryMode, value == 1 ? MessageDeliveryMode.Persistent : MessageDeliveryMode.NonPersistent);
-        }
 
 
         public string CorrelationId
         {
             get => correlationId;
             set => SetField(ref correlationId, value);
-        }
-
-
-        public string ReplyTo
-        {
-            get => replyTo;
-            set => SetField(ref replyTo, value);
         }
 
 
@@ -142,9 +81,10 @@ namespace PettingZoo.UI.Tab.Publisher
         }
 
 
-        public TapetiPublisherViewModel(IConnection connection, ReceivedMessageInfo? receivedMessage = null)
+        public TapetiPublisherViewModel(IConnection connection, IPublishDestination publishDestination, ReceivedMessageInfo? receivedMessage = null)
         {
             this.connection = connection;
+            this.publishDestination = publishDestination;
 
             publishCommand = new DelegateCommand(PublishExecute, PublishCanExecute);
 
@@ -152,14 +92,9 @@ namespace PettingZoo.UI.Tab.Publisher
             if (receivedMessage == null || !IsTapetiMessage(receivedMessage, out var receivedAssemblyName, out var receivedClassName)) 
                 return;
 
-            Exchange = receivedMessage.Exchange;
-            RoutingKey = receivedMessage.RoutingKey;
-
-
             AssemblyName = receivedAssemblyName;
             ClassName = receivedClassName;
             CorrelationId = receivedMessage.Properties.CorrelationId ?? "";
-            ReplyTo = receivedMessage.Properties.ReplyTo ?? "";
             Payload = Encoding.UTF8.GetString(receivedMessage.Body);
         }
 
@@ -171,12 +106,11 @@ namespace PettingZoo.UI.Tab.Publisher
                 return string.IsNullOrEmpty(value) ? null : value;
             }
             
-            // TODO support for Reply To to dynamic queue which waits for a message (or opens a new subscriber tab?)
             // TODO background worker / async
 
             connection.Publish(new PublishMessageInfo(
-                SendToExchange ? Exchange : "", 
-                SendToExchange ? RoutingKey : Queue,
+                publishDestination.Exchange,
+                publishDestination.RoutingKey,
                 Encoding.UTF8.GetBytes(Payload),
                 new MessageProperties(new Dictionary<string, string>
                 {
@@ -185,8 +119,8 @@ namespace PettingZoo.UI.Tab.Publisher
                 {
                     ContentType = @"application/json",
                     CorrelationId = NullIfEmpty(CorrelationId),
-                    DeliveryMode = deliveryMode,
-                    ReplyTo = NullIfEmpty(ReplyTo)
+                    DeliveryMode = MessageDeliveryMode.Persistent,
+                    ReplyTo = publishDestination.GetReplyTo()
                 }));
         }
 
@@ -201,12 +135,12 @@ namespace PettingZoo.UI.Tab.Publisher
 
     public class DesignTimeTapetiPublisherViewModel : TapetiPublisherViewModel
     {
-        public DesignTimeTapetiPublisherViewModel() : base(null!)
+        public DesignTimeTapetiPublisherViewModel() : base(null!, null!)
         {
+            AssemblyName = "Messaging.Example";
+            ClassName = "Messaging.Example.ExampleMessage";
+            CorrelationId = "2c702859-bbbc-454e-87e2-4220c8c595d7";
+            Payload = "{\r\n    \"Hello\": \"world!\"\r\n}";
         }
-
-
-        public override Visibility ExchangeVisibility => Visibility.Visible;
-        public override Visibility QueueVisibility => Visibility.Visible;
     }
 }

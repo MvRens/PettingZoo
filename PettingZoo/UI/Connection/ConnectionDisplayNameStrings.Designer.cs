@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PettingZoo.UI.Tab.Publisher {
+namespace PettingZoo.UI.Connection {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace PettingZoo.UI.Tab.Publisher {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class TapetiPublisherViewStrings {
+    public class ConnectionDisplayNameStrings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal TapetiPublisherViewStrings() {
+        internal ConnectionDisplayNameStrings() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace PettingZoo.UI.Tab.Publisher {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PettingZoo.UI.Tab.Publisher.TapetiPublisherViewStrings", typeof(TapetiPublisherViewStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PettingZoo.UI.Connection.ConnectionDisplayNameStrings", typeof(ConnectionDisplayNameStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,83 +61,29 @@ namespace PettingZoo.UI.Tab.Publisher {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ....
+        ///   Looks up a localized string similar to Cancel.
         /// </summary>
-        public static string ButtonBrowseClass {
+        public static string ButtonCancel {
             get {
-                return ResourceManager.GetString("ButtonBrowseClass", resourceCulture);
+                return ResourceManager.GetString("ButtonCancel", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transient (non-persistent).
+        ///   Looks up a localized string similar to OK.
         /// </summary>
-        public static string DeliveryModeNonPersistent {
+        public static string ButtonOK {
             get {
-                return ResourceManager.GetString("DeliveryModeNonPersistent", resourceCulture);
+                return ResourceManager.GetString("ButtonOK", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Persistent.
+        ///   Looks up a localized string similar to Profile name.
         /// </summary>
-        public static string DeliveryModePersistent {
+        public static string WindowTitle {
             get {
-                return ResourceManager.GetString("DeliveryModePersistent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Assembly name.
-        /// </summary>
-        public static string LabelAssemblyName {
-            get {
-                return ResourceManager.GetString("LabelAssemblyName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Class name (full).
-        /// </summary>
-        public static string LabelClassName {
-            get {
-                return ResourceManager.GetString("LabelClassName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Correlation ID.
-        /// </summary>
-        public static string LabelCorrelationId {
-            get {
-                return ResourceManager.GetString("LabelCorrelationId", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Delivery mode.
-        /// </summary>
-        public static string LabelDeliveryMode {
-            get {
-                return ResourceManager.GetString("LabelDeliveryMode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Payload.
-        /// </summary>
-        public static string LabelPayload {
-            get {
-                return ResourceManager.GetString("LabelPayload", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Properties.
-        /// </summary>
-        public static string LabelProperties {
-            get {
-                return ResourceManager.GetString("LabelProperties", resourceCulture);
+                return ResourceManager.GetString("WindowTitle", resourceCulture);
             }
         }
     }

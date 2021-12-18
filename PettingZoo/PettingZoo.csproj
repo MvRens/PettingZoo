@@ -39,9 +39,15 @@
   <ItemGroup>
     <ProjectReference Include="..\PettingZoo.Core\PettingZoo.Core.csproj" />
     <ProjectReference Include="..\PettingZoo.RabbitMQ\PettingZoo.RabbitMQ.csproj" />
+    <ProjectReference Include="..\PettingZoo.Settings.LiteDB\PettingZoo.Settings.LiteDB.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="UI\Connection\ConnectionDisplayNameStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ConnectionDisplayNameStrings.resx</DependentUpon>
+    </Compile>
     <Compile Update="UI\Connection\ConnectionWindowStrings.Designer.cs">
       <DependentUpon>ConnectionWindowStrings.resx</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -88,6 +94,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="UI\Connection\ConnectionDisplayNameStrings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ConnectionDisplayNameStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="UI\Connection\ConnectionWindowStrings.resx">
       <LastGenOutput>ConnectionWindowStrings.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>

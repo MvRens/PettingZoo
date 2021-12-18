@@ -31,7 +31,7 @@ namespace PettingZoo.UI.Tab
         
         public ITab CreatePublisherTab(IConnection connection, ReceivedMessageInfo? fromReceivedMessage = null)
         {
-            var viewModel = new PublisherViewModel(connection, fromReceivedMessage);
+            var viewModel = new PublisherViewModel(tabHost, this, connection, fromReceivedMessage);
             return new ViewTab<PublisherView, PublisherViewModel>(
                 closeTabCommand,
                 new PublisherView(viewModel),

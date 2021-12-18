@@ -19,7 +19,7 @@ namespace PettingZoo.UI.Connection {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ConnectionWindowStrings {
@@ -70,7 +70,16 @@ namespace PettingZoo.UI.Connection {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to OK.
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string ButtonDelete {
+            get {
+                return ResourceManager.GetString("ButtonDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect.
         /// </summary>
         public static string ButtonOK {
             get {
@@ -79,7 +88,43 @@ namespace PettingZoo.UI.Connection {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Exchange:.
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string ButtonSave {
+            get {
+                return ResourceManager.GetString("ButtonSave", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save as....
+        /// </summary>
+        public static string ButtonSaveAs {
+            get {
+                return ResourceManager.GetString("ButtonSaveAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to delete the connection settings &quot;{0}&quot;?.
+        /// </summary>
+        public static string DeleteConfirm {
+            get {
+                return ResourceManager.GetString("DeleteConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete connection.
+        /// </summary>
+        public static string DeleteConfirmTitle {
+            get {
+                return ResourceManager.GetString("DeleteConfirmTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exchange.
         /// </summary>
         public static string LabelExchange {
             get {
@@ -88,7 +133,7 @@ namespace PettingZoo.UI.Connection {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Host:.
+        ///   Looks up a localized string similar to Host.
         /// </summary>
         public static string LabelHost {
             get {
@@ -97,7 +142,7 @@ namespace PettingZoo.UI.Connection {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Password:.
+        ///   Looks up a localized string similar to Password.
         /// </summary>
         public static string LabelPassword {
             get {
@@ -106,7 +151,7 @@ namespace PettingZoo.UI.Connection {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Port:.
+        ///   Looks up a localized string similar to Port.
         /// </summary>
         public static string LabelPort {
             get {
@@ -115,7 +160,7 @@ namespace PettingZoo.UI.Connection {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Routing key:.
+        ///   Looks up a localized string similar to Routing key.
         /// </summary>
         public static string LabelRoutingKey {
             get {
@@ -133,7 +178,7 @@ namespace PettingZoo.UI.Connection {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Username:.
+        ///   Looks up a localized string similar to Username.
         /// </summary>
         public static string LabelUsername {
             get {
@@ -142,11 +187,20 @@ namespace PettingZoo.UI.Connection {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Virtual host:.
+        ///   Looks up a localized string similar to Virtual host.
         /// </summary>
         public static string LabelVirtualHost {
             get {
                 return ResourceManager.GetString("LabelVirtualHost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;New connection&gt;.
+        /// </summary>
+        public static string LastUsedDisplayName {
+            get {
+                return ResourceManager.GetString("LastUsedDisplayName", resourceCulture);
             }
         }
         

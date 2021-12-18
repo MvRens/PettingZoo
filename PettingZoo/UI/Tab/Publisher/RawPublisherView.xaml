@@ -11,17 +11,11 @@
              Background="White">
     <ui:GridLayout Style="{StaticResource Form}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <ui:GridLayout.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="16"/>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -42,31 +36,14 @@
         </ui:GridLayout.RowDefinitions>
 
 
-        <Label Grid.Row="0" Grid.Column="1">
-            <StackPanel Orientation="Horizontal">
-                <RadioButton Content="{x:Static publisher:RawPublisherViewStrings.LabelSendToExchange}" IsChecked="{Binding SendToExchange}" Style="{StaticResource TypeSelection}" />
-                <RadioButton Content="{x:Static publisher:RawPublisherViewStrings.LabelSendToQueue}" IsChecked="{Binding SendToQueue}" Style="{StaticResource TypeSelection}" />
-            </StackPanel>
-        </Label>
-
-        <Label Grid.Row="1" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelExchange}" Visibility="{Binding ExchangeVisibility}" />
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Exchange}" Visibility="{Binding ExchangeVisibility}" />
-
-        <Label Grid.Row="2" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelRoutingKey}" Visibility="{Binding ExchangeVisibility}" />
-        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding RoutingKey}" Visibility="{Binding ExchangeVisibility}" />
-
-        <Label Grid.Row="3" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelQueue}" Visibility="{Binding QueueVisibility}" />
-        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Queue}" Visibility="{Binding QueueVisibility}" />
-
-
-        <Label Grid.Row="5" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelDeliveryMode}" />
-        <ComboBox Grid.Row="5" Grid.Column="1" SelectedIndex="{Binding DeliveryModeIndex}">
+        <Label Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelDeliveryMode}" />
+        <ComboBox Grid.Column="1" SelectedIndex="{Binding DeliveryModeIndex}">
             <ComboBoxItem Content="{x:Static publisher:RawPublisherViewStrings.DeliveryModeNonPersistent}" />
             <ComboBoxItem Content="{x:Static publisher:RawPublisherViewStrings.DeliveryModePersistent}" />
         </ComboBox>
 
-        <Label Grid.Row="6" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelHeaders}" />
-        <ItemsControl Grid.Row="6" Grid.Column="1" ItemsSource="{Binding Headers}">
+        <Label Grid.Row="1" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelHeaders}" />
+        <ItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Headers}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Vertical" />
@@ -116,43 +93,40 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-        <Label Grid.Row="7" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelProperties}" Style="{StaticResource SectionLabel}"/>
+        <Label Grid.Row="2" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelProperties}" Style="{StaticResource SectionLabel}"/>
 
-        <Label Grid.Row="8" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelContentType}" />
-        <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding ContentType}" />
+        <Label Grid.Row="3" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelContentType}" />
+        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding ContentType, UpdateSourceTrigger=PropertyChanged}" />
 
-        <Label Grid.Row="9" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelCorrelationId}" />
-        <TextBox Grid.Row="9" Grid.Column="1" Text="{Binding CorrelationId}" />
+        <Label Grid.Row="4" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelCorrelationId}" />
+        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding CorrelationId, UpdateSourceTrigger=PropertyChanged}" />
 
-        <Label Grid.Row="10" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelReplyTo}" />
-        <TextBox Grid.Row="10" Grid.Column="1" Text="{Binding ReplyTo}" />
+        <Label Grid.Row="5" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelAppId}" Visibility="{Binding PropertiesExpandedVisibility}" />
+        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding AppId, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding PropertiesExpandedVisibility}" />
 
-        <Label Grid.Row="11" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelAppId}" Visibility="{Binding PropertiesExpandedVisibility}" />
-        <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding AppId}" Visibility="{Binding PropertiesExpandedVisibility}" />
+        <Label Grid.Row="6" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelContentEncoding}" Visibility="{Binding PropertiesExpandedVisibility}" />
+        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding ContentEncoding, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding PropertiesExpandedVisibility}" />
 
-        <Label Grid.Row="12" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelContentEncoding}" Visibility="{Binding PropertiesExpandedVisibility}" />
-        <TextBox Grid.Row="12" Grid.Column="1" Text="{Binding ContentEncoding}" Visibility="{Binding PropertiesExpandedVisibility}" />
+        <Label Grid.Row="7" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelExpiration}" Visibility="{Binding PropertiesExpandedVisibility}" />
+        <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding Expiration, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding PropertiesExpandedVisibility}" />
 
-        <Label Grid.Row="13" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelExpiration}" Visibility="{Binding PropertiesExpandedVisibility}" />
-        <TextBox Grid.Row="13" Grid.Column="1" Text="{Binding Expiration}" Visibility="{Binding PropertiesExpandedVisibility}" />
+        <Label Grid.Row="8" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelMessageId}" Visibility="{Binding PropertiesExpandedVisibility}" />
+        <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding MessageId, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding PropertiesExpandedVisibility}" />
 
-        <Label Grid.Row="14" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelMessageId}" Visibility="{Binding PropertiesExpandedVisibility}" />
-        <TextBox Grid.Row="14" Grid.Column="1" Text="{Binding MessageId}" Visibility="{Binding PropertiesExpandedVisibility}" />
+        <Label Grid.Row="9" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelPriority}" Visibility="{Binding PropertiesExpandedVisibility}" />
+        <TextBox Grid.Row="9" Grid.Column="1" Text="{Binding Priority, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding PropertiesExpandedVisibility}" />
 
-        <Label Grid.Row="15" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelPriority}" Visibility="{Binding PropertiesExpandedVisibility}" />
-        <TextBox Grid.Row="15" Grid.Column="1" Text="{Binding Priority}" Visibility="{Binding PropertiesExpandedVisibility}" />
+        <Label Grid.Row="10" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelTimestamp}" Visibility="{Binding PropertiesExpandedVisibility}" />
+        <TextBox Grid.Row="10" Grid.Column="1" Text="{Binding Timestamp, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding PropertiesExpandedVisibility}" />
 
-        <Label Grid.Row="16" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelTimestamp}" Visibility="{Binding PropertiesExpandedVisibility}" />
-        <TextBox Grid.Row="16" Grid.Column="1" Text="{Binding Timestamp}" Visibility="{Binding PropertiesExpandedVisibility}" />
+        <Label Grid.Row="11" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelType}" Visibility="{Binding PropertiesExpandedVisibility}" />
+        <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding TypeProperty, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding PropertiesExpandedVisibility}" />
 
-        <Label Grid.Row="17" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelType}" Visibility="{Binding PropertiesExpandedVisibility}" />
-        <TextBox Grid.Row="17" Grid.Column="1" Text="{Binding TypeProperty}" Visibility="{Binding PropertiesExpandedVisibility}" />
-
-        <Label Grid.Row="18" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelUserId}" Visibility="{Binding PropertiesExpandedVisibility}" />
-        <TextBox Grid.Row="18" Grid.Column="1" Text="{Binding UserId}" Visibility="{Binding PropertiesExpandedVisibility}" />
+        <Label Grid.Row="12" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelUserId}" Visibility="{Binding PropertiesExpandedVisibility}" />
+        <TextBox Grid.Row="12" Grid.Column="1" Text="{Binding UserId, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding PropertiesExpandedVisibility}" />
 
 
-        <Button Grid.Row="19" Grid.Column="1" Content="{Binding PropertiesExpandedCollapsedText}" Command="{Binding PropertiesExpandCollapseCommand}" Cursor="Hand">
+        <Button Grid.Row="13" Grid.Column="1" Content="{Binding PropertiesExpandedCollapsedText}" Command="{Binding PropertiesExpandCollapseCommand}" Cursor="Hand">
             <Button.Template>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <ContentPresenter />
@@ -160,7 +134,7 @@
             </Button.Template>
         </Button>
 
-        <Label Grid.Row="21" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelPayload}" />
-        <TextBox Grid.Row="21" Grid.Column="1" Text="{Binding Payload}" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" Height="150" />
+        <Label Grid.Row="15" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelPayload}" />
+        <TextBox Grid.Row="15" Grid.Column="1" Text="{Binding Payload, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Payload}" Height="150" />
     </ui:GridLayout>
 </UserControl>

@@ -12,7 +12,14 @@ namespace PettingZoo.UI.Tab
     }
 
 
-    public interface ITab : ITabToolbarCommands
+    public interface ITabActivate
+    {
+        void Activate();
+        void Deactivate();
+    }
+
+
+    public interface ITab : ITabToolbarCommands, ITabActivate
     {
         string Title { get; }
         ContentControl Content { get; }

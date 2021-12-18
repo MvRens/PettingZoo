@@ -4,8 +4,9 @@ namespace PettingZoo.Core.Connection
 {
     public interface ISubscriber : IAsyncDisposable
     {
-        string Exchange {get; }
-        string RoutingKey { get; }
+        string? QueueName { get; }
+        string? Exchange {get; }
+        string? RoutingKey { get; }
         
         event EventHandler<MessageReceivedEventArgs>? MessageReceived;
 

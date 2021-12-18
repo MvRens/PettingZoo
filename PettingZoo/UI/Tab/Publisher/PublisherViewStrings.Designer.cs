@@ -70,11 +70,83 @@ namespace PettingZoo.UI.Tab.Publisher {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Exchange.
+        /// </summary>
+        public static string LabelExchange {
+            get {
+                return ResourceManager.GetString("LabelExchange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Message type: .
         /// </summary>
         public static string LabelMessageType {
             get {
                 return ResourceManager.GetString("LabelMessageType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Queue.
+        /// </summary>
+        public static string LabelQueue {
+            get {
+                return ResourceManager.GetString("LabelQueue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reply To.
+        /// </summary>
+        public static string LabelReplyTo {
+            get {
+                return ResourceManager.GetString("LabelReplyTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New subscriber tab.
+        /// </summary>
+        public static string LabelReplyToNewSubscriber {
+            get {
+                return ResourceManager.GetString("LabelReplyToNewSubscriber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Specified queue.
+        /// </summary>
+        public static string LabelReplyToSpecified {
+            get {
+                return ResourceManager.GetString("LabelReplyToSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Routing key.
+        /// </summary>
+        public static string LabelRoutingKey {
+            get {
+                return ResourceManager.GetString("LabelRoutingKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish to exchange (topic).
+        /// </summary>
+        public static string LabelSendToExchange {
+            get {
+                return ResourceManager.GetString("LabelSendToExchange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish to queue (direct).
+        /// </summary>
+        public static string LabelSendToQueue {
+            get {
+                return ResourceManager.GetString("LabelSendToQueue", resourceCulture);
             }
         }
         

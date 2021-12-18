@@ -120,8 +120,32 @@
   <data name="CommandPublish" xml:space="preserve">
     <value>Publish</value>
   </data>
+  <data name="LabelExchange" xml:space="preserve">
+    <value>Exchange</value>
+  </data>
   <data name="LabelMessageType" xml:space="preserve">
     <value>Message type: </value>
+  </data>
+  <data name="LabelQueue" xml:space="preserve">
+    <value>Queue</value>
+  </data>
+  <data name="LabelReplyTo" xml:space="preserve">
+    <value>Reply To</value>
+  </data>
+  <data name="LabelReplyToNewSubscriber" xml:space="preserve">
+    <value>New subscriber tab</value>
+  </data>
+  <data name="LabelReplyToSpecified" xml:space="preserve">
+    <value>Specified queue</value>
+  </data>
+  <data name="LabelRoutingKey" xml:space="preserve">
+    <value>Routing key</value>
+  </data>
+  <data name="LabelSendToExchange" xml:space="preserve">
+    <value>Publish to exchange (topic)</value>
+  </data>
+  <data name="LabelSendToQueue" xml:space="preserve">
+    <value>Publish to queue (direct)</value>
   </data>
   <data name="OptionMessageTypeRaw" xml:space="preserve">
     <value>Raw message</value>

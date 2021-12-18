@@ -8,6 +8,8 @@ namespace PettingZoo.Core.Connection
         event EventHandler<StatusChangedEventArgs> StatusChanged;
 
         ISubscriber Subscribe(string exchange, string routingKey);
+        ISubscriber Subscribe();
+
         Task Publish(PublishMessageInfo messageInfo);
     }
 

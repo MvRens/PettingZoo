@@ -13,16 +13,16 @@ namespace PettingZoo.UI.Tab.Publisher
     /// </summary>
     public partial class RawPublisherView
     {
-        private RawPublisherViewModel viewModel;
-        private DispatcherTimer checkEmptyHeaderTimer;
+        private readonly RawPublisherViewModel viewModel;
+        private readonly DispatcherTimer checkEmptyHeaderTimer;
 
 
         public RawPublisherView(RawPublisherViewModel viewModel)
         {
             this.viewModel = viewModel;
 
-            InitializeComponent();
             DataContext = viewModel;
+            InitializeComponent();
 
             checkEmptyHeaderTimer = new DispatcherTimer();
             checkEmptyHeaderTimer.Tick += CheckEmptyHeaderTimerOnTick;

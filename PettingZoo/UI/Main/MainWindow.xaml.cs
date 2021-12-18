@@ -3,13 +3,11 @@ using System.Windows;
 using PettingZoo.Core.Connection;
 using PettingZoo.UI.Connection;
 using PettingZoo.UI.Subscribe;
-using PettingZoo.UI.Tab;
+
+// TODO improve readability of the connection status (especially when connecting/disconnected)
 
 namespace PettingZoo.UI.Main
 {
-    // TODO support undocking tabs (and redocking afterwards)
-    // TODO allow tab reordering
-
     #pragma warning disable CA1001 // MainWindow can't be IDisposable, handled instead in OnDispatcherShutDownStarted
     public partial class MainWindow
     {
@@ -20,9 +18,9 @@ namespace PettingZoo.UI.Main
         {
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
-            InitializeComponent();
             viewModel = new MainWindowViewModel(connectionFactory, connectionDialog, subscribeDialog);
             DataContext = viewModel;
+            InitializeComponent();
 
             Dispatcher.ShutdownStarted += OnDispatcherShutDownStarted;
         }

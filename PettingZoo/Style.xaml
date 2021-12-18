@@ -33,8 +33,12 @@
     <Style x:Key="FooterButton" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
         <Setter Property="Margin" Value="8,0,0,0" />
     </Style>
-    
-    
+
+    <Style x:Key="FooterButtonLeft" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Margin" Value="0,0,8,0" />
+    </Style>
+
+
     <Style x:Key="Form" TargetType="{x:Type ui:GridLayout}">
         <Setter Property="ChildMargin" Value="4"/>
     </Style>
@@ -78,4 +82,11 @@
         <Setter Property="FontWeight" Value="Bold"/>
     </Style>
 
+
+    <Style x:Key="Payload" TargetType="{x:Type TextBox}">
+        <Setter Property="AcceptsReturn" Value="True" />
+        <Setter Property="AcceptsTab" Value="True" />
+        <Setter Property="VerticalScrollBarVisibility" Value="Visible" />
+        <Setter Property="FontFamily" Value="Consolas,Courier New" />
+    </Style>
 </ResourceDictionary>

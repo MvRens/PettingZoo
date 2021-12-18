@@ -10,8 +10,8 @@ namespace PettingZoo.UI.Tab.Publisher
     {
         public TapetiPublisherView(TapetiPublisherViewModel viewModel)
         {
-            InitializeComponent();
             DataContext = viewModel;
+            InitializeComponent();
         }
 
 
@@ -20,7 +20,7 @@ namespace PettingZoo.UI.Tab.Publisher
             if (sender is not TextBox textBox)
                 return;
 
-            textBox.CaretIndex = textBox.Text?.Length ?? 0;
+            textBox.CaretIndex = textBox.Text.Length;
         }
     }
 }

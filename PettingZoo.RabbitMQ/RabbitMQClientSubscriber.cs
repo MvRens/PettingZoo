@@ -13,12 +13,13 @@ namespace PettingZoo.RabbitMQ
         private string? consumerTag;
         private bool started;
 
-        public string Exchange { get; }
-        public string RoutingKey { get; }
+        public string? QueueName { get; private set; }
+        public string? Exchange { get; }
+        public string? RoutingKey { get; }
         public event EventHandler<MessageReceivedEventArgs>? MessageReceived;
 
 
-        public RabbitMQClientSubscriber(IModel? model, string exchange, string routingKey)
+        public RabbitMQClientSubscriber(IModel? model, string? exchange, string? routingKey)
         {
             this.model = model;
             Exchange = exchange;
@@ -28,6 +29,8 @@ namespace PettingZoo.RabbitMQ
 
         public ValueTask DisposeAsync()
         {
+            GC.SuppressFinalize(this);
+
             if (model != null && consumerTag != null && model.IsOpen)
                 model.BasicCancelNoWait(consumerTag);
 
@@ -41,13 +44,14 @@ namespace PettingZoo.RabbitMQ
             if (model == null)
                 return;
             
-            var queueName = model.QueueDeclare().QueueName;
-            model.QueueBind(queueName, Exchange, RoutingKey);
+            QueueName = model.QueueDeclare().QueueName;
+            if (Exchange != null && RoutingKey != null)
+                model.QueueBind(QueueName, Exchange, RoutingKey);
 
             var consumer = new EventingBasicConsumer(model);
             consumer.Received += ClientReceived;
 
-            consumerTag = model.BasicConsume(queueName, true, consumer);
+            consumerTag = model.BasicConsume(QueueName, true, consumer);
         }
         
         

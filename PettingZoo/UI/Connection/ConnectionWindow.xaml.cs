@@ -1,13 +1,28 @@
-﻿using System.Windows;
+﻿using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using PettingZoo.Core.Settings;
 
 namespace PettingZoo.UI.Connection
 {
     public class WindowConnectionDialog : IConnectionDialog
     {
-        public ConnectionDialogParams? Show(ConnectionDialogParams? defaultParams = null)
+        private readonly IConnectionSettingsRepository connectionSettingsRepository;
+
+        public WindowConnectionDialog(IConnectionSettingsRepository connectionSettingsRepository)
         {
-            var viewModel = new ConnectionViewModel(defaultParams ?? ConnectionDialogParams.Default);
+            this.connectionSettingsRepository = connectionSettingsRepository;
+        }
+
+
+        public async Task<ConnectionSettings?> Show()
+        {
+            var lastUsed = await connectionSettingsRepository.GetLastUsed();
+
+            var viewModel = new ConnectionViewModel(connectionSettingsRepository, lastUsed);
+            await viewModel.Initialize();
+
             var window = new ConnectionWindow(viewModel)
             {
                 Owner = Application.Current.MainWindow
@@ -17,10 +32,15 @@ namespace PettingZoo.UI.Connection
             {
                 window.DialogResult = true;
             };
+
             
-            return window.ShowDialog().GetValueOrDefault()
-                ? viewModel.ToModel()
-                : null;
+            if (!window.ShowDialog().GetValueOrDefault())
+                return null;
+
+            var newSettings = viewModel.ToModel();
+            await connectionSettingsRepository.StoreLastUsed(newSettings);
+
+            return newSettings;
         }
     }
 
@@ -29,10 +49,8 @@ namespace PettingZoo.UI.Connection
     {
         public ConnectionWindow(ConnectionViewModel viewModel)
         {
-            WindowStartupLocation = WindowStartupLocation.CenterOwner;
-
-            InitializeComponent();
             DataContext = viewModel;
+            InitializeComponent();
         }
 
 
@@ -40,6 +58,15 @@ namespace PettingZoo.UI.Connection
         {
             if (!char.IsDigit(args.Text, args.Text.Length - 1))
                 args.Handled = true;
+        }
+
+
+        private void CaretToEnd(object sender, RoutedEventArgs e)
+        {
+            if (sender is not TextBox textBox)
+                return;
+
+            textBox.CaretIndex = textBox.Text.Length;
         }
     }
 }

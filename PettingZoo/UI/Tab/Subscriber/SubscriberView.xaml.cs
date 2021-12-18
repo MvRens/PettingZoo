@@ -10,8 +10,8 @@ namespace PettingZoo.UI.Tab.Subscriber
     {
         public SubscriberView(SubscriberViewModel viewModel)
         {
-            InitializeComponent();
             DataContext = viewModel;
+            InitializeComponent();
 
 
             if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))

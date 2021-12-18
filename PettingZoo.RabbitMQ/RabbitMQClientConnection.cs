@@ -46,18 +46,32 @@ namespace PettingZoo.RabbitMQ
                     connection = null;
                 }
             }
+
+            GC.SuppressFinalize(this);
         }
 
 
         public ISubscriber Subscribe(string exchange, string routingKey)
         {
+            return CreateSubscriber(exchange, routingKey);
+        }
+
+
+        public ISubscriber Subscribe()
+        {
+            return CreateSubscriber(null, null);
+        }
+
+
+        private ISubscriber CreateSubscriber(string? exchange, string? routingKey)
+        {
             lock (connectionLock)
             {
                 var subscriber = new RabbitMQClientSubscriber(model, exchange, routingKey);
-                if (model != null) 
+                if (model != null)
                     return subscriber;
 
-                
+
                 void ConnectSubscriber(object? sender, StatusChangedEventArgs args)
                 {
                     if (args.Status != ConnectionStatus.Connected)
@@ -67,20 +81,20 @@ namespace PettingZoo.RabbitMQ
                     {
                         if (model == null)
                             return;
-                            
+
                         subscriber.Connected(model);
                     }
-                        
+
                     StatusChanged -= ConnectSubscriber;
                 }
 
-                
+
                 StatusChanged += ConnectSubscriber;
                 return subscriber;
             }
         }
 
-        
+
         public Task Publish(PublishMessageInfo messageInfo)
         {
             if (model == null)

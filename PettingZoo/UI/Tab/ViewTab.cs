@@ -47,5 +47,17 @@ namespace PettingZoo.UI.Tab
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ToolbarCommands)));
             };
         }
+
+
+        public void Activate()
+        {
+            (viewModel as ITabActivate)?.Activate();
+        }
+
+
+        public void Deactivate()
+        {
+            (viewModel as ITabActivate)?.Deactivate();
+        }
     }
 }
