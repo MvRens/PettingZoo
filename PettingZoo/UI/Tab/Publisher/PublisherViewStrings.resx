@@ -153,4 +153,10 @@
   <data name="OptionMessageTypeTapeti" xml:space="preserve">
     <value>Tapeti message</value>
   </data>
+  <data name="TabTitle" xml:space="preserve">
+    <value>Publish: {0}</value>
+  </data>
+  <data name="TabTitleEmpty" xml:space="preserve">
+    <value>Publish</value>
+  </data>
 </root>

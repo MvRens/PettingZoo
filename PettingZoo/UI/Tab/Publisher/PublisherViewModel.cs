@@ -41,7 +41,7 @@ namespace PettingZoo.UI.Tab.Publisher
         public bool SendToExchange
         {
             get => sendToExchange;
-            set => SetField(ref sendToExchange, value, otherPropertiesChanged: new[] { nameof(SendToQueue), nameof(ExchangeVisibility), nameof(QueueVisibility) });
+            set => SetField(ref sendToExchange, value, otherPropertiesChanged: new[] { nameof(SendToQueue), nameof(ExchangeVisibility), nameof(QueueVisibility), nameof(Title) });
         }
 
 
@@ -62,14 +62,14 @@ namespace PettingZoo.UI.Tab.Publisher
         public string RoutingKey
         {
             get => routingKey;
-            set => SetField(ref routingKey, value);
+            set => SetField(ref routingKey, value, otherPropertiesChanged: new[] { nameof(Title) });
         }
 
 
         public string Queue
         {
             get => queue;
-            set => SetField(ref queue, value);
+            set => SetField(ref queue, value, otherPropertiesChanged: new[] { nameof(Title) });
         }
 
 
@@ -138,10 +138,11 @@ namespace PettingZoo.UI.Tab.Publisher
         public ICommand PublishCommand => publishCommand;
 
 
-        // TODO make more dynamic, include entered routing key for example
-        #pragma warning disable CA1822 // Mark members as static - can't, it's part of the interface you silly, that would break the build
-        public string Title => "Publish";
-        #pragma warning restore CA1822
+        public string Title => SendToQueue
+                ? string.IsNullOrWhiteSpace(Queue) ? PublisherViewStrings.TabTitleEmpty : string.Format(PublisherViewStrings.TabTitle, Queue)
+                : string.IsNullOrWhiteSpace(RoutingKey) ? PublisherViewStrings.TabTitleEmpty : string.Format(PublisherViewStrings.TabTitle, RoutingKey);
+
+
         public IEnumerable<TabToolbarCommand> ToolbarCommands => toolbarCommands;
 
 

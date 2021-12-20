@@ -38,13 +38,13 @@
             </Label>
 
             <Label Grid.Row="1" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelExchange}" Visibility="{Binding ExchangeVisibility}" />
-            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Exchange}" Visibility="{Binding ExchangeVisibility}" />
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Exchange, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ExchangeVisibility}" />
 
             <Label Grid.Row="2" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelRoutingKey}" Visibility="{Binding ExchangeVisibility}" />
-            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding RoutingKey}" Visibility="{Binding ExchangeVisibility}" />
+            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding RoutingKey, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ExchangeVisibility}" />
 
             <Label Grid.Row="3" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelQueue}" Visibility="{Binding QueueVisibility}" />
-            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Queue}" Visibility="{Binding QueueVisibility}" />
+            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Queue, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding QueueVisibility}" />
 
             <Label Grid.Row="5" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelReplyTo}" />
             <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="1">

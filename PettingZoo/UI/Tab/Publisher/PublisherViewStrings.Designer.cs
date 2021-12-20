@@ -167,5 +167,23 @@ namespace PettingZoo.UI.Tab.Publisher {
                 return ResourceManager.GetString("OptionMessageTypeTapeti", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish: {0}.
+        /// </summary>
+        public static string TabTitle {
+            get {
+                return ResourceManager.GetString("TabTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish.
+        /// </summary>
+        public static string TabTitleEmpty {
+            get {
+                return ResourceManager.GetString("TabTitleEmpty", resourceCulture);
+            }
+        }
     }
 }
