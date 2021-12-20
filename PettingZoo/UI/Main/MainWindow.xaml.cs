@@ -17,6 +17,8 @@ namespace PettingZoo.UI.Main
     public partial class MainWindow : ITabContainer
     {
         private readonly MainWindowViewModel viewModel;
+
+        public bool WasMaximized;
         
 
         public MainWindow(IConnectionFactory connectionFactory, IConnectionDialog connectionDialog, ISubscribeDialog subscribeDialog)
@@ -28,6 +30,20 @@ namespace PettingZoo.UI.Main
             InitializeComponent();
 
             Dispatcher.ShutdownStarted += OnDispatcherShutDownStarted;
+
+
+            // If the WindowState is Minimized, we can't tell if it was maximized before. To properly store
+            // the last window position, keep track of it.
+            this.OnPropertyChanges<WindowState>(WindowStateProperty)
+                .Subscribe(newState =>
+                {
+                    WasMaximized = newState switch
+                    {
+                        WindowState.Maximized => true,
+                        WindowState.Normal => false,
+                        _ => WasMaximized
+                    };
+                });
         }
 
 

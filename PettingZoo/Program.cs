@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Markup;
 using PettingZoo.Core.Connection;
@@ -38,6 +39,7 @@ namespace PettingZoo
             container.Register<IConnectionDialog, WindowConnectionDialog>();
             container.Register<ISubscribeDialog, WindowSubscribeDialog>();
             container.Register<IConnectionSettingsRepository, LiteDBConnectionSettingsRepository>();
+            container.Register<IUISettingsRepository, LiteDBUISettingsRepository>();
 
             container.Register<MainWindow>();
             
@@ -49,7 +51,7 @@ namespace PettingZoo
         {
             try
             {
-                var app = new App();
+                var app = new App(container);
                 app.InitializeComponent();
 
                 #if DEBUG
@@ -64,9 +66,8 @@ namespace PettingZoo
                 
                 // All this is the reason we only perform verification in debug builds
                 #endif
-
-                var mainWindow = container.GetInstance<MainWindow>();
-                _ = app.Run(mainWindow);
+                
+                app.Run();
             }
             catch (Exception e)
             {

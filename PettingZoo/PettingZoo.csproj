@@ -5,6 +5,7 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Version>0.1</Version>
     <UseWPF>true</UseWPF>
+	<UseWindowsForms>true</UseWindowsForms>
     <Authors>Mark van Renswoude</Authors>
     <Product>Petting Zoo</Product>
     <Description>Petting Zoo - a live RabbitMQ message viewer</Description>
@@ -19,6 +20,8 @@
 
   <ItemGroup>
     <None Remove="Images\Dock.svg" />
+    <None Remove="Images\Error.svg" />
+    <None Remove="Images\Ok.svg" />
     <None Remove="Images\PublishSend.svg" />
     <None Remove="Images\Undock.svg" />
   </ItemGroup>
@@ -28,6 +31,8 @@
     <Resource Include="Images\Connect.svg" />
     <Resource Include="Images\Disconnect.svg" />
     <Resource Include="Images\Dock.svg" />
+    <Resource Include="Images\Error.svg" />
+    <Resource Include="Images\Ok.svg" />
     <Resource Include="Images\Publish.svg" />
     <Resource Include="Images\PublishSend.svg" />
     <Resource Include="Images\Subscribe.svg" />
@@ -35,8 +40,9 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="SharpVectors" Version="1.7.6" />
+    <PackageReference Include="SharpVectors" Version="1.7.7" />
     <PackageReference Include="SimpleInjector" Version="5.3.2" />
+    <PackageReference Include="System.Reactive" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -74,6 +80,11 @@
       <DependentUpon>SubscribeWindowStrings.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="UI\Tab\Publisher\PayloadEditorStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PayloadEditorStrings.resx</DependentUpon>
     </Compile>
     <Compile Update="UI\Tab\Publisher\TapetiPublisherViewStrings.Designer.cs">
       <DependentUpon>TapetiPublisherViewStrings.resx</DependentUpon>
@@ -125,6 +136,10 @@
     <EmbeddedResource Update="UI\Subscribe\SubscribeWindowStrings.resx">
       <LastGenOutput>SubscribeWindowStrings.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Tab\Publisher\PayloadEditorStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PayloadEditorStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="UI\Tab\Publisher\TapetiPublisherViewStrings.resx">
       <LastGenOutput>TapetiPublisherViewStrings.Designer.cs</LastGenOutput>

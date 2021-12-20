@@ -1,6 +1,5 @@
 ﻿Must-have
 ---------
-- Option to not save password in profiles
 
 
 Should-have
@@ -11,5 +10,4 @@ Should-have
 
 Nice-to-have
 ------------
-- JSON validation
 - JSON syntax highlighting

@@ -7,6 +7,11 @@ namespace PettingZoo.Settings.LiteDB
     {
         private readonly string databaseFilename;
 
+        protected static readonly BsonMapper Mapper = new()
+        {
+            EmptyStringToNull = false
+        };
+
 
         public BaseLiteDBRepository(string databaseName)
         {
@@ -24,10 +29,7 @@ namespace PettingZoo.Settings.LiteDB
 
         protected ILiteDatabaseAsync GetDatabase()
         {
-            return new LiteDatabaseAsync(databaseFilename, new BsonMapper
-            {
-                EmptyStringToNull = false
-            });
+            return new LiteDatabaseAsync(databaseFilename, Mapper);
         }
     }
 }
