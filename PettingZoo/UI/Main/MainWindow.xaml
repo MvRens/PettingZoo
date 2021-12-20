@@ -78,7 +78,12 @@
         </ToolBar>
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem>
-                <TextBlock Text="{Binding ConnectionStatus}"/>
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{svgc:SvgImage Source=/Images/Connecting.svg, AppName=PettingZoo}" Width="16" Height="16" Margin="4" Visibility="{Binding ConnectionStatusConnecting}" />
+                    <Image Source="{svgc:SvgImage Source=/Images/Ok.svg, AppName=PettingZoo}" Width="16" Height="16" Margin="4" Visibility="{Binding ConnectionStatusOk}" />
+                    <Image Source="{svgc:SvgImage Source=/Images/Error.svg, AppName=PettingZoo}" Width="16" Height="16" Margin="4" Visibility="{Binding ConnectionStatusError}" />
+                    <TextBlock Text="{Binding ConnectionStatus}" VerticalAlignment="Center"/>
+                </StackPanel>
             </StatusBarItem>
         </StatusBar>
         <Grid>

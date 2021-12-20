@@ -19,6 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\Connecting.svg" />
     <None Remove="Images\Dock.svg" />
     <None Remove="Images\Error.svg" />
     <None Remove="Images\Ok.svg" />
@@ -53,6 +54,7 @@
 
   <ItemGroup>
     <Resource Include="Images\Undock.svg" />
+    <Resource Include="Images\Connecting.svg" />
   </ItemGroup>
 
   <ItemGroup>

@@ -9,8 +9,6 @@ using PettingZoo.UI.Connection;
 using PettingZoo.UI.Subscribe;
 using PettingZoo.UI.Tab;
 
-// TODO improve readability of the connection status (especially when connecting/disconnected)
-
 namespace PettingZoo.UI.Main
 {
     #pragma warning disable CA1001 // MainWindow can't be IDisposable, handled instead in OnDispatcherShutDownStarted

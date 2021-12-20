@@ -13,6 +13,14 @@ using PettingZoo.UI.Tab.Undocked;
 
 namespace PettingZoo.UI.Main
 {
+    public enum ConnectionStatusType
+    {
+        Connecting,
+        Ok,
+        Error
+    }
+
+
     public class MainWindowViewModel : BaseViewModel, IAsyncDisposable, ITabHost
     {
         private readonly IConnectionFactory connectionFactory;
@@ -34,14 +42,27 @@ namespace PettingZoo.UI.Main
         private readonly DelegateCommand closeTabCommand;
         private readonly DelegateCommand undockTabCommand;
 
+        private ConnectionStatusType connectionStatusType;
+
 
         public string ConnectionStatus
         {
             get => connectionStatus;
             private set => SetField(ref connectionStatus, value);
         }
-        
-        
+
+
+        public ConnectionStatusType ConnectionStatusType
+        {
+            get => connectionStatusType;
+            set => SetField(ref connectionStatusType, value, otherPropertiesChanged: new [] { nameof(ConnectionStatusOk), nameof(ConnectionStatusError), nameof(ConnectionStatusConnecting) });
+        }
+
+        public Visibility ConnectionStatusOk => ConnectionStatusType == ConnectionStatusType.Ok ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility ConnectionStatusError => ConnectionStatusType == ConnectionStatusType.Error ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility ConnectionStatusConnecting => ConnectionStatusType == ConnectionStatusType.Connecting ? Visibility.Visible : Visibility.Collapsed;
+
+
         public ObservableCollection<ITab> Tabs { get; }
 
         public ITab? ActiveTab
@@ -86,6 +107,7 @@ namespace PettingZoo.UI.Main
             this.tabContainer = tabContainer;
 
             connectionStatus = GetConnectionStatus(null);
+            connectionStatusType = ConnectionStatusType.Error;
 
             Tabs = new ObservableCollection<ITab>();
             connectCommand = new DelegateCommand(ConnectExecute);
@@ -119,7 +141,7 @@ namespace PettingZoo.UI.Main
 
             connection = connectionFactory.CreateConnection(new ConnectionParams(
                 connectionSettings.Host, connectionSettings.VirtualHost, connectionSettings.Port,
-                connectionSettings.Username, connectionSettings.Password!));
+                connectionSettings.Username, connectionSettings.Password));
             connection.StatusChanged += ConnectionStatusChanged;
 
             if (connectionSettings.Subscribe)
@@ -152,6 +174,7 @@ namespace PettingZoo.UI.Main
             }
 
             ConnectionStatus = GetConnectionStatus(null);
+            ConnectionStatusType = ConnectionStatusType.Error;
             ConnectionChanged();
         }
 
@@ -271,6 +294,12 @@ namespace PettingZoo.UI.Main
         private void ConnectionStatusChanged(object? sender, StatusChangedEventArgs args)
         {
             ConnectionStatus = GetConnectionStatus(args);
+            ConnectionStatusType = args.Status switch
+            {
+                Core.Connection.ConnectionStatus.Connected => ConnectionStatusType.Ok,
+                Core.Connection.ConnectionStatus.Connecting => ConnectionStatusType.Connecting,
+                _ => ConnectionStatusType.Error
+            };
         }
 
 

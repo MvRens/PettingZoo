@@ -22,7 +22,7 @@ namespace PettingZoo.Settings.LiteDB
 
             var lastUsed = await collection.FindOneAsync(r => true);
             if (lastUsed == null)
-                return new StoredConnectionSettings(Guid.Empty, "", false, ConnectionSettings.Default);
+                return new StoredConnectionSettings(Guid.Empty, "", true, ConnectionSettings.Default);
 
             return new StoredConnectionSettings(
                 Guid.Empty,
