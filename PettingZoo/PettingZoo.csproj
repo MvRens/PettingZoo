@@ -1,0 +1,190 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Version>0.1</Version>
+    <UseWPF>true</UseWPF>
+	<UseWindowsForms>true</UseWindowsForms>
+    <Authors>Mark van Renswoude</Authors>
+    <Product>Petting Zoo</Product>
+    <Description>Petting Zoo - a live RabbitMQ message viewer</Description>
+    <Copyright />
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <StartupObject>PettingZoo.Program</StartupObject>
+    <PackageIcon></PackageIcon>
+    <PackageIconUrl />
+    <ApplicationIcon>PettingZoo.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\Connecting.svg" />
+    <None Remove="Images\Dock.svg" />
+    <None Remove="Images\Error.svg" />
+    <None Remove="Images\Ok.svg" />
+    <None Remove="Images\PublishSend.svg" />
+    <None Remove="Images\Undock.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\Clear.svg" />
+    <Resource Include="Images\Connect.svg" />
+    <Resource Include="Images\Disconnect.svg" />
+    <Resource Include="Images\Dock.svg" />
+    <Resource Include="Images\Error.svg" />
+    <Resource Include="Images\Ok.svg" />
+    <Resource Include="Images\Publish.svg" />
+    <Resource Include="Images\PublishSend.svg" />
+    <Resource Include="Images\Subscribe.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="SharpVectors" Version="1.7.7" />
+    <PackageReference Include="SimpleInjector" Version="5.3.2" />
+    <PackageReference Include="System.Reactive" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PettingZoo.Core\PettingZoo.Core.csproj" />
+    <ProjectReference Include="..\PettingZoo.RabbitMQ\PettingZoo.RabbitMQ.csproj" />
+    <ProjectReference Include="..\PettingZoo.Settings.LiteDB\PettingZoo.Settings.LiteDB.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\Undock.svg" />
+    <Resource Include="Images\Connecting.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="UI\Connection\ConnectionDisplayNameStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ConnectionDisplayNameStrings.resx</DependentUpon>
+    </Compile>
+    <Compile Update="UI\Connection\ConnectionWindowStrings.Designer.cs">
+      <DependentUpon>ConnectionWindowStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="UI\Example\ExamplePickerDialogStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ExamplePickerDialogStrings.resx</DependentUpon>
+    </Compile>
+    <Compile Update="UI\Main\MainWindowStrings.Designer.cs">
+      <DependentUpon>MainWindowStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="UI\Subscribe\SubscribeWindowStrings.Designer.cs">
+      <DependentUpon>SubscribeWindowStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="UI\Tab\Publisher\PayloadEditorStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PayloadEditorStrings.resx</DependentUpon>
+    </Compile>
+    <Compile Update="UI\Tab\Publisher\TapetiPublisherViewStrings.Designer.cs">
+      <DependentUpon>TapetiPublisherViewStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="UI\Tab\Publisher\TapetiPublisherView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="UI\Tab\Publisher\RawPublisherViewStrings.Designer.cs">
+      <DependentUpon>RawPublisherViewStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="UI\Tab\Publisher\PublisherViewStrings.Designer.cs">
+      <DependentUpon>PublisherViewStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="UI\Tab\Subscriber\SubscriberViewStrings.Designer.cs">
+      <DependentUpon>SubscriberViewStrings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="UI\Tab\Undocked\UndockedTabHostStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UndockedTabHostStrings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="UI\Connection\ConnectionDisplayNameStrings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ConnectionDisplayNameStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Connection\ConnectionWindowStrings.resx">
+      <LastGenOutput>ConnectionWindowStrings.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Example\ExamplePickerDialogStrings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ExamplePickerDialogStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Main\MainWindowStrings.resx">
+      <LastGenOutput>MainWindowStrings.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Subscribe\SubscribeWindowStrings.resx">
+      <LastGenOutput>SubscribeWindowStrings.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Tab\Publisher\PayloadEditorStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PayloadEditorStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Tab\Publisher\TapetiPublisherViewStrings.resx">
+      <LastGenOutput>TapetiPublisherViewStrings.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Tab\Publisher\RawPublisherViewStrings.resx">
+      <LastGenOutput>RawPublisherViewStrings.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Tab\Publisher\PublisherViewStrings.resx">
+      <LastGenOutput>PublisherViewStrings.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Tab\Subscriber\SubscriberViewStrings.resx">
+      <LastGenOutput>SubscriberViewStrings.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Tab\Undocked\UndockedTabHostStrings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UndockedTabHostStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="UI\Connection\ConnectionWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="UI\Main\MainWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="UI\Subscribe\SubscribeWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="UI\Tab\Publisher\PublisherView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="UI\Tab\Publisher\TapetiPublisherView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UI\Tab\Subscriber\SubscriberView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,39 @@
+image: Visual Studio 2022
+
+
+install:
+  - choco install gitversion.portable -pre -y
+
+before_build:
+  - nuget restore
+  - ps: gitversion /l console /output buildserver
+  - ps: build\UpdateVersion.ps1
+
+after_build:
+  # Create PettingZoo release
+  - cmd: dotnet publish -c Release -r win-x64 --self-contained=true -o publish\x64\selfcontained PettingZoo\PettingZoo.csproj
+  - cmd: dotnet publish -c Release -r win-x64 --self-contained=false -o publish\x64 PettingZoo\PettingZoo.csproj
+  - cmd: copy publish\x64\selfcontained\PettingZoo.exe publish\x64
+  - cmd: rmdir /s /q publish\x64\selfcontained
+  - cmd: 7z a output\PettingZoo-x64-%GitVersion_NuGetVersion%.zip %APPVEYOR_BUILD_FOLDER%\publish\x64\*
+  # Push artifacts
+  - ps: Get-ChildItem output\*.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+
+build:
+  project: PettingZoo.sln
+
+platform:
+  - Any CPU
+
+configuration:
+  - Release
+
+deploy:
+  - provider: GitHub
+    auth_token:
+      secure: dWOConKg3VTPvd9DmWOOKiX1SJCalaqKInuk9GlKQOZX2s+Bia49J7q+AHO8wFj7
+    artifact: /PettingZoo-.*\.zip/
+    draft: false
+    prerelease: false
+    on:
+      APPVEYOR_REPO_TAG: true

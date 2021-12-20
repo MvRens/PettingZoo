@@ -1,0 +1,44 @@
+﻿<Window x:Class="PettingZoo.UI.Tab.Undocked.UndockedTabHostWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:undocked="clr-namespace:PettingZoo.UI.Tab.Undocked"
+        xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance undocked:DesignTimeUndockedTabHostViewModel, IsDesignTimeCreatable=True}"
+        Title="{Binding Title}" 
+        Height="450" 
+        Width="800"
+        WindowStyle="ThreeDBorderWindow">
+    <DockPanel>
+        <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True" Loaded="Toolbar_Loaded">
+            <Button Command="{Binding DockCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{svgc:SvgImage Source=/Images/Dock.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                    <TextBlock Margin="3,0,0,0" Text="{x:Static undocked:UndockedTabHostStrings.CommandDock}" />
+                </StackPanel>
+            </Button>
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Visibility="{Binding ToolbarCommandsSeparatorVisibility}" />
+            <ItemsControl ItemsSource="{Binding ToolbarCommands}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Command="{Binding Command}" Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{Binding Icon}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                                <TextBlock Margin="3,0,0,0" Text="{Binding Caption}" />
+                            </StackPanel>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ToolBar>
+
+        <ContentControl Content="{Binding Content}" />
+    </DockPanel>
+</Window>

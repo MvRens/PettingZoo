@@ -1,9 +1,22 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PettingZoo", "PettingZoo.csproj", "{24819D09-C747-4356-B686-D9DE9CAA6F59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PettingZoo", "PettingZoo\PettingZoo.csproj", "{24819D09-C747-4356-B686-D9DE9CAA6F59}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A64E3FB8-7606-4A05-BF10-D83FD0E80D2D}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PettingZoo.Core", "PettingZoo.Core\PettingZoo.Core.csproj", "{AD20CA14-6272-4C50-819D-F9FE6A963DB1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PettingZoo.RabbitMQ", "PettingZoo.RabbitMQ\PettingZoo.RabbitMQ.csproj", "{220149F3-A8D6-44ED-B3B6-DFE506EB018A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PettingZoo.Tapeti", "PettingZoo.Tapeti\PettingZoo.Tapeti.csproj", "{1763AB04-59D9-4663-B207-D6302FFAACD5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PettingZoo.Settings.LiteDB", "PettingZoo.Settings.LiteDB\PettingZoo.Settings.LiteDB.csproj", "{7157B09C-FDD9-4928-B14D-C25B784CA865}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +28,27 @@ Global
 		{24819D09-C747-4356-B686-D9DE9CAA6F59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24819D09-C747-4356-B686-D9DE9CAA6F59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24819D09-C747-4356-B686-D9DE9CAA6F59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD20CA14-6272-4C50-819D-F9FE6A963DB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD20CA14-6272-4C50-819D-F9FE6A963DB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD20CA14-6272-4C50-819D-F9FE6A963DB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD20CA14-6272-4C50-819D-F9FE6A963DB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{220149F3-A8D6-44ED-B3B6-DFE506EB018A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{220149F3-A8D6-44ED-B3B6-DFE506EB018A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{220149F3-A8D6-44ED-B3B6-DFE506EB018A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{220149F3-A8D6-44ED-B3B6-DFE506EB018A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1763AB04-59D9-4663-B207-D6302FFAACD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1763AB04-59D9-4663-B207-D6302FFAACD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1763AB04-59D9-4663-B207-D6302FFAACD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1763AB04-59D9-4663-B207-D6302FFAACD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7157B09C-FDD9-4928-B14D-C25B784CA865}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7157B09C-FDD9-4928-B14D-C25B784CA865}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7157B09C-FDD9-4928-B14D-C25B784CA865}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7157B09C-FDD9-4928-B14D-C25B784CA865}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {07CE270E-9E57-49CD-8D5C-79C7B7A98517}
 	EndGlobalSection
 EndGlobal

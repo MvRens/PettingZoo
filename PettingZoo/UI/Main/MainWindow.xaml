@@ -1,0 +1,124 @@
+﻿<Window x:Class="PettingZoo.UI.Main.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:main="clr-namespace:PettingZoo.UI.Main"
+        xmlns:tab="clr-namespace:PettingZoo.UI.Tab"
+        xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+        xmlns:ui="clr-namespace:PettingZoo.UI"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance main:DesignTimeMainWindowViewModel, IsDesignTimeCreatable=True}"
+        Width="800" 
+        Height="800"
+        ResizeMode="CanResizeWithGrip"
+        Style="{StaticResource WindowStyle}"
+        Title="{x:Static main:MainWindowStrings.WindowTitle}"
+        Loaded="MainWindow_OnLoaded"
+        Closed="MainWindow_OnClosed">
+    <Window.InputBindings>
+        <KeyBinding Modifiers="Control" Key="W" Command="{Binding CloseTabCommand}" />
+        <KeyBinding Modifiers="Control" Key="U" Command="{Binding UndockTabCommand}" />
+    </Window.InputBindings>
+    <Window.Resources>
+        <ui:BindingProxy x:Key="ContextMenuProxy" Data="{Binding}" />
+    </Window.Resources>
+    <DockPanel>
+        <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True" Loaded="Toolbar_Loaded">
+            <Button Command="{Binding ConnectCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{svgc:SvgImage Source=/Images/Connect.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                    <TextBlock Margin="3,0,0,0" Text="{x:Static main:MainWindowStrings.CommandConnect}" />
+                </StackPanel> 
+            </Button>
+            <Button Command="{Binding DisconnectCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{svgc:SvgImage Source=/Images/Disconnect.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                    <TextBlock Margin="3,0,0,0" Text="{x:Static main:MainWindowStrings.CommandDisconnect}" />
+                </StackPanel>
+            </Button>
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+            <Button Command="{Binding SubscribeCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{svgc:SvgImage Source=/Images/Subscribe.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                    <TextBlock Margin="3,0,0,0" Text="{x:Static main:MainWindowStrings.CommandSubscribe}" />
+                </StackPanel>
+            </Button>
+            <Button Command="{Binding PublishCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{svgc:SvgImage Source=/Images/Publish.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                    <TextBlock Margin="3,0,0,0" Text="{x:Static main:MainWindowStrings.CommandPublish}" />
+                </StackPanel>
+            </Button>
+            <Button Command="{Binding UndockTabCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{svgc:SvgImage Source=/Images/Undock.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                    <TextBlock Margin="3,0,0,0" Text="{x:Static main:MainWindowStrings.CommandUndock}" />
+                </StackPanel>
+            </Button>
+
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Visibility="{Binding ToolbarCommandsSeparatorVisibility}" />
+            <ItemsControl ItemsSource="{Binding ToolbarCommands}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Command="{Binding Command}" Style="{DynamicResource {x:Static ToolBar.ButtonStyleKey}}">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{Binding Icon}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                                <TextBlock Margin="3,0,0,0" Text="{Binding Caption}" />
+                            </StackPanel>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ToolBar>
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{svgc:SvgImage Source=/Images/Connecting.svg, AppName=PettingZoo}" Width="16" Height="16" Margin="4" Visibility="{Binding ConnectionStatusConnecting}" />
+                    <Image Source="{svgc:SvgImage Source=/Images/Ok.svg, AppName=PettingZoo}" Width="16" Height="16" Margin="4" Visibility="{Binding ConnectionStatusOk}" />
+                    <Image Source="{svgc:SvgImage Source=/Images/Error.svg, AppName=PettingZoo}" Width="16" Height="16" Margin="4" Visibility="{Binding ConnectionStatusError}" />
+                    <TextBlock Text="{Binding ConnectionStatus}" VerticalAlignment="Center"/>
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
+        <Grid>
+            <TabControl 
+            Name="SubscriberTabs" 
+            ItemsSource="{Binding Tabs}" 
+            SelectedValue="{Binding ActiveTab}">
+                <TabControl.ItemContainerStyle>
+                    <Style TargetType="{x:Type TabItem}">
+                        <!-- ReSharper disable once Xaml.BindingWithContextNotResolved - valid property for ITab, not sure how to specify the DataContext here so just ignore the warning for now -->
+                        <Setter Property="Header" Value="{Binding Title}" />
+                        <Setter Property="AllowDrop" Value="True" />
+                        <Setter Property="ContextMenu">
+                            <Setter.Value>
+                                <ContextMenu>
+                                    <!-- ReSharper disable Xaml.BindingWithContextNotResolved - binding is correct, just weird because of the required proxy -->
+                                    <MenuItem Header="{x:Static main:MainWindowStrings.ContextMenuUndockTab}" Command="{Binding Data.UndockTabCommand, Source={StaticResource ContextMenuProxy}}" InputGestureText="Ctrl+U" />
+                                    <MenuItem Header="{x:Static main:MainWindowStrings.ContextMenuCloseTab}" Command="{Binding Data.CloseTabCommand, Source={StaticResource ContextMenuProxy}}" InputGestureText="Ctrl+W" />
+                                    <!-- ReSharper restore Xaml.BindingWithContextNotResolved -->
+                                </ContextMenu>
+                            </Setter.Value>
+                        </Setter>
+                        <EventSetter Event="PreviewMouseRightButtonDown" Handler="TabItem_PreviewRightMouseDown" />
+                        <EventSetter Event="PreviewMouseMove" Handler="TabItem_PreviewMouseMove" />
+                        <EventSetter Event="Drop" Handler="TabItem_Drop" />
+                    </Style>
+                </TabControl.ItemContainerStyle>
+                <TabControl.ContentTemplate>
+                    <DataTemplate DataType="{x:Type tab:ITab}">
+                        <ContentControl Content="{Binding Content}" />
+                    </DataTemplate>
+                </TabControl.ContentTemplate>
+            </TabControl>
+
+            <TextBlock Text="{x:Static main:MainWindowStrings.TabsEmptyText}" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding NoTabsVisibility}" />
+        </Grid>
+    </DockPanel>
+</Window>

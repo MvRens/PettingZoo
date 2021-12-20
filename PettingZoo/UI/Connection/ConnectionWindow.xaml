@@ -1,0 +1,104 @@
+﻿<Window x:Class="PettingZoo.UI.Connection.ConnectionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:ui="clr-namespace:PettingZoo.UI"
+        xmlns:connection="clr-namespace:PettingZoo.UI.Connection"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance connection:DesignTimeConnectionViewModel, IsDesignTimeCreatable = True}"
+        Width="700" 
+        SizeToContent="Height"
+        ResizeMode="NoResize"
+        WindowStyle="ToolWindow"
+        Style="{StaticResource WindowStyle}"
+        Title="{x:Static connection:ConnectionWindowStrings.WindowTitle}" 
+        FocusManager.FocusedElement="{Binding ElementName=HostTextBox}"
+        WindowStartupLocation="CenterOwner">
+    <Grid Margin="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <UniformGrid Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" Rows="1" Columns="1" Style="{StaticResource FooterPanel}">
+            <Button Content="{x:Static connection:ConnectionWindowStrings.ButtonDelete}" Style="{StaticResource FooterButtonLeft}" Command="{Binding DeleteCommand}"/>
+        </UniformGrid>
+
+        <UniformGrid Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Rows="1" Columns="3" Style="{StaticResource FooterPanel}">
+            <Button Content="{x:Static connection:ConnectionWindowStrings.ButtonSave}" Style="{StaticResource FooterButtonLeft}" Command="{Binding SaveCommand}"/>
+            <Button Content="{x:Static connection:ConnectionWindowStrings.ButtonSaveAs}" Style="{StaticResource FooterButtonLeft}" Command="{Binding SaveAsCommand}"/>
+        </UniformGrid>
+
+        <UniformGrid Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" Rows="1" Columns="2" Style="{StaticResource FooterPanel}">
+            <Button IsDefault="True" Content="{x:Static connection:ConnectionWindowStrings.ButtonOK}" Style="{StaticResource FooterButton}" Command="{Binding OkCommand}"/>
+            <Button IsCancel="True" Content="{x:Static connection:ConnectionWindowStrings.ButtonCancel}" Style="{StaticResource FooterButton}"/>
+        </UniformGrid>
+
+        <ListBox Grid.Row="0" Grid.Column="0" Margin="0 0 8 0" Width="250" ItemsSource="{Binding StoredConnections}" SelectedValue="{Binding SelectedStoredConnection}">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding DisplayName}">
+                        <TextBlock.InputBindings>
+                            <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DataContext.OkCommand, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}" />
+                        </TextBlock.InputBindings>
+                    </TextBlock>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <ui:GridLayout Style="{StaticResource Form}" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="24"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Column="0" Grid.Row="0" Content="{x:Static connection:ConnectionWindowStrings.LabelHost}"/>
+            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Host, UpdateSourceTrigger=PropertyChanged}" Name="HostTextBox" GotFocus="CaretToEnd" />
+
+            <Label Grid.Column="0" Grid.Row="1" Content="{x:Static connection:ConnectionWindowStrings.LabelPort}"/>
+            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Port, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left" PreviewTextInput="NumericPreviewTextInput" GotFocus="CaretToEnd" />
+
+            <Label Grid.Column="0" Grid.Row="2" Content="{x:Static connection:ConnectionWindowStrings.LabelVirtualHost}"/>
+            <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding VirtualHost, UpdateSourceTrigger=PropertyChanged}" GotFocus="CaretToEnd"/>
+
+            <Label Grid.Column="0" Grid.Row="3" Content="{x:Static connection:ConnectionWindowStrings.LabelUsername}"/>
+            <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" GotFocus="CaretToEnd"/>
+
+            <Label Grid.Column="0" Grid.Row="4" Content="{x:Static connection:ConnectionWindowStrings.LabelPassword}"/>
+            <PasswordBox Grid.Column="1" Grid.Row="4" ui:PasswordBoxAssistant.BindPassword="true" ui:PasswordBoxAssistant.BoundPassword="{Binding Path=Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" GotFocus="CaretToEnd"/>
+            <CheckBox Grid.Column="1" Grid.Row="5" Content="{x:Static connection:ConnectionWindowStrings.LabelStorePassword}" IsChecked="{Binding StorePassword}"/>
+
+            <CheckBox Grid.Column="1" Grid.Row="7" Content="{x:Static connection:ConnectionWindowStrings.LabelSubscribe}" IsChecked="{Binding Subscribe}"/>
+
+            <Label Grid.Column="0" Grid.Row="8" Content="{x:Static connection:ConnectionWindowStrings.LabelExchange}"/>
+            <TextBox Grid.Column="1" Grid.Row="8" Text="{Binding Exchange, UpdateSourceTrigger=PropertyChanged}" GotFocus="CaretToEnd"/>
+
+            <Label Grid.Column="0" Grid.Row="9" Content="{x:Static connection:ConnectionWindowStrings.LabelRoutingKey}"/>
+            <TextBox Grid.Column="1" Grid.Row="9" Text="{Binding RoutingKey, UpdateSourceTrigger=PropertyChanged}" GotFocus="CaretToEnd"/>
+        </ui:GridLayout>
+    </Grid>
+</Window>
+
