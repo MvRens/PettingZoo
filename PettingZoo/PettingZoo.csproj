@@ -19,7 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Images\Connecting.svg" />
+    <None Remove="Images\Busy.svg" />
     <None Remove="Images\Dock.svg" />
     <None Remove="Images\Error.svg" />
     <None Remove="Images\Ok.svg" />
@@ -40,6 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AvalonEdit" Version="6.1.2.30" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="SharpVectors" Version="1.7.7" />
     <PackageReference Include="SimpleInjector" Version="5.3.2" />
@@ -54,7 +55,7 @@
 
   <ItemGroup>
     <Resource Include="Images\Undock.svg" />
-    <Resource Include="Images\Connecting.svg" />
+    <Resource Include="Images\Busy.svg" />
   </ItemGroup>
 
   <ItemGroup>

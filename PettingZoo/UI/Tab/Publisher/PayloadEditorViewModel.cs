@@ -1,8 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using System.Windows;
+using ICSharpCode.AvalonEdit.Highlighting;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace PettingZoo.UI.Tab.Publisher
@@ -15,6 +16,38 @@ namespace PettingZoo.UI.Tab.Publisher
     };
 
 
+    public enum ValidationStatus
+    {
+        NotSupported,
+        Validating,
+        Ok,
+        Error
+    }
+
+
+    public readonly struct ValidationInfo
+    {
+        public ValidationStatus Status { get; }
+        public string Message { get; }
+        public TextPosition? ErrorPosition { get; }
+
+
+        public ValidationInfo(ValidationStatus status, string? message = null, TextPosition? errorPosition = null)
+        {
+            Status = status;
+            Message = message ?? status switch
+            {
+                ValidationStatus.NotSupported => "",
+                ValidationStatus.Validating => PayloadEditorStrings.ValidationValidating,
+                ValidationStatus.Ok => PayloadEditorStrings.ValidationOk,
+                ValidationStatus.Error => throw new InvalidOperationException(@"Message required for Error validation status"),
+                _ => throw new ArgumentException(@"Unsupported validation status", nameof(status))
+            };
+            ErrorPosition = errorPosition;
+        }
+    }
+
+
     public class PayloadEditorViewModel : BaseViewModel
     {
         private const string ContentTypeJson = "application/json";
@@ -24,8 +57,7 @@ namespace PettingZoo.UI.Tab.Publisher
         private PayloadEditorContentType contentTypeSelection = PayloadEditorContentType.Json;
         private bool fixedJson;
 
-        private bool jsonValid = true;
-        private string jsonValidationMessage;
+        private ValidationInfo validationInfo = new(ValidationStatus.Ok);
 
         private string payload = "";
 
@@ -59,7 +91,7 @@ namespace PettingZoo.UI.Tab.Publisher
             get => contentTypeSelection;
             set
             {
-                if (!SetField(ref contentTypeSelection, value, otherPropertiesChanged: new [] { nameof(JsonValidationVisibility) }))
+                if (!SetField(ref contentTypeSelection, value, otherPropertiesChanged: new [] { nameof(ValidationVisibility), nameof(SyntaxHighlighting) }))
                     return;
 
                 ContentType = ContentTypeSelection switch
@@ -80,23 +112,22 @@ namespace PettingZoo.UI.Tab.Publisher
             set => SetField(ref fixedJson, value);
         }
 
-        public Visibility JsonValidationVisibility => ContentTypeSelection == PayloadEditorContentType.Json ? Visibility.Visible : Visibility.Collapsed;
-        public Visibility JsonValidationOk => JsonValid ? Visibility.Visible : Visibility.Collapsed;
-        public Visibility JsonValidationError => !JsonValid ? Visibility.Visible : Visibility.Collapsed;
 
-
-        public string JsonValidationMessage
+        public ValidationInfo ValidationInfo
         {
-            get => jsonValidationMessage;
-            private set => SetField(ref jsonValidationMessage, value);
+            get => validationInfo;
+            private set => SetField(ref validationInfo, value, otherPropertiesChanged: new[] { nameof(ValidationOk), nameof(ValidationError), nameof(ValidationValidating), nameof(ValidationMessage) });
         }
 
 
-        public bool JsonValid
-        {
-            get => jsonValid;
-            private set => SetField(ref jsonValid, value, otherPropertiesChanged: new[] { nameof(JsonValidationOk), nameof(JsonValidationError) });
-        }
+        public Visibility ValidationVisibility => ContentTypeSelection == PayloadEditorContentType.Json ? Visibility.Visible : Visibility.Collapsed;
+
+        public string ValidationMessage => ValidationInfo.Message;
+        
+        public Visibility ValidationOk => ValidationInfo.Status == ValidationStatus.Ok ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility ValidationError => ValidationInfo.Status == ValidationStatus.Error ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility ValidationValidating => ValidationInfo.Status == ValidationStatus.Validating ? Visibility.Visible : Visibility.Collapsed;
+
 
         public Visibility ContentTypeVisibility => FixedJson ? Visibility.Collapsed : Visibility.Visible;
 
@@ -108,17 +139,40 @@ namespace PettingZoo.UI.Tab.Publisher
         }
 
 
+        public IHighlightingDefinition? SyntaxHighlighting => ContentTypeSelection == PayloadEditorContentType.Json
+            ? HighlightingManager.Instance.GetDefinition(@"Json")
+            : null;
+
+
 
         public PayloadEditorViewModel()
         {
-            jsonValidationMessage = PayloadEditorStrings.JsonValidationOk;
-
-            Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
+            var observable = Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
                 h => PropertyChanged += h,
                 h => PropertyChanged -= h)
-                .Where(e => e.EventArgs.PropertyName == nameof(Payload))
+                .Where(e => e.EventArgs.PropertyName == nameof(Payload));
+
+            observable
+                .Subscribe(_ => ValidatingPayload());
+
+            observable
                 .Throttle(TimeSpan.FromMilliseconds(500))
                 .Subscribe(_ => ValidatePayload());
+        }
+
+
+        private void ValidatingPayload()
+        {
+            if (ValidationInfo.Status == ValidationStatus.Validating)
+                return;
+
+            if (ContentTypeSelection != PayloadEditorContentType.Json)
+            {
+                ValidationInfo = new ValidationInfo(ValidationStatus.NotSupported);
+                return;
+            }
+
+            ValidationInfo = new ValidationInfo(ValidationStatus.Validating);
         }
 
 
@@ -126,8 +180,7 @@ namespace PettingZoo.UI.Tab.Publisher
         {
             if (ContentTypeSelection != PayloadEditorContentType.Json)
             {
-                JsonValid = true;
-                JsonValidationMessage = PayloadEditorStrings.JsonValidationOk;
+                ValidationInfo = new ValidationInfo(ValidationStatus.NotSupported);
                 return;
             }
 
@@ -136,13 +189,15 @@ namespace PettingZoo.UI.Tab.Publisher
                 if (!string.IsNullOrEmpty(Payload))
                     JToken.Parse(Payload);
 
-                JsonValid = true;
-                JsonValidationMessage = PayloadEditorStrings.JsonValidationOk;
+                ValidationInfo = new ValidationInfo(ValidationStatus.Ok);
+            }
+            catch (JsonReaderException e)
+            {
+                ValidationInfo = new ValidationInfo(ValidationStatus.Error, e.Message, new TextPosition(e.LineNumber, e.LinePosition));
             }
             catch (Exception e)
             {
-                JsonValid = false;
-                JsonValidationMessage = string.Format(PayloadEditorStrings.JsonValidationError, e.Message);
+                ValidationInfo = new ValidationInfo(ValidationStatus.Error, e.Message);
             }
         }
     }

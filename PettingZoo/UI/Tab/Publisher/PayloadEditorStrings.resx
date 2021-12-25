@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ContentTypeJson" xml:space="preserve">
     <value>JSON</value>
@@ -126,10 +126,13 @@
   <data name="ContentTypePlain" xml:space="preserve">
     <value>Plain text</value>
   </data>
-  <data name="JsonValidationError" xml:space="preserve">
-    <value>Invalid JSON: {0}</value>
+  <data name="ValidationError" xml:space="preserve">
+    <value>Invalid: {0}</value>
   </data>
-  <data name="JsonValidationOk" xml:space="preserve">
-    <value>Valid JSON</value>
+  <data name="ValidationOk" xml:space="preserve">
+    <value>Valid</value>
+  </data>
+  <data name="ValidationValidating" xml:space="preserve">
+    <value>Validating...</value>
   </data>
 </root>

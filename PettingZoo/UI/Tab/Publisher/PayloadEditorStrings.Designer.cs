@@ -88,20 +88,29 @@ namespace PettingZoo.UI.Tab.Publisher {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid JSON: {0}.
+        ///   Looks up a localized string similar to Invalid: {0}.
         /// </summary>
-        internal static string JsonValidationError {
+        internal static string ValidationError {
             get {
-                return ResourceManager.GetString("JsonValidationError", resourceCulture);
+                return ResourceManager.GetString("ValidationError", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Valid JSON.
+        ///   Looks up a localized string similar to Valid.
         /// </summary>
-        internal static string JsonValidationOk {
+        internal static string ValidationOk {
             get {
-                return ResourceManager.GetString("JsonValidationOk", resourceCulture);
+                return ResourceManager.GetString("ValidationOk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validating....
+        /// </summary>
+        internal static string ValidationValidating {
+            get {
+                return ResourceManager.GetString("ValidationValidating", resourceCulture);
             }
         }
     }

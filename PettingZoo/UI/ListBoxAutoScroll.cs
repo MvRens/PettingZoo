@@ -69,6 +69,8 @@ namespace PettingZoo.UI
         public void Dispose()
         {
             BindingOperations.ClearBinding(this, ItemsSourceProperty);
+
+            GC.SuppressFinalize(this);
         }
 
 

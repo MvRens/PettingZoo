@@ -115,6 +115,8 @@ namespace PettingZoo.UI.Main
         private static T? GetParent<T>(object originalSource) where T : DependencyObject
         {
             var current = originalSource as DependencyObject;
+            if (current is not Visual)
+                return null;
 
             while (current != null)
             {
