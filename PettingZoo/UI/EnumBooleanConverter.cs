@@ -13,7 +13,7 @@ namespace PettingZoo.UI
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((bool)value) ? parameter : Binding.DoNothing;
+            return (bool)value ? parameter : Binding.DoNothing;
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Windows;
 using ICSharpCode.AvalonEdit.Highlighting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PettingZoo.WPF.ViewModel;
 
 namespace PettingZoo.UI.Tab.Publisher
 {
@@ -13,7 +14,7 @@ namespace PettingZoo.UI.Tab.Publisher
         Json,
         Plain,
         Other
-    };
+    }
 
 
     public enum ValidationStatus

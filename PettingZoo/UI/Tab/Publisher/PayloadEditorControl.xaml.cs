@@ -148,26 +148,47 @@ namespace PettingZoo.UI.Tab.Publisher
             // https://stackoverflow.com/questions/18964176/two-way-binding-to-avalonedit-document-text-using-mvvm
             Editor.Document.Text = Payload;
 
+
+            var editorTriggered = false;
+
             Editor.TextChanged += (_, _) =>
             {
-                Payload = Editor.Document.Text;
+                editorTriggered = true;
+                try
+                {
+                    Payload = Editor.Document.Text;
+                }
+                finally
+                {
+                    editorTriggered = false;
+                }
             };
 
 
             viewModel.PropertyChanged += (_, args) =>
             {
-                if (args.PropertyName != nameof(viewModel.ValidationInfo))
+                if (args.PropertyName != nameof(viewModel.ValidationInfo) && 
+                    (args.PropertyName != nameof(viewModel.Payload) || editorTriggered))
                     return;
 
                 Dispatcher.Invoke(() =>
                 {
-                    if (errorHighlightingTransformer.ErrorPosition == viewModel.ValidationInfo.ErrorPosition)
-                        return;
+                    switch (args.PropertyName)
+                    {
+                        case nameof(viewModel.ValidationInfo):
+                            if (errorHighlightingTransformer.ErrorPosition == viewModel.ValidationInfo.ErrorPosition)
+                                return;
 
-                    errorHighlightingTransformer.ErrorPosition = viewModel.ValidationInfo.ErrorPosition;
+                            errorHighlightingTransformer.ErrorPosition = viewModel.ValidationInfo.ErrorPosition;
 
-                    // TODO this can probably be optimized to only redraw the affected line
-                    Editor.TextArea.TextView.Redraw();
+                            // TODO this can probably be optimized to only redraw the affected line
+                            Editor.TextArea.TextView.Redraw();
+                            break;
+
+                        case nameof(viewModel.Payload):
+                            Editor.Document.Text = viewModel.Payload;
+                            break;
+                    }
                 });
             };
 

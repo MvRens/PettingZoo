@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using PettingZoo.Core.Settings;
+using PettingZoo.WPF.ViewModel;
 
 namespace PettingZoo.UI.Connection
 {
@@ -207,10 +208,7 @@ namespace PettingZoo.UI.Connection
                    Port > 0 &&
                    !string.IsNullOrWhiteSpace(Username) &&
                    (!requirePassword || !string.IsNullOrWhiteSpace(Password)) &&
-                   (!Subscribe || (
-                       !string.IsNullOrWhiteSpace(Exchange) &&
-                       !string.IsNullOrWhiteSpace(RoutingKey)
-                       ));
+                   (!Subscribe || !string.IsNullOrWhiteSpace(Exchange) && !string.IsNullOrWhiteSpace(RoutingKey));
         }
 
 

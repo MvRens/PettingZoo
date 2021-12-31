@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace PettingZoo.UI.Tab
 {
-    public class ViewTab<TView, TViewModel> : ITab where TView : ContentControl where TViewModel : INotifyPropertyChanged
+    public class ViewTab<TView, TViewModel> : ITab, ITabToolbarCommands, ITabActivate, ITabHostWindowNotify where TView : ContentControl where TViewModel : INotifyPropertyChanged
     {
         public string Title => getTitle(viewModel);
         public ContentControl Content { get; }
@@ -56,6 +56,12 @@ namespace PettingZoo.UI.Tab
         public void Deactivate()
         {
             (viewModel as ITabActivate)?.Deactivate();
+        }
+
+
+        public void HostWindowChanged(Window? hostWindow)
+        {
+            (viewModel as ITabHostWindowNotify)?.HostWindowChanged(hostWindow);
         }
     }
 }

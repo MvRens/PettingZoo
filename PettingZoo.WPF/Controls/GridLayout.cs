@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace PettingZoo.UI
+namespace PettingZoo.WPF.Controls
 {
     // Source: http://daniel-albuschat.blogspot.nl/2011/07/gridlayout-for-wpf-escape-margin-hell.html
 

@@ -7,7 +7,7 @@ namespace PettingZoo.Core.Rendering
 {
     public class MessageBodyRenderer
     {
-        public static Dictionary<string, Func<byte[], string>> ContentTypeHandlers = new()
+        private static readonly Dictionary<string, Func<byte[], string>> ContentTypeHandlers = new()
         {
             { "application/json", RenderJson }
         };
@@ -15,7 +15,7 @@ namespace PettingZoo.Core.Rendering
 
         public static string Render(byte[] body, string? contentType)
         {
-            return (contentType != null) && ContentTypeHandlers.TryGetValue(contentType, out var handler)
+            return contentType != null && ContentTypeHandlers.TryGetValue(contentType, out var handler)
                 ? handler(body) 
                 : Encoding.UTF8.GetString(body);
 

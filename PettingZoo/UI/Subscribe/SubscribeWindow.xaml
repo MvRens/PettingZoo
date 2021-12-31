@@ -3,11 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:ui="clr-namespace:PettingZoo.UI"
-        xmlns:connection="clr-namespace:PettingZoo.UI.Connection"
         xmlns:subscribe="clr-namespace:PettingZoo.UI.Subscribe"
+        xmlns:controls="clr-namespace:PettingZoo.WPF.Controls;assembly=PettingZoo.WPF"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance connection:DesignTimeConnectionViewModel, IsDesignTimeCreatable = True}"
+        d:DataContext="{d:DesignInstance subscribe:DesignTimeSubscribeViewModel, IsDesignTimeCreatable=True}"
         Width="500" 
         SizeToContent="Height"
         ResizeMode="NoResize"
@@ -21,7 +20,7 @@
             <Button IsCancel="True" Content="{x:Static subscribe:SubscribeWindowStrings.ButtonCancel}" Style="{StaticResource FooterButton}"/>
         </UniformGrid>
         
-        <ui:GridLayout Style="{StaticResource Form}">
+        <controls:GridLayout Style="{StaticResource Form}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -35,7 +34,7 @@
 
             <Label Grid.Column="0" Grid.Row="1" Content="{x:Static subscribe:SubscribeWindowStrings.LabelRoutingKey}"/>
             <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding RoutingKey}"/>
-        </ui:GridLayout>
+        </controls:GridLayout>
     </DockPanel>
 </Window>
 

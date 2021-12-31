@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Threading;
 using PettingZoo.Core.Settings;
 using PettingZoo.UI.Main;
+using Serilog;
 using SimpleInjector;
 using Point = System.Windows.Point;
 
@@ -14,6 +15,7 @@ namespace PettingZoo
     public partial class App
     {
         private readonly Container container;
+        private readonly ILogger logger;
 
 
         public App()
@@ -22,9 +24,10 @@ namespace PettingZoo
         }
 
 
-        public App(Container container)
+        public App(Container container, ILogger logger)
         {
             this.container = container;
+            this.logger = logger;
         }
 
 
@@ -80,6 +83,7 @@ namespace PettingZoo
 
         private void App_OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
+            logger.Error(e.Exception, "Unhandled exception");
             _ = MessageBox.Show($"Unhandled exception: {e.Exception.Message}", "Petting Zoo - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }

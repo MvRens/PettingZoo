@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using PettingZoo.Core.Connection;
+using PettingZoo.WPF.ViewModel;
 
 namespace PettingZoo.UI.Tab.Publisher
 {
@@ -144,7 +145,7 @@ namespace PettingZoo.UI.Tab.Publisher
         protected Header LastHeader;
 
 
-        public RawPublisherViewModel(IConnection connection, IPublishDestination publishDestination, ReceivedMessageInfo? receivedMessage = null)
+        public RawPublisherViewModel(IConnection connection, IPublishDestination publishDestination, BaseMessageInfo? receivedMessage = null)
         {
             this.connection = connection;
             this.publishDestination = publishDestination;
@@ -167,11 +168,11 @@ namespace PettingZoo.UI.Tab.Publisher
 
                 Payload = Encoding.UTF8.GetString(receivedMessage.Body);
 
-                foreach (var header in receivedMessage.Properties.Headers)
+                foreach (var (key, value) in receivedMessage.Properties.Headers)
                     Headers.Add(new Header
                     {
-                        Key = header.Key,
-                        Value = header.Value
+                        Key = key,
+                        Value = value
                     });
 
                 PropertiesExpanded = AnyNotEmpty(AppId, ContentEncoding, Expiration, MessageId, Priority, Timestamp, TypeProperty, UserId);
@@ -244,7 +245,7 @@ namespace PettingZoo.UI.Tab.Publisher
         }
 
 
-        private bool PublishCanExecute()
+        private static bool PublishCanExecute()
         {
             // TODO validate input
             return true;

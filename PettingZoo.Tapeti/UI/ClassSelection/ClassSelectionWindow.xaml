@@ -1,0 +1,69 @@
+﻿<Window x:Class="PettingZoo.Tapeti.UI.ClassSelection.ClassSelectionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:controls="clr-namespace:PettingZoo.WPF.Controls;assembly=PettingZoo.WPF"
+        xmlns:classSelection="clr-namespace:PettingZoo.Tapeti.UI.ClassSelection"
+        xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+        mc:Ignorable="d" 
+        Title="{x:Static classSelection:ClassSelectionStrings.WindowTitle}" 
+        Height="600" 
+        Width="800"
+        ResizeMode="CanResizeWithGrip"
+        WindowStartupLocation="CenterOwner"
+        d:DataContext="{d:DesignInstance classSelection:DesignTimeClassSelectionViewModel, IsDesignTimeCreatable=True}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <Style x:Key="TreeItemIcon" TargetType="{x:Type Image}">
+                <Setter Property="Margin" Value="2,2,8,2" />
+            </Style>
+
+            <Style x:Key="TreeItemLabel" TargetType="{x:Type TextBlock}">
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/PettingZoo.WPF;component/Style.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <controls:GridLayout Style="{StaticResource Form}" Margin="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TreeView Grid.Row="0" ItemsSource="{Binding Examples}" SelectedItemChanged="TreeView_OnSelectedItemChanged">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="IsExpanded" Value="True" />
+                </Style>
+            </TreeView.ItemContainerStyle>
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type classSelection:NamespaceFolderClassTreeItem}" ItemsSource="{Binding Children}">
+                    <StackPanel Orientation="Horizontal">
+                        <!-- 
+                            I couldn't get the image assets to work from within this assembly, so I've simply included them in the main application. 
+                            Not pretty, and it still doesn't show up in design-time, but works at runtime for now. 
+                        -->
+                        <Image Source="{svgc:SvgImage Source=/Images/Folder.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource TreeItemIcon}"/>
+                        <TextBlock Text="{Binding Name}" Style="{StaticResource TreeItemLabel}" />
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type classSelection:ExampleTreeItem}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{svgc:SvgImage Source=/Images/Example.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource TreeItemIcon}"/>
+                        <TextBlock Text="{Binding Name}" Style="{StaticResource TreeItemLabel}" />
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+            </TreeView.Resources>
+        </TreeView>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Style="{StaticResource FooterPanel}">
+            <Button Content="{x:Static classSelection:ClassSelectionStrings.ButtonSelect}" Style="{StaticResource FooterButton}" Command="{Binding SelectCommand}" />
+            <Button Content="{x:Static classSelection:ClassSelectionStrings.ButtonCancel}"  Style="{StaticResource FooterButton}" />
+        </StackPanel>
+    </controls:GridLayout>
+</Window>

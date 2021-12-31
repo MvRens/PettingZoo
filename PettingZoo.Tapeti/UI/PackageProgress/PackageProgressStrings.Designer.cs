@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PettingZoo.UI.Example {
+namespace PettingZoo.Tapeti.UI.PackageProgress {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace PettingZoo.UI.Example {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class ExamplePickerDialogStrings {
+    public class PackageProgressStrings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ExamplePickerDialogStrings() {
+        internal PackageProgressStrings() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace PettingZoo.UI.Example {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PettingZoo.UI.Example.ExamplePickerDialogStrings", typeof(ExamplePickerDialogStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PettingZoo.Tapeti.UI.PackageProgress.PackageProgressStrings", typeof(PackageProgressStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,7 +61,7 @@ namespace PettingZoo.UI.Example {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select example.
+        ///   Looks up a localized string similar to Reading message classes....
         /// </summary>
         public static string WindowTitle {
             get {

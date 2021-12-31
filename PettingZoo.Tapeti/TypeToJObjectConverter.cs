@@ -6,7 +6,15 @@ using Newtonsoft.Json.Linq;
 
 namespace PettingZoo.Tapeti
 {
-    internal class TypeToJObjectConverter
+    // TODO detect recursion
+    // TODO detect recursion
+    // TODO detect recursion
+    // TODO stop making nerdy jokes in comments.
+
+    // TODO generate at least one item for enumerables
+    // TODO support basic types
+
+    public class TypeToJObjectConverter
     {
         public static JObject Convert(Type type)
         {
@@ -63,7 +71,7 @@ namespace PettingZoo.Tapeti
             }
 
             if (actualType.IsArray)
-                return new JArray(Convert(actualType.GetElementType()));
+                return new JArray(Convert(actualType.GetElementType()!));
 
             if (actualType.IsEnum)
                 return Enum.GetNames(actualType).FirstOrDefault();

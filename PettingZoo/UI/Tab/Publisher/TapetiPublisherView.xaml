@@ -4,18 +4,18 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:publisher="clr-namespace:PettingZoo.UI.Tab.Publisher"
-             xmlns:ui="clr-namespace:PettingZoo.UI"
+             xmlns:controls="clr-namespace:PettingZoo.WPF.Controls;assembly=PettingZoo.WPF"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance publisher:DesignTimeTapetiPublisherViewModel, IsDesignTimeCreatable=True}"
              Background="White">
-    <ui:GridLayout Style="{StaticResource Form}">
+    <controls:GridLayout Style="{StaticResource Form}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <ui:GridLayout.RowDefinitions>
+        <controls:GridLayout.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -23,7 +23,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto" />
-        </ui:GridLayout.RowDefinitions>
+        </controls:GridLayout.RowDefinitions>
 
 
         <Label Grid.Column="0" Content="{x:Static publisher:TapetiPublisherViewStrings.LabelProperties}" Style="{StaticResource SectionLabel}"/>
@@ -42,12 +42,10 @@
             </Grid.ColumnDefinitions>
 
             <TextBox Grid.Column="0" Text="{Binding ClassName, UpdateSourceTrigger=PropertyChanged}" GotFocus="CaretToEnd" />
-            <!--
-            <Button Grid.Column="1" Content="{x:Static publisher:TapetiPublisherViewStrings.ButtonBrowseClass}" />
-            -->
+            <Button Grid.Column="1" Content="{x:Static publisher:TapetiPublisherViewStrings.ButtonBrowseClass}" Command="{Binding BrowseClassCommand}" />
         </Grid>
 
         <Label Grid.Row="6" Grid.Column="0" Content="{x:Static publisher:TapetiPublisherViewStrings.LabelPayload}" />
         <publisher:PayloadEditorControl Grid.Row="6" Grid.Column="1" Payload="{Binding Payload}" FixedJson="True" Height="350"/>
-    </ui:GridLayout>
+    </controls:GridLayout>
 </UserControl>

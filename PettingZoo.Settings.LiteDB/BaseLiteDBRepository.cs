@@ -1,5 +1,6 @@
 ﻿using LiteDB;
 using LiteDB.Async;
+using PettingZoo.Core.Settings;
 
 namespace PettingZoo.Settings.LiteDB
 {
@@ -15,15 +16,7 @@ namespace PettingZoo.Settings.LiteDB
 
         public BaseLiteDBRepository(string databaseName)
         {
-            var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            if (appDataPath == null)
-                throw new IOException("Could not resolve application data path");
-
-            var databasePath = Path.Combine(appDataPath, @"PettingZoo");
-            if (!Directory.CreateDirectory(databasePath).Exists)
-                throw new IOException($"Failed to create directory: {databasePath}");
-
-            databaseFilename = Path.Combine(databasePath, $"{databaseName}.litedb");
+            databaseFilename = Path.Combine(PettingZooPaths.AppDataRoot, $"{databaseName}.litedb");
         }
 
 

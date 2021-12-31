@@ -1,16 +1,69 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <Version>0.1</Version>
+	<UseWpf>true</UseWpf>
+	<Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="NuGet.Packaging" Version="6.0.0" />
+    <PackageReference Include="NuGet.Protocol" Version="6.0.0" />
+    <PackageReference Include="SharpVectors" Version="1.7.7" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageReference Include="System.Reactive" Version="5.0.0" />
     <PackageReference Include="System.Reflection.MetadataLoadContext" Version="6.0.0" />
+    <PackageReference Include="Tapeti.DataAnnotations.Extensions" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\PettingZoo.Core\PettingZoo.Core.csproj" />
+    <ProjectReference Include="..\PettingZoo.WPF\PettingZoo.WPF.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="UI\ClassSelection\ClassSelectionStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ClassSelectionStrings.resx</DependentUpon>
+    </Compile>
+    <Compile Update="UI\PackageProgress\PackageProgressStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PackageProgressStrings.resx</DependentUpon>
+    </Compile>
+    <Compile Update="UI\PackageProgress\PackageProgressWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="UI\PackageSelection\PackageSelectionStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PackageSelectionStrings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="UI\ClassSelection\ClassSelectionStrings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ClassSelectionStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\PackageProgress\PackageProgressStrings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>PackageProgressStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\PackageSelection\PackageSelectionStrings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>PackageSelectionStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="UI\PackageProgress\PackageProgressWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 
 </Project>

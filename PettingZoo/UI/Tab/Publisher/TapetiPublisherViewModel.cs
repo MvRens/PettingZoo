@@ -1,21 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using PettingZoo.Core.Connection;
+using PettingZoo.Core.Generator;
+using PettingZoo.WPF.ViewModel;
 using IConnection = PettingZoo.Core.Connection.IConnection;
 
 namespace PettingZoo.UI.Tab.Publisher
 {
-    public class TapetiPublisherViewModel : BaseViewModel
+    public class TapetiPublisherViewModel : BaseViewModel, ITabHostWindowNotify
     {
         private readonly IConnection connection;
         private readonly IPublishDestination publishDestination;
+        private readonly IExampleGenerator exampleGenerator;
         private readonly DelegateCommand publishCommand;
+        private readonly DelegateCommand browseClassCommand;
 
         private string correlationId = "";
         private string payload = "";
         private string className = "";
         private string assemblyName = "";
+        private Window? tabHostWindow;
 
 
         public string CorrelationId
@@ -51,6 +58,7 @@ namespace PettingZoo.UI.Tab.Publisher
 
 
         public ICommand PublishCommand => publishCommand;
+        public ICommand BrowseClassCommand => browseClassCommand;
 
 
 
@@ -81,12 +89,14 @@ namespace PettingZoo.UI.Tab.Publisher
         }
 
 
-        public TapetiPublisherViewModel(IConnection connection, IPublishDestination publishDestination, ReceivedMessageInfo? receivedMessage = null)
+        public TapetiPublisherViewModel(IConnection connection, IPublishDestination publishDestination, IExampleGenerator exampleGenerator, ReceivedMessageInfo? receivedMessage = null)
         {
             this.connection = connection;
             this.publishDestination = publishDestination;
+            this.exampleGenerator = exampleGenerator;
 
             publishCommand = new DelegateCommand(PublishExecute, PublishCanExecute);
+            browseClassCommand = new DelegateCommand(BrowseClassExecute);
 
 
             if (receivedMessage == null || !IsTapetiMessage(receivedMessage, out var receivedAssemblyName, out var receivedClassName)) 
@@ -96,6 +106,31 @@ namespace PettingZoo.UI.Tab.Publisher
             ClassName = receivedClassName;
             CorrelationId = receivedMessage.Properties.CorrelationId ?? "";
             Payload = Encoding.UTF8.GetString(receivedMessage.Body);
+        }
+
+
+        private void BrowseClassExecute()
+        {
+            exampleGenerator.Select(tabHostWindow, example =>
+            {
+                Dispatcher.CurrentDispatcher.BeginInvoke(() =>
+                {
+                    switch (example)
+                    {
+                        case null:
+                            return;
+
+                        case IClassTypeExample classTypeExample:
+                            AssemblyName = classTypeExample.AssemblyName;
+                            ClassName = classTypeExample.FullClassName;
+                            break;
+                    }
+
+                    Payload = example.Generate();
+
+                    // TODO if validating example, keep reference for validation... and implement validation of course
+                });
+            });
         }
 
 
@@ -125,17 +160,22 @@ namespace PettingZoo.UI.Tab.Publisher
         }
 
 
-        private bool PublishCanExecute()
+        private static bool PublishCanExecute()
         {
             // TODO validate input
             return true;
+        }
+
+        public void HostWindowChanged(Window? hostWindow)
+        {
+            tabHostWindow = hostWindow;
         }
     }
 
 
     public class DesignTimeTapetiPublisherViewModel : TapetiPublisherViewModel
     {
-        public DesignTimeTapetiPublisherViewModel() : base(null!, null!)
+        public DesignTimeTapetiPublisherViewModel() : base(null!, null!, null!)
         {
             AssemblyName = "Messaging.Example";
             ClassName = "Messaging.Example.ExampleMessage";

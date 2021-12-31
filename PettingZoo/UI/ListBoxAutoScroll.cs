@@ -6,6 +6,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 
+// ReSharper disable UnusedMember.Global - public API
+
 namespace PettingZoo.UI
 {
     // Source: https://social.msdn.microsoft.com/Forums/vstudio/en-US/0f524459-b14e-4f9a-8264-267953418a2d/trivial-listboxlistview-autoscroll?forum=wpf
