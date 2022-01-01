@@ -9,23 +9,28 @@ using NuGet.Common;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
+using ILogger = Serilog.ILogger;
 
 namespace PettingZoo.Tapeti.NuGet
 {
     public class NuGetPackageManager : INuGetPackageManager
     {
+        private const string NuGetDefaultSource = @"https://api.nuget.org/v3/index.json";
+
+        private readonly ILogger logger;
         private readonly SourceCacheContext cache;
         private readonly List<Source> sources;
 
         public IReadOnlyList<INuGetPackageSource> Sources => sources;
 
 
-        public NuGetPackageManager()
+        public NuGetPackageManager(ILogger logger)
         {
+            this.logger = logger;
             cache = new SourceCacheContext();
             sources = new List<Source>
             {
-                new(cache, "nuget.org", @"https://api.nuget.org/v3/index.json")
+                new(logger.ForContext("source", NuGetDefaultSource), cache, "nuget.org", NuGetDefaultSource)
             };
         }
 
@@ -53,7 +58,7 @@ namespace PettingZoo.Tapeti.NuGet
                 if (string.IsNullOrEmpty(nameAttribute?.Value) || string.IsNullOrEmpty(urlAttribute?.Value))
                     continue;
 
-                sources.Add(new Source(cache, nameAttribute.Value, urlAttribute.Value));
+                sources.Add(new Source(logger.ForContext("source", urlAttribute.Value), cache, nameAttribute.Value, urlAttribute.Value));
             }
 
             return this;
@@ -63,14 +68,16 @@ namespace PettingZoo.Tapeti.NuGet
 
         private class Source : INuGetPackageSource
         {
+            private readonly ILogger logger;
             private readonly SourceCacheContext cache;
             private readonly SourceRepository repository;
 
             public string Name { get; }
 
 
-            public Source(SourceCacheContext cache, string name, string url)
+            public Source(ILogger logger, SourceCacheContext cache, string name, string url)
             {
+                this.logger = logger;
                 this.cache = cache;
                 Name = name;
                 repository = Repository.Factory.GetCoreV3(url);
@@ -82,19 +89,30 @@ namespace PettingZoo.Tapeti.NuGet
                 if (string.IsNullOrWhiteSpace(searchTerm))
                     return Array.Empty<INuGetPackage>();
 
-                var resource = await repository.GetResourceAsync<PackageSearchResource>(cancellationToken);
-                var filter = new SearchFilter(includePrerelease);
+                try
+                {
+                    var resource = await repository.GetResourceAsync<PackageSearchResource>(cancellationToken);
+                    var filter = new SearchFilter(includePrerelease);
 
-                return (await resource.SearchAsync(searchTerm, filter, 0, 20, new NullLogger(),
-                        cancellationToken))
-                    .Select(p => new Package(cache, repository, p))
-                    .ToArray();
+                    var result = (await resource.SearchAsync(searchTerm, filter, 0, 20, new NullLogger(),
+                            cancellationToken))
+                        .Select(p => new Package(logger, cache, repository, p))
+                        .ToArray();
+
+                    return result;
+                }
+                catch (Exception e)
+                {
+                    logger.Error(e, "NuGet Search failed for term '{searchTerm}' (includePrerelease {includePrerelease})", searchTerm, includePrerelease);
+                    throw;
+                }
             }
         }
 
 
         protected class Package : INuGetPackage
         {
+            private readonly ILogger logger;
             private readonly SourceCacheContext cache;
             private readonly SourceRepository repository;
             private readonly IPackageSearchMetadata packageSearchMetadata;
@@ -108,8 +126,9 @@ namespace PettingZoo.Tapeti.NuGet
             private IReadOnlyList<INuGetPackageVersion>? versions;
 
 
-            public Package(SourceCacheContext cache, SourceRepository repository, IPackageSearchMetadata packageSearchMetadata)
+            public Package(ILogger logger, SourceCacheContext cache, SourceRepository repository, IPackageSearchMetadata packageSearchMetadata)
             {
+                this.logger = logger;
                 this.cache = cache;
                 this.repository = repository;
                 this.packageSearchMetadata = packageSearchMetadata;
@@ -118,9 +137,17 @@ namespace PettingZoo.Tapeti.NuGet
 
             public async Task<IReadOnlyList<INuGetPackageVersion>> GetVersions(CancellationToken cancellationToken)
             {
-                return versions ??= (await packageSearchMetadata.GetVersionsAsync())
-                    .Select(v => new PackageVersion(cache, repository, packageSearchMetadata, v.Version))
-                    .ToArray();
+                try
+                {
+                    return versions ??= (await packageSearchMetadata.GetVersionsAsync())
+                        .Select(v => new PackageVersion(cache, repository, packageSearchMetadata, v.Version))
+                        .ToArray();
+                }
+                catch (Exception e)
+                {
+                    logger.Error(e, "NuGet GetVersions failed for packge Id '{packageId}')", packageSearchMetadata.Identity.Id);
+                    throw;
+                }
             }
         }
 

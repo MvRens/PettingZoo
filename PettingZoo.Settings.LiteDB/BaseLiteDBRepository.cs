@@ -16,7 +16,7 @@ namespace PettingZoo.Settings.LiteDB
 
         public BaseLiteDBRepository(string databaseName)
         {
-            databaseFilename = Path.Combine(PettingZooPaths.AppDataRoot, $"{databaseName}.litedb");
+            databaseFilename = Path.Combine(PettingZooPaths.DatabasePath, $"{databaseName}.litedb");
         }
 
 

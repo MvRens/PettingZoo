@@ -127,8 +127,6 @@ namespace PettingZoo.UI.Tab.Publisher
                     }
 
                     Payload = example.Generate();
-
-                    // TODO if validating example, keep reference for validation... and implement validation of course
                 });
             });
         }

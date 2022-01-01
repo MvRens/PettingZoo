@@ -56,7 +56,7 @@ namespace PettingZoo
 
         private static ILogger CreateLogger()
         {
-            var logPath = Path.Combine(PettingZooPaths.AppDataRoot, @"logs", "PettingZoo.log");
+            var logPath = Path.Combine(PettingZooPaths.LogPath, @"PettingZoo.log");
 
             return new LoggerConfiguration()
                 .MinimumLevel.Verbose()
