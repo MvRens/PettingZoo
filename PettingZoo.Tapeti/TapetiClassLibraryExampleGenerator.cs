@@ -13,14 +13,24 @@ using PettingZoo.Tapeti.NuGet;
 using PettingZoo.Tapeti.UI.ClassSelection;
 using PettingZoo.Tapeti.UI.PackageProgress;
 using PettingZoo.Tapeti.UI.PackageSelection;
+using Serilog;
 
 namespace PettingZoo.Tapeti
 {
     public class TapetiClassLibraryExampleGenerator : IExampleGenerator
     {
+        private readonly ILogger logger;
+
+
+        public TapetiClassLibraryExampleGenerator(ILogger logger)
+        {
+            this.logger = logger;
+        }
+
+
         public void Select(object? ownerWindow, Action<IExample> onExampleSelected)
         {
-            var packageManager = new NuGetPackageManager()
+            var packageManager = new NuGetPackageManager(logger)
                 .WithSourcesFrom(Path.Combine(PettingZooPaths.InstallationRoot, @"nuget.config"))
                 .WithSourcesFrom(Path.Combine(PettingZooPaths.AppDataRoot, @"nuget.config"));
 
@@ -97,8 +107,11 @@ namespace PettingZoo.Tapeti
 
         private static IEnumerable<IClassTypeExample> LoadExamples(IEnumerable<IPackageAssembly> assemblies)
         {
-            // TODO support folder with additional assemblies to load, or implement a proper NuGet install (with dependencies) instead
-            var assemblyParser = new AssemblyParser.AssemblyParser();
+            var assemblyParser = new AssemblyParser.AssemblyParser(
+                PettingZooPaths.AppDataAssemblies,
+                PettingZooPaths.InstallationAssemblies
+                );
+
             return assemblies
                 .SelectMany(a =>
                 {

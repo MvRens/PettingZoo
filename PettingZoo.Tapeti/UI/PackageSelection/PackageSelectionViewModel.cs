@@ -88,6 +88,7 @@ namespace PettingZoo.Tapeti.UI.PackageSelection
         public ICommand AssemblyBrowse => assemblyBrowse;
 
 
+        // TODO hint for extra assemblies path
         public static string HintNuGetSources => string.Format(PackageSelectionStrings.HintNuGetSources, PettingZooPaths.InstallationRoot, PettingZooPaths.AppDataRoot);
 
         public string NuGetSearchTerm

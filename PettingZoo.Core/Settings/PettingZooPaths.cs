@@ -9,6 +9,16 @@ namespace PettingZoo.Core.Settings
         public static string AppDataRoot { get; }
         public static string InstallationRoot { get; }
 
+        public static string LogPath => Path.Combine(AppDataRoot, @"Logs");
+
+        public static string DatabasePath => AppDataRoot;
+
+
+        public const string AssembliesPath = @"Assemblies";
+
+        public static string AppDataAssemblies => Path.Combine(AppDataRoot, AssembliesPath);
+        public static string InstallationAssemblies => Path.Combine(InstallationRoot, AssembliesPath);
+
 
         static PettingZooPaths()
         {

@@ -2,37 +2,37 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
+using System.Runtime.Loader;
 using Newtonsoft.Json;
 using PettingZoo.Core.Generator;
-using Tapeti.DataAnnotations.Extensions;
 
 namespace PettingZoo.Tapeti.AssemblyParser
 {
     public class AssemblyParser : IDisposable
     {
-        private readonly MetadataLoadContext loadContext;
+        private readonly AssemblyLoadContext loadContext;
 
-        public AssemblyParser(params string[] extraAssemblies)
+        public AssemblyParser(params string[] extraAssembliesPaths)
         {
-            var runtimeAssemblies = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll");
-            var paths = runtimeAssemblies
-                .Concat(extraAssemblies)
+            // Using the MetadataLoadContext introduces extra complexity since types can not be compared
+            // (a string from the loaded assembly does not equal our typeof(string) for example).
+            // So instead we'll use a regular AssemblyLoadContext. Not ideal, and will probably cause other side-effects
+            // if we're not careful, but I don't feel like writing a full metadata parser right now.
+            // If you have a better idea, it's open-source! :-)
+            loadContext = new AssemblyLoadContext(null, true);
 
-                // TODO find a cleaner way
-                .Append(typeof(JsonSerializer).Assembly.Location)
-                .Append(typeof(RequiredGuidAttribute).Assembly.Location);
-
-
-            var resolver = new PathAssemblyResolver(paths);
-            loadContext = new MetadataLoadContext(resolver);
+            foreach (var extraAssembly in extraAssembliesPaths.SelectMany(p => Directory.Exists(p)
+                         ? Directory.GetFiles(p, "*.dll")
+                         : Enumerable.Empty<string>()))
+            {
+                loadContext.LoadFromAssemblyPath(extraAssembly);
+            }
         }
 
 
         public void Dispose()
         {
-            loadContext.Dispose();
+            loadContext.Unload();
             GC.SuppressFinalize(this);
         }
 

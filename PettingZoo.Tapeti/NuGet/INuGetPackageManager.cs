@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace PettingZoo.Tapeti.NuGet
 {
-    // TODO support logger
     public interface INuGetPackageManager
     {
         public IReadOnlyList<INuGetPackageSource> Sources { get; }
@@ -36,7 +35,6 @@ namespace PettingZoo.Tapeti.NuGet
     {
         public string Version { get; }
 
-        // TODO support fetching dependencies
         public Task Download(Stream destination, CancellationToken cancellationToken);
     }
 }
