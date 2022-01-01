@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using PettingZoo.WPF.ViewModel;
 
 // TODO validate input
 
@@ -40,7 +41,7 @@ namespace PettingZoo.UI.Subscribe
         
         public SubscribeDialogParams ToModel()
         {
-            return new(Exchange, RoutingKey);
+            return new SubscribeDialogParams(Exchange, RoutingKey);
         }
 
 

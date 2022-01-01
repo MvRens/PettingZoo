@@ -1,5 +1,5 @@
-﻿using System.Windows.Input;
-using PettingZoo.Core.Connection;
+﻿using PettingZoo.Core.Connection;
+using PettingZoo.Core.Generator;
 using PettingZoo.UI.Tab.Publisher;
 using PettingZoo.UI.Tab.Subscriber;
 
@@ -8,11 +8,13 @@ namespace PettingZoo.UI.Tab
     public class ViewTabFactory : ITabFactory
     {
         private readonly ITabHost tabHost;
+        private readonly IExampleGenerator exampleGenerator;
 
 
-        public ViewTabFactory(ITabHost tabHost)
+        public ViewTabFactory(ITabHost tabHost, IExampleGenerator exampleGenerator)
         {
             this.tabHost = tabHost;
+            this.exampleGenerator = exampleGenerator;
         }
 
 
@@ -28,7 +30,7 @@ namespace PettingZoo.UI.Tab
         
         public ITab CreatePublisherTab(IConnection connection, ReceivedMessageInfo? fromReceivedMessage = null)
         {
-            var viewModel = new PublisherViewModel(tabHost, this, connection, fromReceivedMessage);
+            var viewModel = new PublisherViewModel(tabHost, this, connection, exampleGenerator, fromReceivedMessage);
             return new ViewTab<PublisherView, PublisherViewModel>(
                 new PublisherView(viewModel),
                 viewModel,

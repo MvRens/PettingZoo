@@ -19,9 +19,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Images\Connecting.svg" />
+    <None Remove="Images\Busy.svg" />
     <None Remove="Images\Dock.svg" />
     <None Remove="Images\Error.svg" />
+    <None Remove="Images\Example.svg" />
+    <None Remove="Images\Folder.svg" />
     <None Remove="Images\Ok.svg" />
     <None Remove="Images\PublishSend.svg" />
     <None Remove="Images\Undock.svg" />
@@ -33,6 +35,8 @@
     <Resource Include="Images\Disconnect.svg" />
     <Resource Include="Images\Dock.svg" />
     <Resource Include="Images\Error.svg" />
+    <Resource Include="Images\Example.svg" />
+    <Resource Include="Images\Folder.svg" />
     <Resource Include="Images\Ok.svg" />
     <Resource Include="Images\Publish.svg" />
     <Resource Include="Images\PublishSend.svg" />
@@ -40,7 +44,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AvalonEdit" Version="6.1.3.50" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Serilog" Version="2.10.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="SharpVectors" Version="1.7.7" />
     <PackageReference Include="SimpleInjector" Version="5.3.2" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
@@ -50,11 +57,13 @@
     <ProjectReference Include="..\PettingZoo.Core\PettingZoo.Core.csproj" />
     <ProjectReference Include="..\PettingZoo.RabbitMQ\PettingZoo.RabbitMQ.csproj" />
     <ProjectReference Include="..\PettingZoo.Settings.LiteDB\PettingZoo.Settings.LiteDB.csproj" />
+    <ProjectReference Include="..\PettingZoo.Tapeti\PettingZoo.Tapeti.csproj" />
+    <ProjectReference Include="..\PettingZoo.WPF\PettingZoo.WPF.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Images\Undock.svg" />
-    <Resource Include="Images\Connecting.svg" />
+    <Resource Include="Images\Busy.svg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -67,11 +76,6 @@
       <DependentUpon>ConnectionWindowStrings.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Update="UI\Example\ExamplePickerDialogStrings.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ExamplePickerDialogStrings.resx</DependentUpon>
     </Compile>
     <Compile Update="UI\Main\MainWindowStrings.Designer.cs">
       <DependentUpon>MainWindowStrings.resx</DependentUpon>
@@ -126,10 +130,6 @@
     <EmbeddedResource Update="UI\Connection\ConnectionWindowStrings.resx">
       <LastGenOutput>ConnectionWindowStrings.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="UI\Example\ExamplePickerDialogStrings.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>ExamplePickerDialogStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="UI\Main\MainWindowStrings.resx">
       <LastGenOutput>MainWindowStrings.Designer.cs</LastGenOutput>

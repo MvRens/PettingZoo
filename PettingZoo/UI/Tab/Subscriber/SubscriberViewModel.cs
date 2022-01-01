@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using PettingZoo.Core.Connection;
 using PettingZoo.Core.Rendering;
+using PettingZoo.WPF.ViewModel;
 
 // TODO visual hint of where the last read message was when activating the tab again
 

@@ -1,12 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
 namespace PettingZoo.UI.Tab
 {
-    public interface ITabToolbarCommands : INotifyPropertyChanged
+    public interface ITab : INotifyPropertyChanged
+    {
+        string Title { get; }
+        ContentControl Content { get; }
+    }
+
+
+    public interface ITabToolbarCommands
     {
         IEnumerable<TabToolbarCommand> ToolbarCommands { get; }
     }
@@ -19,13 +27,12 @@ namespace PettingZoo.UI.Tab
     }
 
 
-    public interface ITab : ITabToolbarCommands, ITabActivate
+    public interface ITabHostWindowNotify
     {
-        string Title { get; }
-        ContentControl Content { get; }
+        void HostWindowChanged(Window? hostWindow);
     }
-    
-    
+
+
     public readonly struct TabToolbarCommand
     {
         public ICommand Command { get; }

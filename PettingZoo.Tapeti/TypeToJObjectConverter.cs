@@ -6,18 +6,47 @@ using Newtonsoft.Json.Linq;
 
 namespace PettingZoo.Tapeti
 {
-    internal class TypeToJObjectConverter
+    public class TypeToJObjectConverter
     {
         public static JObject Convert(Type type)
         {
+            if (!type.IsClass)
+                throw new ArgumentException($"TypeToJObjectConverter.Convert expects a class, got {type.Name}");
+
+            return ClassToJToken(type, Array.Empty<Type>());
+        }
+
+
+        private static readonly Dictionary<Type, Type> TypeEquivalenceMap = new()
+        {
+            { typeof(uint), typeof(int) },
+            { typeof(long), typeof(int) },
+            { typeof(ulong), typeof(int) },
+            { typeof(short), typeof(int) },
+            { typeof(ushort), typeof(int) },
+            { typeof(float), typeof(decimal) }
+        };
+
+
+        private static readonly Dictionary<Type, JToken> TypeValueMap = new()
+        {
+            { typeof(int), 0 },
+            { typeof(decimal), 0.0 },
+            { typeof(bool), false }
+        };
+
+
+        private static JObject ClassToJToken(Type classType, IEnumerable<Type> typesEncountered)
+        {
+            var newTypesEncountered = typesEncountered.Append(classType).ToArray();
             var result = new JObject();
 
-            foreach (var propertyInfo in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            foreach (var propertyInfo in classType.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
-                // Note: unfortunately we can not call GetCustomAttributes here, as that would
-                // trigger assemblies not included in the package to be loaded
+                // Note: unfortunately we can not call GetCustomAttributes here for now, as that would
+                // trigger assemblies not included in the package to be loaded, which may not exist
 
-                var value = PropertyToJToken(propertyInfo.PropertyType);
+                var value = TypeToJToken(propertyInfo.PropertyType, newTypesEncountered);
                 result.Add(propertyInfo.Name, value);
             }
 
@@ -25,23 +54,12 @@ namespace PettingZoo.Tapeti
         }
 
 
-        private static readonly Dictionary<Type, JToken> TypeMap = new()
+        private static JToken TypeToJToken(Type type, ICollection<Type> typesEncountered)
         {
-            { typeof(short), 0 },
-            { typeof(ushort), 0 },
-            { typeof(int), 0 },
-            { typeof(uint), 0 },
-            { typeof(long), 0 },
-            { typeof(ulong), 0 },
-            { typeof(decimal), 0.0 },
-            { typeof(float), 0.0 },
-            { typeof(bool), false }
-        };
+            var actualType = Nullable.GetUnderlyingType(type) ?? type;
 
-
-        private static JToken PropertyToJToken(Type propertyType)
-        {
-            var actualType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
+            if (TypeEquivalenceMap.TryGetValue(actualType, out var equivalentType))
+                actualType = equivalentType;
 
 
             // String is also a class
@@ -56,14 +74,13 @@ namespace PettingZoo.Tapeti
                     .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
 
                 if (enumerableInterface != null)
-                    return new JArray(Convert(enumerableInterface.GetGenericArguments()[0]));
+                    return new JArray(TypeToJToken(enumerableInterface.GetGenericArguments()[0], typesEncountered));
 
-
-                return Convert(actualType);
+                return typesEncountered.Contains(actualType) ? new JValue((object?)null) : ClassToJToken(actualType, typesEncountered);
             }
 
             if (actualType.IsArray)
-                return new JArray(Convert(actualType.GetElementType()));
+                return new JArray(TypeToJToken(actualType.GetElementType()!, typesEncountered));
 
             if (actualType.IsEnum)
                 return Enum.GetNames(actualType).FirstOrDefault();
@@ -80,11 +97,9 @@ namespace PettingZoo.Tapeti
             if (actualType == typeof(Guid))
                 return Guid.NewGuid().ToString();
 
-            return TypeMap.TryGetValue(actualType, out var mappedToken)
+            return TypeValueMap.TryGetValue(actualType, out var mappedToken)
                 ? mappedToken
                 : $"(unknown type: {actualType.Name})";
         }
-
-
     }
 }

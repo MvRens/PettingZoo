@@ -1,6 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
+// ReSharper disable UnusedMember.Global - public API
+
 namespace PettingZoo.UI
 {
     // Source: http://blog.functionalfun.net/2008/06/wpf-passwordbox-and-data-binding.html
@@ -20,14 +22,10 @@ namespace PettingZoo.UI
 
         private static void OnBoundPasswordChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var box = d as PasswordBox;
-
             // only handle this event when the property is attached to a PasswordBox
             // and when the BindPassword attached property has been set to true
-            if (box == null || !GetBindPassword(d))
-            {
+            if (d is not PasswordBox box || !GetBindPassword(d))
                 return;
-            }
 
             // avoid recursive updating by ignoring the box's changed event
             box.PasswordChanged -= HandlePasswordChanged;
@@ -61,8 +59,7 @@ namespace PettingZoo.UI
 
         private static void HandlePasswordChanged(object sender, RoutedEventArgs e)
         {
-            var box = sender as PasswordBox;
-            if (box == null)
+            if (sender is not PasswordBox box)
                 return;
 
             // set a flag to indicate that we're updating the password

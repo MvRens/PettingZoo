@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using PettingZoo.WPF.ViewModel;
 
 namespace PettingZoo.UI.Tab.Undocked
 {
@@ -17,7 +17,7 @@ namespace PettingZoo.UI.Tab.Undocked
 
         public string Title => tab.Title;
         public ContentControl Content => tab.Content;
-        public IEnumerable<TabToolbarCommand> ToolbarCommands => tab.ToolbarCommands;
+        public IEnumerable<TabToolbarCommand> ToolbarCommands => (tab as ITabToolbarCommands)?.ToolbarCommands ?? Enumerable.Empty<TabToolbarCommand>();
 
         public Visibility ToolbarCommandsSeparatorVisibility =>
             ToolbarCommands.Any() ? Visibility.Visible : Visibility.Collapsed;
@@ -63,23 +63,12 @@ namespace PettingZoo.UI.Tab.Undocked
 
         private class DesignTimeTab : ITab
         {
+            #pragma warning disable CS0067 // "The event ... is never used" - it's part of the interface so it's required.
             public event PropertyChangedEventHandler? PropertyChanged;
-            public IEnumerable<TabToolbarCommand> ToolbarCommands { get; } = Array.Empty<TabToolbarCommand>();
+            #pragma warning restore CS0067
 
             public string Title => "Design-time tab title";
             public ContentControl Content => null!;
-
-
-            public void Activate()
-            {
-                // Just to prevent the "PropertyChanged is never used" message
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
-            }
-
-
-            public void Deactivate()
-            {
-            }
         }
     }
 }

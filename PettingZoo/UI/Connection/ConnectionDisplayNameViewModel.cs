@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using PettingZoo.WPF.ViewModel;
 
 namespace PettingZoo.UI.Connection
 {

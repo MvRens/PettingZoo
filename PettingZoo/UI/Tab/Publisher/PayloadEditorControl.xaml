@@ -17,15 +17,23 @@
             <RadioButton Content="JSON" Style="{StaticResource TypeSelection}" IsChecked="{Binding ContentTypeSelection, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static publisher:PayloadEditorContentType.Json}}" />
             <RadioButton Content="Plain text" Style="{StaticResource TypeSelection}"  IsChecked="{Binding ContentTypeSelection, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static publisher:PayloadEditorContentType.Plain}}" />
             <RadioButton Content="Other" Style="{StaticResource TypeSelection}"  IsChecked="{Binding ContentTypeSelection, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static publisher:PayloadEditorContentType.Other}}" />
-            <TextBox Width="200" Text="{Binding ContentType, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBox Name="TextBoxForBorder" Width="200" Text="{Binding ContentType, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Visibility="{Binding JsonValidationVisibility}" Margin="0,8,0,0">
-            <Image Source="{svgc:SvgImage Source=/Images/Ok.svg, AppName=PettingZoo}" Width="16" Height="16" Margin="4" Visibility="{Binding JsonValidationOk}" />
-            <Image Source="{svgc:SvgImage Source=/Images/Error.svg, AppName=PettingZoo}" Width="16" Height="16" Margin="4" Visibility="{Binding JsonValidationError}" />
-            <TextBlock Text="{Binding JsonValidationMessage}" Margin="4" />
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Visibility="{Binding ValidationVisibility}" Margin="0,8,0,0">
+            <Image Source="{svgc:SvgImage Source=/Images/Ok.svg, AppName=PettingZoo}" Width="16" Height="16" Margin="4" Visibility="{Binding ValidationOk}" />
+            <Image Source="{svgc:SvgImage Source=/Images/Error.svg, AppName=PettingZoo}" Width="16" Height="16" Margin="4" Visibility="{Binding ValidationError}" />
+            <Image Source="{svgc:SvgImage Source=/Images/Busy.svg, AppName=PettingZoo}" Width="16" Height="16" Margin="4" Visibility="{Binding ValidationValidating}" />
+            <TextBlock Text="{Binding ValidationMessage}" Margin="4" />
         </StackPanel>
 
-        <TextBox Text="{Binding Payload, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource Payload}" />
+        <Border Style="{StaticResource ControlBorder}" Name="EditorBorder">
+            <avalonedit:TextEditor
+            xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
+            Name="Editor"
+            SyntaxHighlighting="{Binding SyntaxHighlighting}"
+            Style="{StaticResource Payload}"
+        />
+        </Border>
     </DockPanel>
 </UserControl>

@@ -1,25 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace PettingZoo.Core.Generator
 {
-    public interface IExampleSource : IDisposable
+    public interface IExampleGenerator
     {
-        IExampleFolder GetRootFolder();
+        void Select(object? ownerWindow, Action<IExample> onExampleSelected);
     }
 
 
-    public interface IExampleFolder
-    {
-        public string Name { get; }
-
-        public IReadOnlyList<IExampleFolder> Folders { get; }
-        public IReadOnlyList<IExampleMessage> Messages { get; }
-    }
-
-
-    public interface IExampleMessage
+    public interface IExample
     {
         string Generate();
     }
+
+
+    public interface IClassTypeExample : IExample
+    {
+        public string AssemblyName { get; }
+        public string? Namespace { get; }
+        public string ClassName { get; }
+
+        public string FullClassName => !string.IsNullOrEmpty(Namespace) ? Namespace + "." : "" + ClassName;
+    }
+
+
+    /*
+    public interface IValidatingExample : IExample
+    {
+        bool Validate(string payload, out string validationMessage);
+    }
+    */
 }

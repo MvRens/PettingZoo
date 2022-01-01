@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using PettingZoo.Core.Connection;
+using PettingZoo.Core.Generator;
 using PettingZoo.UI.Connection;
 using PettingZoo.UI.Subscribe;
 using PettingZoo.UI.Tab;
 using PettingZoo.UI.Tab.Undocked;
+using PettingZoo.WPF.ViewModel;
 
 namespace PettingZoo.UI.Main
 {
@@ -44,6 +46,8 @@ namespace PettingZoo.UI.Main
 
         private ConnectionStatusType connectionStatusType;
 
+        public Window? TabHostWindow { get; set; }
+
 
         public string ConnectionStatus
         {
@@ -75,8 +79,8 @@ namespace PettingZoo.UI.Main
                 if (!SetField(ref activeTab, value, otherPropertiesChanged: new[] { nameof(ToolbarCommands), nameof(ToolbarCommandsSeparatorVisibility) }))
                     return;
 
-                currentTab?.Deactivate();
-                activeTab?.Activate();
+                (currentTab as ITabActivate)?.Deactivate();
+                (activeTab as ITabActivate)?.Activate();
             }
         }
 
@@ -99,7 +103,7 @@ namespace PettingZoo.UI.Main
 
 
         public MainWindowViewModel(IConnectionFactory connectionFactory, IConnectionDialog connectionDialog, 
-            ISubscribeDialog subscribeDialog, ITabContainer tabContainer)
+            ISubscribeDialog subscribeDialog, ITabContainer tabContainer, IExampleGenerator exampleGenerator)
         {
             this.connectionFactory = connectionFactory;
             this.connectionDialog = connectionDialog;
@@ -117,7 +121,7 @@ namespace PettingZoo.UI.Main
             closeTabCommand = new DelegateCommand(CloseTabExecute, HasActiveTabCanExecute);
             undockTabCommand = new DelegateCommand(UndockTabExecute, HasActiveTabCanExecute);
 
-            tabFactory = new ViewTabFactory(this);
+            tabFactory = new ViewTabFactory(this, exampleGenerator);
         }
 
 
@@ -226,6 +230,7 @@ namespace PettingZoo.UI.Main
             undockedTabs.Add(tab, tabHostWindow);
 
             tabHostWindow.Show();
+            (tab as ITabHostWindowNotify)?.HostWindowChanged(tabHostWindow);
         }
 
 
@@ -263,7 +268,9 @@ namespace PettingZoo.UI.Main
         {
             Tabs.Add(tab);
             ActiveTab = tab;
-            
+
+            (tab as ITabHostWindowNotify)?.HostWindowChanged(TabHostWindow);
+
             closeTabCommand.RaiseCanExecuteChanged();
             undockTabCommand.RaiseCanExecuteChanged();
             RaisePropertyChanged(nameof(NoTabsVisibility));
@@ -276,6 +283,9 @@ namespace PettingZoo.UI.Main
                 tabHostWindow.Close();
 
             AddTab(tab);
+            ActiveTab = tab;
+
+            (tab as ITabHostWindowNotify)?.HostWindowChanged(TabHostWindow);
         }
 
         public void UndockedTabClosed(ITab tab)
@@ -320,7 +330,7 @@ namespace PettingZoo.UI.Main
     
     public class DesignTimeMainWindowViewModel : MainWindowViewModel
     {
-        public DesignTimeMainWindowViewModel() : base(null!, null!, null!, null!)
+        public DesignTimeMainWindowViewModel() : base(null!, null!, null!, null!, null!)
         {
         }
     }

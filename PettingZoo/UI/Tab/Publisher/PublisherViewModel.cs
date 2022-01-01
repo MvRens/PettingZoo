@@ -4,6 +4,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using PettingZoo.Core.Connection;
+using PettingZoo.Core.Generator;
+using PettingZoo.WPF.ViewModel;
 
 namespace PettingZoo.UI.Tab.Publisher
 {
@@ -14,9 +16,10 @@ namespace PettingZoo.UI.Tab.Publisher
     }
     
 
-    public class PublisherViewModel : BaseViewModel, ITabToolbarCommands, IPublishDestination
+    public class PublisherViewModel : BaseViewModel, ITabToolbarCommands, ITabHostWindowNotify, IPublishDestination
     {
         private readonly IConnection connection;
+        private readonly IExampleGenerator exampleGenerator;
         private readonly ITabFactory tabFactory;
         private readonly ITabHost tabHost;
 
@@ -36,6 +39,7 @@ namespace PettingZoo.UI.Tab.Publisher
 
         private readonly DelegateCommand publishCommand;
         private readonly TabToolbarCommand[] toolbarCommands;
+        private Window? tabHostWindow;
 
 
         public bool SendToExchange
@@ -150,9 +154,10 @@ namespace PettingZoo.UI.Tab.Publisher
         string IPublishDestination.RoutingKey => SendToExchange ? RoutingKey : Queue;
 
 
-        public PublisherViewModel(ITabHost tabHost, ITabFactory tabFactory, IConnection connection, ReceivedMessageInfo? fromReceivedMessage = null)
+        public PublisherViewModel(ITabHost tabHost, ITabFactory tabFactory, IConnection connection, IExampleGenerator exampleGenerator, ReceivedMessageInfo? fromReceivedMessage = null)
         {
             this.connection = connection;
+            this.exampleGenerator = exampleGenerator;
             this.tabFactory = tabFactory;
             this.tabHost = tabHost;
 
@@ -187,16 +192,35 @@ namespace PettingZoo.UI.Tab.Publisher
             switch (value)
             {
                 case MessageType.Raw:
-                    var rawPublisherViewModel = new RawPublisherViewModel(connection, this);
-                    rawPublisherView ??= new RawPublisherView(rawPublisherViewModel);
+                    RawPublisherViewModel rawPublisherViewModel;
+
+                    if (rawPublisherView == null)
+                    {
+                        rawPublisherViewModel = new RawPublisherViewModel(connection, this);
+                        rawPublisherView ??= new RawPublisherView(rawPublisherViewModel);
+                    }
+                    else
+                        rawPublisherViewModel = (RawPublisherViewModel)rawPublisherView.DataContext;
+
                     MessageTypeControl = rawPublisherView;
 
                     messageTypePublishCommand = rawPublisherViewModel.PublishCommand;
                     break;
                     
                 case MessageType.Tapeti:
-                    var tapetiPublisherViewModel = new TapetiPublisherViewModel(connection, this);
-                    tapetiPublisherView ??= new TapetiPublisherView(tapetiPublisherViewModel);
+                    TapetiPublisherViewModel tapetiPublisherViewModel;
+
+                    if (tapetiPublisherView == null)
+                    {
+                        tapetiPublisherViewModel = new TapetiPublisherViewModel(connection, this, exampleGenerator);
+                        tapetiPublisherView ??= new TapetiPublisherView(tapetiPublisherViewModel);
+
+                        if (tabHostWindow != null)
+                            tapetiPublisherViewModel.HostWindowChanged(tabHostWindow);
+                    }
+                    else
+                        tapetiPublisherViewModel = (TapetiPublisherViewModel)tapetiPublisherView.DataContext;
+
                     MessageTypeControl = tapetiPublisherView;
 
                     messageTypePublishCommand = tapetiPublisherViewModel.PublishCommand;
@@ -218,7 +242,7 @@ namespace PettingZoo.UI.Tab.Publisher
 
             if (TapetiPublisherViewModel.IsTapetiMessage(fromReceivedMessage))
             {
-                var tapetiPublisherViewModel = new TapetiPublisherViewModel(connection, this, fromReceivedMessage);
+                var tapetiPublisherViewModel = new TapetiPublisherViewModel(connection, this, exampleGenerator, fromReceivedMessage);
                 tapetiPublisherView = new TapetiPublisherView(tapetiPublisherViewModel);
 
                 MessageType = MessageType.Tapeti;
@@ -245,12 +269,20 @@ namespace PettingZoo.UI.Tab.Publisher
             subscriber.Start();
             return subscriber.QueueName;
         }
+
+
+        public void HostWindowChanged(Window? hostWindow)
+        {
+            tabHostWindow = hostWindow;
+
+            (tapetiPublisherView?.DataContext as TapetiPublisherViewModel)?.HostWindowChanged(hostWindow);
+        }
     }
 
 
     public class DesignTimePublisherViewModel : PublisherViewModel
     {
-        public DesignTimePublisherViewModel() : base(null!, null!, null!)
+        public DesignTimePublisherViewModel() : base(null!, null!, null!, null!)
         {
         }
 

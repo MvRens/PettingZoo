@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace PettingZoo.UI.Subscribe
+﻿namespace PettingZoo.UI.Subscribe
 {
     public interface ISubscribeDialog
     {
