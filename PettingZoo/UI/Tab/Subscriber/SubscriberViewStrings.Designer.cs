@@ -97,6 +97,15 @@ namespace PettingZoo.UI.Tab.Subscriber {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New messages.
+        /// </summary>
+        public static string LabelNewMessages {
+            get {
+                return ResourceManager.GetString("LabelNewMessages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Body.
         /// </summary>
         public static string PanelTitleBody {
