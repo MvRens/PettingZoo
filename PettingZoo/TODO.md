@@ -12,4 +12,3 @@ Should-have
 
 Nice-to-have
 ------------
-- Validation against message classes (for Tapeti messages)

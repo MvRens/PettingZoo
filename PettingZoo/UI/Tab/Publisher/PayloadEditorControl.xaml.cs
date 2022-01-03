@@ -3,6 +3,7 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Data;
+using PettingZoo.Core.Validation;
 
 namespace PettingZoo.UI.Tab.Publisher
 {
@@ -84,6 +85,13 @@ namespace PettingZoo.UI.Tab.Publisher
                 SetValue(PayloadProperty, value);
                 viewModel.Payload = value;
             }
+        }
+
+
+        public IPayloadValidator? Validator
+        {
+            get => viewModel.Validator;
+            set => viewModel.Validator = value;
         }
 
 
@@ -181,7 +189,7 @@ namespace PettingZoo.UI.Tab.Publisher
 
                             errorHighlightingTransformer.ErrorPosition = viewModel.ValidationInfo.ErrorPosition;
 
-                            // TODO this can probably be optimized to only redraw the affected line
+                            // This can probably be optimized to only redraw the affected line, but the message is typically so small it's not worth the effort at the moment
                             Editor.TextArea.TextView.Redraw();
                             break;
 

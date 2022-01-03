@@ -51,7 +51,7 @@ namespace PettingZoo.Tapeti
 
                     var progressWindow = new PackageProgressWindow();
                     progressWindow.Left = windowBounds.Left + (windowBounds.Width - progressWindow.Width) / 2;
-                    progressWindow.Left = windowBounds.Top + (windowBounds.Height - progressWindow.Height) / 2;
+                    progressWindow.Top = windowBounds.Top + (windowBounds.Height - progressWindow.Height) / 2;
                     progressWindow.Show();
 
                     Task.Run(async () =>

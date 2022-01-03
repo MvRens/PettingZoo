@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PettingZoo.UI.Tab.Publisher {
+namespace PettingZoo.Tapeti.AssemblyParser {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace PettingZoo.UI.Tab.Publisher {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class PayloadEditorStrings {
+    internal class AssemblyParserStrings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal PayloadEditorStrings() {
+        internal AssemblyParserStrings() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace PettingZoo.UI.Tab.Publisher {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PettingZoo.UI.Tab.Publisher.PayloadEditorStrings", typeof(PayloadEditorStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PettingZoo.Tapeti.AssemblyParser.AssemblyParserStrings", typeof(AssemblyParserStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,65 +61,29 @@ namespace PettingZoo.UI.Tab.Publisher {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to JSON.
+        ///   Looks up a localized string similar to JSON deserialization returned null.
         /// </summary>
-        internal static string ContentTypeJson {
+        internal static string JsonDeserializationNull {
             get {
-                return ResourceManager.GetString("ContentTypeJson", resourceCulture);
+                return ResourceManager.GetString("JsonDeserializationNull", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Other.
+        ///   Looks up a localized string similar to Failed validation: {0}.
         /// </summary>
-        internal static string ContentTypeOther {
+        internal static string ValidationErrors {
             get {
-                return ResourceManager.GetString("ContentTypeOther", resourceCulture);
+                return ResourceManager.GetString("ValidationErrors", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Plain text.
+        ///   Looks up a localized string similar to Failed validation for {0}: {1}.
         /// </summary>
-        internal static string ContentTypePlain {
+        internal static string ValidationErrorsMembers {
             get {
-                return ResourceManager.GetString("ContentTypePlain", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid: {0}.
-        /// </summary>
-        internal static string ValidationError {
-            get {
-                return ResourceManager.GetString("ValidationError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Valid.
-        /// </summary>
-        internal static string ValidationOk {
-            get {
-                return ResourceManager.GetString("ValidationOk", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Valid syntax.
-        /// </summary>
-        internal static string ValidationOkSyntax {
-            get {
-                return ResourceManager.GetString("ValidationOkSyntax", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Validating....
-        /// </summary>
-        internal static string ValidationValidating {
-            get {
-                return ResourceManager.GetString("ValidationValidating", resourceCulture);
+                return ResourceManager.GetString("ValidationErrorsMembers", resourceCulture);
             }
         }
     }

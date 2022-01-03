@@ -79,6 +79,24 @@ namespace PettingZoo.Tapeti.UI.ClassSelection {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Only classes ending in &quot;Message&quot;.
+        /// </summary>
+        public static string CheckboxMessageOnly {
+            get {
+                return ResourceManager.GetString("CheckboxMessageOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter.
+        /// </summary>
+        public static string LabelFilter {
+            get {
+                return ResourceManager.GetString("LabelFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select class.
         /// </summary>
         public static string WindowTitle {

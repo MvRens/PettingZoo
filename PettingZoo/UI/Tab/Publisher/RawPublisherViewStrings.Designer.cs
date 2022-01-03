@@ -223,6 +223,15 @@ namespace PettingZoo.UI.Tab.Publisher {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Priority must be a valid byte value.
+        /// </summary>
+        public static string PriorityParseFailed {
+            get {
+                return ResourceManager.GetString("PriorityParseFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ⏶ Collapse.
         /// </summary>
         public static string PropertiesCollapse {
@@ -237,6 +246,24 @@ namespace PettingZoo.UI.Tab.Publisher {
         public static string PropertiesExpand {
             get {
                 return ResourceManager.GetString("PropertiesExpand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid parameters.
+        /// </summary>
+        public static string PublishValidationErrorTitle {
+            get {
+                return ResourceManager.GetString("PublishValidationErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Timestamp must be a valid date/time value.
+        /// </summary>
+        public static string TimestampParseFailed {
+            get {
+                return ResourceManager.GetString("TimestampParseFailed", resourceCulture);
             }
         }
     }

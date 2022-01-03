@@ -5,12 +5,13 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using PettingZoo.Core.Connection;
 using PettingZoo.Core.Generator;
+using PettingZoo.Core.Validation;
 using PettingZoo.WPF.ViewModel;
 using IConnection = PettingZoo.Core.Connection.IConnection;
 
 namespace PettingZoo.UI.Tab.Publisher
 {
-    public class TapetiPublisherViewModel : BaseViewModel, ITabHostWindowNotify
+    public class TapetiPublisherViewModel : BaseViewModel, ITabHostWindowNotify, IPayloadValidator
     {
         private readonly IConnection connection;
         private readonly IPublishDestination publishDestination;
@@ -23,6 +24,7 @@ namespace PettingZoo.UI.Tab.Publisher
         private string className = "";
         private string assemblyName = "";
         private Window? tabHostWindow;
+        private IValidatingExample? validatingExample;
 
 
         public string CorrelationId
@@ -35,7 +37,11 @@ namespace PettingZoo.UI.Tab.Publisher
         public string ClassName
         {
             get => string.IsNullOrEmpty(className) ? AssemblyName + "." : className;
-            set => SetField(ref className, value);
+            set
+            {
+                if (SetField(ref className, value))
+                    validatingExample = null;
+            }
         }
 
 
@@ -123,6 +129,8 @@ namespace PettingZoo.UI.Tab.Publisher
                         case IClassTypeExample classTypeExample:
                             AssemblyName = classTypeExample.AssemblyName;
                             ClassName = classTypeExample.FullClassName;
+
+                            validatingExample = classTypeExample as IValidatingExample;
                             break;
                     }
 
@@ -139,8 +147,6 @@ namespace PettingZoo.UI.Tab.Publisher
                 return string.IsNullOrEmpty(value) ? null : value;
             }
             
-            // TODO background worker / async
-
             connection.Publish(new PublishMessageInfo(
                 publishDestination.Exchange,
                 publishDestination.RoutingKey,
@@ -167,6 +173,18 @@ namespace PettingZoo.UI.Tab.Publisher
         public void HostWindowChanged(Window? hostWindow)
         {
             tabHostWindow = hostWindow;
+        }
+
+
+        public bool CanValidate()
+        {
+            return validatingExample != null && validatingExample.CanValidate();
+        }
+
+
+        public void Validate(string validatePayload)
+        {
+            validatingExample?.Validate(validatePayload);
         }
     }
 

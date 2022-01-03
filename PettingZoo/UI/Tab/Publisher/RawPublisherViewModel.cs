@@ -216,12 +216,34 @@ namespace PettingZoo.UI.Tab.Publisher
             {
                 return string.IsNullOrEmpty(value) ? null : value;
             }
-            
-            // TODO check parsing of priority and timestamp
-            
-            var headers = Headers.Where(h => h.IsValid()).ToDictionary(h => h.Key, h => h.Value);
 
-            // TODO background worker / async
+            byte? priorityValue = null;
+            DateTime? timestampValue = null;
+
+            if (!string.IsNullOrWhiteSpace(Priority))
+            {
+                if (byte.TryParse(Priority, out var priorityParsedValue))
+                    priorityValue = priorityParsedValue;
+                else
+                {
+                    MessageBox.Show(RawPublisherViewStrings.PriorityParseFailed, RawPublisherViewStrings.PublishValidationErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(Timestamp))
+            {
+                if (DateTime.TryParse(Timestamp, out var timestampParsedValue))
+                    timestampValue = timestampParsedValue;
+                else
+                {
+                    MessageBox.Show(RawPublisherViewStrings.TimestampParseFailed, RawPublisherViewStrings.PublishValidationErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
+
+
+            var headers = Headers.Where(h => h.IsValid()).ToDictionary(h => h.Key, h => h.Value);
 
             connection.Publish(new PublishMessageInfo(
                 publishDestination.Exchange, 
@@ -236,9 +258,9 @@ namespace PettingZoo.UI.Tab.Publisher
                     DeliveryMode = deliveryMode,
                     Expiration = NullIfEmpty(Expiration),
                     MessageId = NullIfEmpty(MessageId),
-                    Priority = !string.IsNullOrEmpty(Priority) && byte.TryParse(Priority, out var priorityValue) ? priorityValue : null,
+                    Priority = priorityValue,
                     ReplyTo = publishDestination.GetReplyTo(),
-                    Timestamp = !string.IsNullOrEmpty(Timestamp) && DateTime.TryParse(Timestamp, out var timestampValue) ? timestampValue : null,
+                    Timestamp = timestampValue,
                     Type = NullIfEmpty(TypeProperty),
                     UserId = NullIfEmpty(UserId)
                 }));
