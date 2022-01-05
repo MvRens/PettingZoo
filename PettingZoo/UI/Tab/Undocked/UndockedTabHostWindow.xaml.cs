@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace PettingZoo.UI.Tab.Undocked
 {
@@ -29,6 +31,16 @@ namespace PettingZoo.UI.Tab.Undocked
             Closed += (_, _) =>
             {
                 viewModel.WindowClosed();
+            };
+
+            Activated += (_, _) =>
+            {
+                viewModel.Activate();
+            };
+
+            Deactivated += (_, _) =>
+            {
+                viewModel.Deactivate();
             };
         }
 

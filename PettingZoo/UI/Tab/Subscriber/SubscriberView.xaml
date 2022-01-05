@@ -6,11 +6,15 @@
              xmlns:ui="clr-namespace:PettingZoo.UI"
              xmlns:res="clr-namespace:PettingZoo.UI.Tab.Subscriber"
              xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+             xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
              mc:Ignorable="d" 
              d:DesignHeight="450" 
              d:DesignWidth="800"
              d:DataContext="{d:DesignInstance res:DesignTimeSubscriberViewModel, IsDesignTimeCreatable=True}"
              Background="White">
+    <UserControl.Resources>
+        <res:SameMessageVisibilityConverter x:Key="SameMessageVisibilityConverter" />
+    </UserControl.Resources>
     <Grid Margin="4">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -22,7 +26,8 @@
                      HorizontalContentAlignment="Stretch"
                      ItemsSource="{Binding Messages}" 
                      SelectedItem="{Binding Path=SelectedMessage, Mode=TwoWay}"
-                     ui:ListBox.AutoScroll="True">
+                     ui:ListBox.AutoScroll="True"
+                     x:Name="ReferenceControlForBorder">
             <ListBox.Resources>
                 <ui:BindingProxy x:Key="ContextMenuProxy" Data="{Binding}" />
             </ListBox.Resources>
@@ -30,11 +35,37 @@
                 <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" MinWidth="150"/>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto" MinWidth="150" SharedSizeGroup="DateTime"/>
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding ReceivedTimestamp, StringFormat=g}" Style="{StaticResource Timestamp}"></TextBlock>
-                        <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding RoutingKey}" Style="{StaticResource RoutingKey}"></TextBlock>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!-- TODO insert as non-focusable item instead, so it's not part of the selection (and perhaps also fixes the bug mentioned in SubscriberViewModel) -->
+                        <Grid Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition SharedSizeGroup="DateTime" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.Visibility>
+                                <MultiBinding Converter="{StaticResource SameMessageVisibilityConverter}">
+                                    <Binding RelativeSource="{RelativeSource Self}" Path="DataContext" />
+                                    <Binding RelativeSource="{RelativeSource AncestorType={x:Type ListBox}}" Path="DataContext.NewMessage" />
+                                </MultiBinding>
+                            </Grid.Visibility>
+
+                            <Separator Grid.Column="0" Margin="0,0,8,0" />
+                            <TextBlock Grid.Column="1" Text="{x:Static res:SubscriberViewStrings.LabelNewMessages}" HorizontalAlignment="Center" Background="{Binding Background, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Foreground="{x:Static SystemColors.GrayTextBrush}" />
+                            <Separator Grid.Column="2" Margin="8,0,0,0" />
+                        </Grid>
+
+                        <TextBlock Grid.Column="0" Grid.Row="1" Text="{Binding ReceivedTimestamp, StringFormat=g}" Style="{StaticResource Timestamp}" />
+                        <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding RoutingKey}" Style="{StaticResource RoutingKey}" />
 
                         <Grid.ContextMenu>
                             <ContextMenu>
@@ -66,12 +97,11 @@
             <Border Grid.Column="0" Grid.Row="1" Style="{StaticResource SidePanel}">
                 <DockPanel>
                     <Label DockPanel.Dock="Top" Style="{StaticResource HeaderLabel}" Content="{x:Static res:SubscriberViewStrings.PanelTitleBody}"/>
-                    <TextBox 
-                            Text="{Binding SelectedMessageBody, Mode=OneWay}" 
-                            BorderThickness="0"
-                            IsReadOnly="True" 
-                            HorizontalScrollBarVisibility="Auto" 
-                            VerticalScrollBarVisibility="Auto"/>
+                    <Border Style="{StaticResource ControlBorder}" Name="EditorBorder">
+                        <avalonedit:TextEditor
+                            Name="Editor"
+                            Style="{StaticResource Payload}" />
+                    </Border>
                 </DockPanel>
             </Border>
             <GridSplitter HorizontalAlignment="Stretch" Grid.Column="0" Grid.Row="2" Height="5" ResizeDirection="Rows"/>

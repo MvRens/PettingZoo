@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PettingZoo.UI
+namespace PettingZoo.Core.Validation
 {
     public readonly struct TextPosition : IEquatable<TextPosition>
     {

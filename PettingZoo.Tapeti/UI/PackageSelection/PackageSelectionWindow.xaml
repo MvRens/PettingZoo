@@ -8,10 +8,11 @@
         mc:Ignorable="d" 
         Title="{x:Static packageSelection:PackageSelectionStrings.WindowTitle}" 
         Height="600" 
-        Width="800"
+        Width="600"
         ResizeMode="CanResizeWithGrip"
         WindowStartupLocation="CenterOwner"
-        d:DataContext="{d:DesignInstance packageSelection:DesignTimePackageSelectionViewModel, IsDesignTimeCreatable=True}">
+        d:DataContext="{d:DesignInstance packageSelection:DesignTimePackageSelectionViewModel, IsDesignTimeCreatable=True}"
+        FocusManager.FocusedElement="{Binding ElementName=DefaultFocus}">
     <Window.Resources>
         <ResourceDictionary>
             <Style x:Key="PackageTitle" TargetType="{x:Type TextBlock}">
@@ -26,6 +27,10 @@
 
             <Style x:Key="PackageDescription" TargetType="{x:Type TextBlock}">
                 <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+            </Style>
+
+            <Style x:Key="Hint" TargetType="{x:Type TextBlock}">
+                <Setter Property="Foreground" Value="{x:Static SystemColors.GrayTextBrush}" />
             </Style>
 
             <ResourceDictionary.MergedDictionaries>
@@ -68,7 +73,7 @@
             </ComboBox.ItemTemplate>
         </ComboBox>
 
-        <TextBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding NuGetSearchTerm, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding NuGetSearchTerm, UpdateSourceTrigger=PropertyChanged}" x:Name="DefaultFocus" />
         <TextBlock Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Text="{x:Static packageSelection:PackageSelectionStrings.PlaceholderNuGetSearch}" Visibility="{Binding NuGetSearchTermPlaceholderVisibility}" Style="{StaticResource Placeholder}" />
 
         <CheckBox Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Content="{x:Static packageSelection:PackageSelectionStrings.CheckPrerelease}" IsChecked="{Binding NuGetIncludePrerelease}" />
@@ -82,6 +87,11 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid>
+                        <Grid.InputBindings>
+                            <MouseBinding 
+                                MouseAction="LeftDoubleClick" 
+                                Command="{Binding DataContext.SelectCommand, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}" />
+                        </Grid.InputBindings>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
@@ -116,11 +126,11 @@
             </ComboBox.ItemTemplate>
         </ComboBox>
 
-        <TextBlock Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding HintNuGetSources}" TextWrapping="Wrap" />
+        <TextBlock Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding HintNuGetSources}" TextWrapping="Wrap" Style="{StaticResource Hint}" />
 
         <StackPanel Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Style="{StaticResource FooterPanel}">
             <Button Content="{x:Static packageSelection:PackageSelectionStrings.ButtonSelect}" Style="{StaticResource FooterButton}" Command="{Binding SelectCommand}" />
-            <Button Content="{x:Static packageSelection:PackageSelectionStrings.ButtonCancel}"  Style="{StaticResource FooterButton}" />
+            <Button IsCancel="True" Content="{x:Static packageSelection:PackageSelectionStrings.ButtonCancel}"  Style="{StaticResource FooterButton}" />
         </StackPanel>
     </controls:GridLayout>
 </Window>

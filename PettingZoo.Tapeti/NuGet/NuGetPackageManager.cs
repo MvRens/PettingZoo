@@ -27,6 +27,7 @@ namespace PettingZoo.Tapeti.NuGet
         public NuGetPackageManager(ILogger logger)
         {
             this.logger = logger;
+
             cache = new SourceCacheContext();
             sources = new List<Source>
             {

@@ -29,11 +29,10 @@
 
         <Border Style="{StaticResource ControlBorder}" Name="EditorBorder">
             <avalonedit:TextEditor
-            xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
-            Name="Editor"
-            SyntaxHighlighting="{Binding SyntaxHighlighting}"
-            Style="{StaticResource Payload}"
-        />
+                xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
+                Name="Editor"
+                SyntaxHighlighting="{Binding SyntaxHighlighting}"
+                Style="{StaticResource Payload}" />
         </Border>
     </DockPanel>
 </UserControl>

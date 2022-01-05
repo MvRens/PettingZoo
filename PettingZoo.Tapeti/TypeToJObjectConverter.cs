@@ -43,9 +43,6 @@ namespace PettingZoo.Tapeti
 
             foreach (var propertyInfo in classType.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
-                // Note: unfortunately we can not call GetCustomAttributes here for now, as that would
-                // trigger assemblies not included in the package to be loaded, which may not exist
-
                 var value = TypeToJToken(propertyInfo.PropertyType, newTypesEncountered);
                 result.Add(propertyInfo.Name, value);
             }
@@ -61,6 +58,8 @@ namespace PettingZoo.Tapeti
             if (TypeEquivalenceMap.TryGetValue(actualType, out var equivalentType))
                 actualType = equivalentType;
 
+
+            // TODO check for JsonConverter attribute? doubt we'll be able to generate a nice value for it, but at least we can provide a placeholder
 
             // String is also a class
             if (actualType == typeof(string))

@@ -8,7 +8,7 @@ using PettingZoo.WPF.ViewModel;
 
 namespace PettingZoo.UI.Tab.Undocked
 {
-    public class UndockedTabHostViewModel : BaseViewModel
+    public class UndockedTabHostViewModel : BaseViewModel, ITabActivate
     {
         private readonly ITabHost tabHost;
         private readonly ITab tab;
@@ -50,6 +50,17 @@ namespace PettingZoo.UI.Tab.Undocked
         public void WindowClosed()
         {
             tabHost.UndockedTabClosed(tab);
+        }
+
+
+        public void Activate()
+        {
+            (tab as ITabActivate)?.Activate();
+        }
+
+        public void Deactivate()
+        {
+            (tab as ITabActivate)?.Deactivate();
         }
     }
 
