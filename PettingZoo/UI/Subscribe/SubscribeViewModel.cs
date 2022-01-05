@@ -2,8 +2,6 @@
 using System.Windows.Input;
 using PettingZoo.WPF.ViewModel;
 
-// TODO validate input
-
 namespace PettingZoo.UI.Subscribe
 {
     public class SubscribeViewModel : BaseViewModel
@@ -11,28 +9,30 @@ namespace PettingZoo.UI.Subscribe
         private string exchange;
         private string routingKey;
 
+        private readonly DelegateCommand okCommand;
+
 
         public string Exchange
         {
             get => exchange;
-            set => SetField(ref exchange, value);
+            set => SetField(ref exchange, value, delegateCommandsChanged: new [] { okCommand });
         }
 
         public string RoutingKey
         {
             get => routingKey;
-            set => SetField(ref routingKey, value);
+            set => SetField(ref routingKey, value, delegateCommandsChanged: new[] { okCommand });
         }
 
 
-        public ICommand OkCommand { get; }
+        public ICommand OkCommand => okCommand;
 
         public event EventHandler? OkClick;
 
 
         public SubscribeViewModel(SubscribeDialogParams subscribeParams)
         {
-            OkCommand = new DelegateCommand(OkExecute, OkCanExecute);
+            okCommand = new DelegateCommand(OkExecute, OkCanExecute);
             
             exchange = subscribeParams.Exchange;
             routingKey = subscribeParams.RoutingKey;
@@ -51,9 +51,9 @@ namespace PettingZoo.UI.Subscribe
         }
 
 
-        private static bool OkCanExecute()
+        private bool OkCanExecute()
         {
-            return true;
+            return !string.IsNullOrWhiteSpace(Exchange) && !string.IsNullOrWhiteSpace(RoutingKey);
         }
     }
 

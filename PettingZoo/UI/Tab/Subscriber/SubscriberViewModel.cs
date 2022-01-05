@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Threading;
 using PettingZoo.Core.Connection;
 using PettingZoo.Core.Rendering;
 using PettingZoo.WPF.ViewModel;
 
-// TODO visual hint of where the last read message was when activating the tab again
+// TODO if the "New message" line is visible when this tab is undocked, the line in the ListBox does not shrink. Haven't been able to figure out yet how to solve it
 
 namespace PettingZoo.UI.Tab.Subscriber
 {
@@ -18,7 +20,7 @@ namespace PettingZoo.UI.Tab.Subscriber
         private readonly ITabFactory tabFactory;
         private readonly IConnection connection;
         private readonly ISubscriber subscriber;
-        private readonly TaskScheduler uiScheduler;
+        private readonly Dispatcher dispatcher;
         private ReceivedMessageInfo? selectedMessage;
         private readonly DelegateCommand clearCommand;
         private readonly TabToolbarCommand[] toolbarCommands;
@@ -27,6 +29,8 @@ namespace PettingZoo.UI.Tab.Subscriber
         private readonly DelegateCommand createPublisherCommand;
 
         private bool tabActive;
+        private ReceivedMessageInfo? newMessage;
+        private Timer? newMessageTimer;
         private int unreadCount;
 
 
@@ -46,6 +50,14 @@ namespace PettingZoo.UI.Tab.Subscriber
                     UpdateSelectedMessageProperties();
             }
         }
+
+
+        public ReceivedMessageInfo? NewMessage
+        {
+            get => newMessage;
+            set => SetField(ref newMessage, value);
+        }
+
 
         public string SelectedMessageBody =>
             SelectedMessage != null
@@ -70,8 +82,8 @@ namespace PettingZoo.UI.Tab.Subscriber
             this.tabFactory = tabFactory;
             this.connection = connection;
             this.subscriber = subscriber;
-            
-            uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+
+            dispatcher = Dispatcher.CurrentDispatcher;
 
             Messages = new ObservableCollection<ReceivedMessageInfo>();
             clearCommand = new DelegateCommand(ClearExecute, ClearCanExecute);
@@ -116,12 +128,14 @@ namespace PettingZoo.UI.Tab.Subscriber
 
         private void SubscriberMessageReceived(object? sender, MessageReceivedEventArgs args)
         {
-            RunFromUiScheduler(() =>
+            dispatcher.BeginInvoke(() =>
             {
                 if (!tabActive)
                 {
                     unreadCount++;
                     RaisePropertyChanged(nameof(Title));
+
+                    NewMessage ??= args.MessageInfo;
                 }
 
                 Messages.Add(args.MessageInfo);
@@ -140,22 +154,39 @@ namespace PettingZoo.UI.Tab.Subscriber
         }
 
 
-        private void RunFromUiScheduler(Action action)
-        {
-            _ = Task.Factory.StartNew(action, CancellationToken.None, TaskCreationOptions.None, uiScheduler);
-        }
-
-
         public void Activate()
         {
             tabActive = true;
             unreadCount = 0;
 
             RaisePropertyChanged(nameof(Title));
+
+            if (NewMessage == null) 
+                return;
+
+            newMessageTimer?.Dispose();
+            newMessageTimer = new Timer(
+                _ =>
+                {
+                    dispatcher.BeginInvoke(() =>
+                    {
+                        NewMessage = null;
+                    });
+                },
+                null,
+                TimeSpan.FromSeconds(5),
+                Timeout.InfiniteTimeSpan);
         }
 
         public void Deactivate()
         {
+            if (newMessageTimer != null)
+            {
+                newMessageTimer.Dispose();
+                newMessageTimer = null;
+            }
+
+            NewMessage = null;
             tabActive = false;
         }
     }
@@ -165,6 +196,20 @@ namespace PettingZoo.UI.Tab.Subscriber
     {
         public DesignTimeSubscriberViewModel() : base(null!, null!, null!, new DesignTimeSubscriber())
         {
+            for (var i = 1; i <= 5; i++)
+                Messages.Add(new ReceivedMessageInfo(
+                    "designtime", 
+                    $"designtime.message.{i}", 
+                    Encoding.UTF8.GetBytes(@"Design-time message"), 
+                    new MessageProperties(null)
+                    {
+                        ContentType = "text/fake",
+                        ReplyTo = "/dev/null"
+                    }, 
+                    DateTime.Now));
+
+            SelectedMessage = Messages[2];
+            NewMessage = Messages[2];
         }
         
         

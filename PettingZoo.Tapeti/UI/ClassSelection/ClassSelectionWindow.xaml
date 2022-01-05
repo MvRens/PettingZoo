@@ -12,7 +12,8 @@
         Width="800"
         ResizeMode="CanResizeWithGrip"
         WindowStartupLocation="CenterOwner"
-        d:DataContext="{d:DesignInstance classSelection:DesignTimeClassSelectionViewModel, IsDesignTimeCreatable=True}">
+        d:DataContext="{d:DesignInstance classSelection:DesignTimeClassSelectionViewModel, IsDesignTimeCreatable=True}"
+        FocusManager.FocusedElement="{Binding ElementName=DefaultFocus}">
     <Window.Resources>
         <ResourceDictionary>
             <Style x:Key="TreeItemIcon" TargetType="{x:Type Image}">
@@ -31,11 +32,24 @@
 
     <controls:GridLayout Style="{StaticResource Form}" Margin="8">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="8"/>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TreeView Grid.Row="0" ItemsSource="{Binding Examples}" SelectedItemChanged="TreeView_OnSelectedItemChanged">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Content="{x:Static classSelection:ClassSelectionStrings.LabelFilter}" />
+        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}" x:Name="DefaultFocus" />
+
+        <CheckBox Grid.Row="1" Grid.Column="1" Content="{x:Static classSelection:ClassSelectionStrings.CheckboxMessageOnly}" IsChecked="{Binding FilterMessageOnly}" />
+
+        <TreeView Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding FilteredExamples}" SelectedItemChanged="TreeView_OnSelectedItemChanged">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="IsExpanded" Value="True" />
@@ -54,6 +68,11 @@
                 </HierarchicalDataTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type classSelection:ExampleTreeItem}">
                     <StackPanel Orientation="Horizontal">
+                        <StackPanel.InputBindings>
+                            <MouseBinding 
+                                MouseAction="LeftDoubleClick" 
+                                Command="{Binding DataContext.SelectCommand, RelativeSource={RelativeSource AncestorType={x:Type TreeView}}}" />
+                        </StackPanel.InputBindings>
                         <Image Source="{svgc:SvgImage Source=/Images/Example.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource TreeItemIcon}"/>
                         <TextBlock Text="{Binding Name}" Style="{StaticResource TreeItemLabel}" />
                     </StackPanel>
@@ -61,9 +80,9 @@
             </TreeView.Resources>
         </TreeView>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Style="{StaticResource FooterPanel}">
+        <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Style="{StaticResource FooterPanel}">
             <Button Content="{x:Static classSelection:ClassSelectionStrings.ButtonSelect}" Style="{StaticResource FooterButton}" Command="{Binding SelectCommand}" />
-            <Button Content="{x:Static classSelection:ClassSelectionStrings.ButtonCancel}"  Style="{StaticResource FooterButton}" />
+            <Button IsCancel="True" Content="{x:Static classSelection:ClassSelectionStrings.ButtonCancel}" Style="{StaticResource FooterButton}" />
         </StackPanel>
     </controls:GridLayout>
 </Window>

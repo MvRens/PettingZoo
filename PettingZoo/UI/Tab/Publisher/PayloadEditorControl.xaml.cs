@@ -3,6 +3,7 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Data;
+using PettingZoo.Core.Validation;
 
 namespace PettingZoo.UI.Tab.Publisher
 {
@@ -87,6 +88,13 @@ namespace PettingZoo.UI.Tab.Publisher
         }
 
 
+        public IPayloadValidator? Validator
+        {
+            get => viewModel.Validator;
+            set => viewModel.Validator = value;
+        }
+
+
         private readonly ErrorHighlightingTransformer errorHighlightingTransformer = new();
 
         public PayloadEditorControl()
@@ -146,6 +154,8 @@ namespace PettingZoo.UI.Tab.Publisher
 
             // Avalon doesn't play nice with bindings it seems:
             // https://stackoverflow.com/questions/18964176/two-way-binding-to-avalonedit-document-text-using-mvvm
+            // ...this is intended though, and well explained here:
+            // https://github.com/icsharpcode/AvalonEdit/issues/84
             Editor.Document.Text = Payload;
 
 
@@ -181,7 +191,7 @@ namespace PettingZoo.UI.Tab.Publisher
 
                             errorHighlightingTransformer.ErrorPosition = viewModel.ValidationInfo.ErrorPosition;
 
-                            // TODO this can probably be optimized to only redraw the affected line
+                            // This can probably be optimized to only redraw the affected line, but the message is typically so small it's not worth the effort at the moment
                             Editor.TextArea.TextView.Redraw();
                             break;
 

@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Reactive.Linq;
+using System.Threading;
 using System.Windows.Input;
 using PettingZoo.Core.Generator;
 using PettingZoo.WPF.ViewModel;
@@ -13,7 +17,33 @@ namespace PettingZoo.Tapeti.UI.ClassSelection
         private BaseClassTreeItem? selectedItem;
         private readonly DelegateCommand selectCommand;
 
+        private string filterText = "";
+        private bool filterMessageOnly = true;
+        private ObservableCollection<BaseClassTreeItem> filteredExamples;
+
         public ObservableCollection<BaseClassTreeItem> Examples { get; } = new();
+
+        public string FilterText
+        {
+            get => filterText;
+            set => SetField(ref filterText, value);
+        }
+
+
+        public bool FilterMessageOnly
+        {
+            get => filterMessageOnly;
+            set => SetField(ref filterMessageOnly, value);
+        }
+
+        public ObservableCollection<BaseClassTreeItem> FilteredExamples
+        {
+            get => filteredExamples;
+
+            [MemberNotNull(nameof(filteredExamples))]
+            set => SetField(ref filteredExamples!, value);
+        }
+
 
         public BaseClassTreeItem? SelectedItem
         {
@@ -39,6 +69,29 @@ namespace PettingZoo.Tapeti.UI.ClassSelection
             selectCommand = new DelegateCommand(SelectExecute, SelectCanExecute);
 
             TreeFromExamples(examples);
+
+            Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
+                h => PropertyChanged += h,
+                h => PropertyChanged -= h)
+                .Where(e => e.EventArgs.PropertyName is nameof(FilterText) or nameof(FilterMessageOnly))
+                .Throttle(TimeSpan.FromMilliseconds(250))
+                .ObserveOn(SynchronizationContext.Current!)
+                .Subscribe(_ => UpdateFilteredExamples());
+
+            UpdateFilteredExamples();
+        }
+
+
+        [MemberNotNull(nameof(filteredExamples))]
+        private void UpdateFilteredExamples()
+        {
+            if (!FilterMessageOnly && string.IsNullOrWhiteSpace(FilterText))
+                FilteredExamples = Examples;
+
+            FilteredExamples = new ObservableCollection<BaseClassTreeItem>(Examples
+                .Select(i => i.Filter(FilterText, FilterMessageOnly))
+                .Where(i => i != null)
+                .Cast<BaseClassTreeItem>());
         }
 
 
@@ -109,7 +162,7 @@ namespace PettingZoo.Tapeti.UI.ClassSelection
     }
 
 
-    public class BaseClassTreeItem
+    public abstract class BaseClassTreeItem
     {
         private readonly SortedSet<BaseClassTreeItem> children = new(new BaseClassTreeItemComparer());
 
@@ -117,7 +170,7 @@ namespace PettingZoo.Tapeti.UI.ClassSelection
         public IReadOnlyCollection<BaseClassTreeItem> Children => children;
 
 
-        public BaseClassTreeItem(string name)
+        protected BaseClassTreeItem(string name)
         {
             Name = name;
         }
@@ -127,6 +180,9 @@ namespace PettingZoo.Tapeti.UI.ClassSelection
         {
             children.Add(item);
         }
+
+
+        public abstract BaseClassTreeItem? Filter(string filterText, bool messageOnly);
     }
 
 
@@ -142,6 +198,32 @@ namespace PettingZoo.Tapeti.UI.ClassSelection
             Name = string.IsNullOrEmpty(parentFolderName) ? Name : parentFolderName + "." + Name;
             return this;
         }
+
+
+        public override BaseClassTreeItem? Filter(string filterText, bool messageOnly)
+        {
+            var childFilterText = filterText;
+
+            // If the folder name matches, include everything in it (...that matches messageOnly)
+            if (!string.IsNullOrWhiteSpace(filterText) && Name.Contains(filterText, StringComparison.CurrentCultureIgnoreCase))
+                childFilterText = "";
+
+            var filteredChildren = Children
+                .Select(c => c.Filter(childFilterText, messageOnly))
+                .Where(c => c != null)
+                .Cast<BaseClassTreeItem>();
+
+            var result = new NamespaceFolderClassTreeItem(Name);
+            var hasChildren = false;
+
+            foreach (var filteredChild in filteredChildren)
+            {
+                result.AddChild(filteredChild);
+                hasChildren = true;
+            }
+
+            return hasChildren ? result : null;
+        }
     }
 
 
@@ -153,6 +235,18 @@ namespace PettingZoo.Tapeti.UI.ClassSelection
         public ExampleTreeItem(IClassTypeExample example) : base(example.ClassName)
         {
             Example = example;
+        }
+
+
+        public override BaseClassTreeItem? Filter(string filterText, bool messageOnly)
+        {
+            // Assumes examples don't have child items, so no further filtering is required
+            if (messageOnly && !Name.EndsWith(@"Message", StringComparison.CurrentCultureIgnoreCase))
+                return null;
+
+            return string.IsNullOrWhiteSpace(filterText) || Name.Contains(filterText, StringComparison.CurrentCultureIgnoreCase) 
+                ? this 
+                : null;
         }
     }
 

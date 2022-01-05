@@ -34,7 +34,7 @@ namespace PettingZoo.Test.Tapeti
                 objectValue.Should().HaveElement("RecursiveValue").Which.Type.Should().Be(JTokenType.Null);
 
                 // Via type mapping
-                // TODO
+                // TODO test type mappings
             }
         }
 

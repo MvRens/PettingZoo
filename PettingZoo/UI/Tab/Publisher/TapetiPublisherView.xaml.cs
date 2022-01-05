@@ -8,10 +8,13 @@ namespace PettingZoo.UI.Tab.Publisher
     /// </summary>
     public partial class TapetiPublisherView
     {
+        // ReSharper disable once SuggestBaseTypeForParameterInConstructor - the XAML explicitly requires TapetiPublisherViewModel
         public TapetiPublisherView(TapetiPublisherViewModel viewModel)
         {
             DataContext = viewModel;
             InitializeComponent();
+
+            PayloadEditor.Validator = viewModel;
         }
 
 

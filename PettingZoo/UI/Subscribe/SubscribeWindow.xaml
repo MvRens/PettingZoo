@@ -30,10 +30,10 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Label Grid.Column="0" Grid.Row="0" Content="{x:Static subscribe:SubscribeWindowStrings.LabelExchange}"/>
-            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Exchange}" Name="ExchangeTextBox"/>
+            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Exchange, UpdateSourceTrigger=PropertyChanged}" Name="ExchangeTextBox"/>
 
             <Label Grid.Column="0" Grid.Row="1" Content="{x:Static subscribe:SubscribeWindowStrings.LabelRoutingKey}"/>
-            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding RoutingKey}"/>
+            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding RoutingKey, UpdateSourceTrigger=PropertyChanged}"/>
         </controls:GridLayout>
     </DockPanel>
 </Window>

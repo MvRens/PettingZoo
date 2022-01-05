@@ -18,8 +18,6 @@ namespace PettingZoo.Core.Rendering
             return contentType != null && ContentTypeHandlers.TryGetValue(contentType, out var handler)
                 ? handler(body) 
                 : Encoding.UTF8.GetString(body);
-
-            // ToDo hex output if required
         }
 
 
