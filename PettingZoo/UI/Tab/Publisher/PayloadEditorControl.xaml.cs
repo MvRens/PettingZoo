@@ -154,6 +154,8 @@ namespace PettingZoo.UI.Tab.Publisher
 
             // Avalon doesn't play nice with bindings it seems:
             // https://stackoverflow.com/questions/18964176/two-way-binding-to-avalonedit-document-text-using-mvvm
+            // ...this is intended though, and well explained here:
+            // https://github.com/icsharpcode/AvalonEdit/issues/84
             Editor.Document.Text = Payload;
 
 
