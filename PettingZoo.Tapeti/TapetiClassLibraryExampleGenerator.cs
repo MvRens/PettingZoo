@@ -34,8 +34,6 @@ namespace PettingZoo.Tapeti
                 .WithSourcesFrom(Path.Combine(PettingZooPaths.InstallationRoot, @"nuget.config"))
                 .WithSourcesFrom(Path.Combine(PettingZooPaths.AppDataRoot, @"nuget.config"));
 
-            var dispatcher = Dispatcher.CurrentDispatcher;
-
             var viewModel = new PackageSelectionViewModel(packageManager);
             var selectionWindow = new PackageSelectionWindow(viewModel)
             {
@@ -44,7 +42,7 @@ namespace PettingZoo.Tapeti
 
             viewModel.Select += (_, args) =>
             {
-                dispatcher.Invoke(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     var windowBounds = selectionWindow.RestoreBounds;
                     selectionWindow.Close();
@@ -65,7 +63,7 @@ namespace PettingZoo.Tapeti
                             // var classes = 
                             var examples = LoadExamples(assemblies);
 
-                            dispatcher.Invoke(() =>
+                            Application.Current.Dispatcher.Invoke(() =>
                             {
                                 progressWindow.Close();
                                 progressWindow = null;
@@ -90,7 +88,7 @@ namespace PettingZoo.Tapeti
                         }
                         catch (Exception e)
                         {
-                            dispatcher.Invoke(() =>
+                            Application.Current.Dispatcher.Invoke(() =>
                             {
                                 // ReSharper disable once ConstantConditionalAccessQualifier - if I remove it, there's a "Dereference of a possibly null reference" warning instead
                                 progressWindow?.Close();

@@ -70,6 +70,15 @@ namespace PettingZoo.UI.Tab.Subscriber {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export....
+        /// </summary>
+        public static string CommandExport {
+            get {
+                return ResourceManager.GetString("CommandExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open in new Publisher tab.
         /// </summary>
         public static string ContextPublish {
@@ -93,6 +102,33 @@ namespace PettingZoo.UI.Tab.Subscriber {
         public static string DeliveryModePersistent {
             get {
                 return ResourceManager.GetString("DeliveryModePersistent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error while exporting messages: {0}.
+        /// </summary>
+        public static string ExportError {
+            get {
+                return ResourceManager.GetString("ExportError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        public static string ExportResultTitle {
+            get {
+                return ResourceManager.GetString("ExportResultTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exported {0} message(s) to {1}.
+        /// </summary>
+        public static string ExportSuccess {
+            get {
+                return ResourceManager.GetString("ExportSuccess", resourceCulture);
             }
         }
         

@@ -124,7 +124,7 @@ namespace PettingZoo.UI.Tab.Publisher
         {
             exampleGenerator.Select(tabHostWindow, example =>
             {
-                Dispatcher.CurrentDispatcher.BeginInvoke(() =>
+                Application.Current.Dispatcher.BeginInvoke(() =>
                 {
                     switch (example)
                     {

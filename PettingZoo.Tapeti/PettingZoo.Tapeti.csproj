@@ -32,6 +32,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AssemblyParserStrings.resx</DependentUpon>
     </Compile>
+    <Compile Update="Export\TapetiCmdExportStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TapetiCmdExportStrings.resx</DependentUpon>
+    </Compile>
     <Compile Update="UI\ClassSelection\ClassSelectionStrings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -56,6 +61,10 @@
     <EmbeddedResource Update="AssemblyParser\AssemblyParserStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AssemblyParserStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Export\TapetiCmdExportStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TapetiCmdExportStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="UI\ClassSelection\ClassSelectionStrings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

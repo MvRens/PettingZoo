@@ -10,7 +10,7 @@ namespace PettingZoo.UI.Tab.Undocked
 {
     public class UndockedTabHostViewModel : BaseViewModel, ITabActivate
     {
-        private readonly ITabHost tabHost;
+        private readonly ITabHostProvider tabHostProvider;
         private readonly ITab tab;
         private readonly DelegateCommand dockCommand;
 
@@ -25,9 +25,9 @@ namespace PettingZoo.UI.Tab.Undocked
         public ICommand DockCommand => dockCommand;
 
 
-        public UndockedTabHostViewModel(ITabHost tabHost, ITab tab)
+        public UndockedTabHostViewModel(ITabHostProvider tabHostProvider, ITab tab)
         {
-            this.tabHost = tabHost;
+            this.tabHostProvider = tabHostProvider;
             this.tab = tab;
 
             tab.PropertyChanged += (_, args) =>
@@ -43,13 +43,13 @@ namespace PettingZoo.UI.Tab.Undocked
 
         private void DockCommandExecute()
         {
-            tabHost.DockTab(tab);
+            tabHostProvider.Instance.DockTab(tab);
         }
 
 
         public void WindowClosed()
         {
-            tabHost.UndockedTabClosed(tab);
+            tabHostProvider.Instance.UndockedTabClosed(tab);
         }
 
 

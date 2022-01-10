@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using PettingZoo.Core.Connection;
-using PettingZoo.Core.Generator;
 using PettingZoo.UI.Connection;
 using PettingZoo.UI.Subscribe;
 using PettingZoo.UI.Tab;
@@ -29,6 +28,7 @@ namespace PettingZoo.UI.Main
         private readonly IConnectionDialog connectionDialog;
         private readonly ISubscribeDialog subscribeDialog;
         private readonly ITabContainer tabContainer;
+        private readonly ITabHostProvider tabHostProvider;
         private readonly ITabFactory tabFactory;
 
         private SubscribeDialogParams? subscribeDialogParams;
@@ -103,12 +103,16 @@ namespace PettingZoo.UI.Main
 
 
         public MainWindowViewModel(IConnectionFactory connectionFactory, IConnectionDialog connectionDialog, 
-            ISubscribeDialog subscribeDialog, ITabContainer tabContainer, IExampleGenerator exampleGenerator)
+            ISubscribeDialog subscribeDialog, ITabContainer tabContainer, ITabHostProvider tabHostProvider, ITabFactory tabFactory)
         {
+            tabHostProvider.SetInstance(this);
+
             this.connectionFactory = connectionFactory;
             this.connectionDialog = connectionDialog;
             this.subscribeDialog = subscribeDialog;
             this.tabContainer = tabContainer;
+            this.tabHostProvider = tabHostProvider;
+            this.tabFactory = tabFactory;
 
             connectionStatus = GetConnectionStatus(null);
             connectionStatusType = ConnectionStatusType.Error;
@@ -120,8 +124,6 @@ namespace PettingZoo.UI.Main
             subscribeCommand = new DelegateCommand(SubscribeExecute, IsConnectedCanExecute);
             closeTabCommand = new DelegateCommand(CloseTabExecute, HasActiveTabCanExecute);
             undockTabCommand = new DelegateCommand(UndockTabExecute, HasActiveTabCanExecute);
-
-            tabFactory = new ViewTabFactory(this, exampleGenerator);
         }
 
 
@@ -226,7 +228,7 @@ namespace PettingZoo.UI.Main
             if (tab == null)
                 return;
 
-            var tabHostWindow = UndockedTabHostWindow.Create(this, tab, tabContainer.TabWidth, tabContainer.TabHeight);
+            var tabHostWindow = UndockedTabHostWindow.Create(tabHostProvider, tab, tabContainer.TabWidth, tabContainer.TabHeight);
             undockedTabs.Add(tab, tabHostWindow);
 
             tabHostWindow.Show();
@@ -330,7 +332,7 @@ namespace PettingZoo.UI.Main
     
     public class DesignTimeMainWindowViewModel : MainWindowViewModel
     {
-        public DesignTimeMainWindowViewModel() : base(null!, null!, null!, null!, null!)
+        public DesignTimeMainWindowViewModel() : base(null!, null!, null!, null!, null!, null!)
         {
         }
     }

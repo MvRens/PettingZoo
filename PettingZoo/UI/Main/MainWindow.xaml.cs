@@ -5,7 +5,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using PettingZoo.Core.Connection;
-using PettingZoo.Core.Generator;
 using PettingZoo.UI.Connection;
 using PettingZoo.UI.Subscribe;
 using PettingZoo.UI.Tab;
@@ -20,11 +19,12 @@ namespace PettingZoo.UI.Main
         public bool WasMaximized;
         
 
-        public MainWindow(IConnectionFactory connectionFactory, IConnectionDialog connectionDialog, ISubscribeDialog subscribeDialog, IExampleGenerator exampleGenerator)
+        public MainWindow(IConnectionFactory connectionFactory, IConnectionDialog connectionDialog, ISubscribeDialog subscribeDialog,
+            ITabHostProvider tabHostProvider, ITabFactory tabFactory)
         {
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
-            viewModel = new MainWindowViewModel(connectionFactory, connectionDialog, subscribeDialog, this, exampleGenerator)
+            viewModel = new MainWindowViewModel(connectionFactory, connectionDialog, subscribeDialog, this, tabHostProvider, tabFactory)
             {
                 TabHostWindow = this
             };

@@ -21,7 +21,7 @@ namespace PettingZoo.UI.Tab.Publisher
         private readonly IConnection connection;
         private readonly IExampleGenerator exampleGenerator;
         private readonly ITabFactory tabFactory;
-        private readonly ITabHost tabHost;
+        private readonly ITabHostProvider tabHostProvider;
 
         private bool sendToExchange = true;
         private string exchange = "";
@@ -156,12 +156,12 @@ namespace PettingZoo.UI.Tab.Publisher
         string IPublishDestination.RoutingKey => SendToExchange ? RoutingKey : Queue;
 
 
-        public PublisherViewModel(ITabHost tabHost, ITabFactory tabFactory, IConnection connection, IExampleGenerator exampleGenerator, ReceivedMessageInfo? fromReceivedMessage = null)
+        public PublisherViewModel(ITabHostProvider tabHostProvider, ITabFactory tabFactory, IConnection connection, IExampleGenerator exampleGenerator, ReceivedMessageInfo? fromReceivedMessage = null)
         {
             this.connection = connection;
             this.exampleGenerator = exampleGenerator;
             this.tabFactory = tabFactory;
-            this.tabHost = tabHost;
+            this.tabHostProvider = tabHostProvider;
 
             publishCommand = new DelegateCommand(PublishExecute, PublishCanExecute);
 
@@ -287,7 +287,7 @@ namespace PettingZoo.UI.Tab.Publisher
 
             var subscriber = connection.Subscribe();
             var tab = tabFactory.CreateSubscriberTab(connection, subscriber);
-            tabHost.AddTab(tab);
+            tabHostProvider.Instance.AddTab(tab);
 
             subscriber.Start();
             return subscriber.QueueName;
