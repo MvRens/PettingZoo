@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using PettingZoo.Core.Connection;
 using PettingZoo.Core.Rendering;
 using PettingZoo.WPF.ViewModel;
-
-// TODO if the "New message" line is visible when this tab is undocked, the line in the ListBox does not shrink. Haven't been able to figure out yet how to solve it
 
 namespace PettingZoo.UI.Tab.Subscriber
 {
@@ -29,7 +27,6 @@ namespace PettingZoo.UI.Tab.Subscriber
         private readonly DelegateCommand createPublisherCommand;
 
         private bool tabActive;
-        private ReceivedMessageInfo? newMessage;
         private Timer? newMessageTimer;
         private int unreadCount;
 
@@ -39,7 +36,8 @@ namespace PettingZoo.UI.Tab.Subscriber
         // ReSharper disable once UnusedMember.Global - it is, but via a proxy
         public ICommand CreatePublisherCommand => createPublisherCommand;
 
-        public ObservableCollection<ReceivedMessageInfo> Messages { get; }
+        public ObservableCollectionEx<ReceivedMessageInfo> Messages { get; }
+        public ObservableCollectionEx<ReceivedMessageInfo> UnreadMessages { get; }
 
         public ReceivedMessageInfo? SelectedMessage
         {
@@ -52,11 +50,7 @@ namespace PettingZoo.UI.Tab.Subscriber
         }
 
 
-        public ReceivedMessageInfo? NewMessage
-        {
-            get => newMessage;
-            set => SetField(ref newMessage, value);
-        }
+        public Visibility UnreadMessagesVisibility => UnreadMessages.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
 
         public string SelectedMessageBody =>
@@ -85,7 +79,8 @@ namespace PettingZoo.UI.Tab.Subscriber
 
             dispatcher = Dispatcher.CurrentDispatcher;
 
-            Messages = new ObservableCollection<ReceivedMessageInfo>();
+            Messages = new ObservableCollectionEx<ReceivedMessageInfo>();
+            UnreadMessages = new ObservableCollectionEx<ReceivedMessageInfo>();
             clearCommand = new DelegateCommand(ClearExecute, ClearCanExecute);
 
             toolbarCommands = new[]
@@ -103,6 +98,8 @@ namespace PettingZoo.UI.Tab.Subscriber
         private void ClearExecute()
         {
             Messages.Clear();
+            UnreadMessages.Clear();
+            RaisePropertyChanged(nameof(UnreadMessagesVisibility));
             clearCommand.RaiseCanExecuteChanged();
         }
 
@@ -135,10 +132,13 @@ namespace PettingZoo.UI.Tab.Subscriber
                     unreadCount++;
                     RaisePropertyChanged(nameof(Title));
 
-                    NewMessage ??= args.MessageInfo;
+                    UnreadMessages.Add(args.MessageInfo);
+                    if (UnreadMessages.Count == 1)
+                        RaisePropertyChanged(nameof(UnreadMessagesVisibility));
                 }
+                else
+                    Messages.Add(args.MessageInfo);
 
-                Messages.Add(args.MessageInfo);
                 clearCommand.RaiseCanExecuteChanged();
             });
         }
@@ -161,7 +161,7 @@ namespace PettingZoo.UI.Tab.Subscriber
 
             RaisePropertyChanged(nameof(Title));
 
-            if (NewMessage == null) 
+            if (UnreadMessages.Count == 0) 
                 return;
 
             newMessageTimer?.Dispose();
@@ -170,13 +170,30 @@ namespace PettingZoo.UI.Tab.Subscriber
                 {
                     dispatcher.BeginInvoke(() =>
                     {
-                        NewMessage = null;
+                        if (UnreadMessages.Count == 0)
+                            return;
+
+                        Messages.BeginUpdate();
+                        UnreadMessages.BeginUpdate();
+                        try
+                        {
+                            Messages.AddRange(UnreadMessages);
+                            UnreadMessages.Clear();
+                        }
+                        finally
+                        {
+                            UnreadMessages.EndUpdate();
+                            Messages.EndUpdate();
+                        }
+
+                        RaisePropertyChanged(nameof(UnreadMessagesVisibility));
                     });
                 },
                 null,
                 TimeSpan.FromSeconds(5),
                 Timeout.InfiniteTimeSpan);
         }
+
 
         public void Deactivate()
         {
@@ -186,7 +203,6 @@ namespace PettingZoo.UI.Tab.Subscriber
                 newMessageTimer = null;
             }
 
-            NewMessage = null;
             tabActive = false;
         }
     }
@@ -197,22 +213,21 @@ namespace PettingZoo.UI.Tab.Subscriber
         public DesignTimeSubscriberViewModel() : base(null!, null!, null!, new DesignTimeSubscriber())
         {
             for (var i = 1; i <= 5; i++)
-                Messages.Add(new ReceivedMessageInfo(
-                    "designtime", 
-                    $"designtime.message.{i}", 
-                    Encoding.UTF8.GetBytes(@"Design-time message"), 
+                (i > 2 ? UnreadMessages : Messages).Add(new ReceivedMessageInfo(
+                    "designtime",
+                    $"designtime.message.{i}",
+                    Encoding.UTF8.GetBytes(@"Design-time message"),
                     new MessageProperties(null)
                     {
                         ContentType = "text/fake",
                         ReplyTo = "/dev/null"
-                    }, 
+                    },
                     DateTime.Now));
 
-            SelectedMessage = Messages[2];
-            NewMessage = Messages[2];
+            SelectedMessage = UnreadMessages[0];
         }
-        
-        
+
+
         private class DesignTimeSubscriber : ISubscriber
         {
             public ValueTask DisposeAsync()

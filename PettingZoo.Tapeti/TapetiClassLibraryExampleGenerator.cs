@@ -54,12 +54,13 @@ namespace PettingZoo.Tapeti
                     progressWindow.Top = windowBounds.Top + (windowBounds.Height - progressWindow.Height) / 2;
                     progressWindow.Show();
 
+                    var cancellationToken = progressWindow.CancellationToken;
+
                     Task.Run(async () =>
                     {
                         try
                         {
-                            // TODO allow cancelling (by closing the progress window and optionally a Cancel button)
-                            var assemblies = await args.Assemblies.GetAssemblies(progressWindow, CancellationToken.None);
+                            var assemblies = await args.Assemblies.GetAssemblies(progressWindow, cancellationToken);
 
                             // var classes = 
                             var examples = LoadExamples(assemblies);
@@ -94,10 +95,11 @@ namespace PettingZoo.Tapeti
                                 // ReSharper disable once ConstantConditionalAccessQualifier - if I remove it, there's a "Dereference of a possibly null reference" warning instead
                                 progressWindow?.Close();
 
-                                MessageBox.Show($"Error while loading assembly: {e.Message}", "Petting Zoo - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                                if (e is not OperationCanceledException)
+                                    MessageBox.Show($"Error while loading assembly: {e.Message}", "Petting Zoo - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
                             });
                         }
-                    });
+                    }, CancellationToken.None);
                 });
             };
 

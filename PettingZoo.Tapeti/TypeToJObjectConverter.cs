@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace PettingZoo.Tapeti
@@ -59,7 +60,20 @@ namespace PettingZoo.Tapeti
                 actualType = equivalentType;
 
 
-            // TODO check for JsonConverter attribute? doubt we'll be able to generate a nice value for it, but at least we can provide a placeholder
+            try
+            {
+                if (type.GetCustomAttribute<JsonConverterAttribute>() != null)
+                {
+                    // This type uses custom Json conversion so there's no way to know how to provide an example.
+                    // We could try to create an instance of the type and pass it through the converter, but for now we'll
+                    // just output a placeholder.
+                    return "<custom JsonConverter - manual input required>";
+                }
+            }
+            catch
+            {
+                // Move along
+            }
 
             // String is also a class
             if (actualType == typeof(string))

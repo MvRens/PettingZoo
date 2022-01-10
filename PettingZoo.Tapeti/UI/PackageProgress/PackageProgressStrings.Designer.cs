@@ -61,6 +61,15 @@ namespace PettingZoo.Tapeti.UI.PackageProgress {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string ButtonCancel {
+            get {
+                return ResourceManager.GetString("ButtonCancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reading message classes....
         /// </summary>
         public static string WindowTitle {

@@ -5,10 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:packageProgress="clr-namespace:PettingZoo.Tapeti.UI.PackageProgress"
         mc:Ignorable="d" 
-        Height="80" 
         Width="400"
         Title="{x:Static packageProgress:PackageProgressStrings.WindowTitle}" 
         ResizeMode="NoResize"
-        WindowStyle="ToolWindow">
-    <ProgressBar Height="25" Margin="16" VerticalAlignment="Center" Name="Progress" Maximum="100" />
+        WindowStyle="ToolWindow"
+        SizeToContent="Height">
+    <StackPanel Orientation="Vertical">
+        <ProgressBar Height="25" Margin="16" VerticalAlignment="Center" Name="Progress" Maximum="100" />
+        <Button HorizontalAlignment="Center" Margin="0,0,0,16" Content="{x:Static packageProgress:PackageProgressStrings.ButtonCancel}" Click="CancelButton_OnClick" />
+    </StackPanel>
 </Window>

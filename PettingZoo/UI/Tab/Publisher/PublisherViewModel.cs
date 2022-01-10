@@ -45,7 +45,9 @@ namespace PettingZoo.UI.Tab.Publisher
         public bool SendToExchange
         {
             get => sendToExchange;
-            set => SetField(ref sendToExchange, value, otherPropertiesChanged: new[] { nameof(SendToQueue), nameof(ExchangeVisibility), nameof(QueueVisibility), nameof(Title) });
+            set => SetField(ref sendToExchange, value, 
+                delegateCommandsChanged: new [] { publishCommand },
+                otherPropertiesChanged: new[] { nameof(SendToQueue), nameof(ExchangeVisibility), nameof(QueueVisibility), nameof(Title) });
         }
 
 
@@ -59,21 +61,21 @@ namespace PettingZoo.UI.Tab.Publisher
         public string Exchange
         {
             get => exchange;
-            set => SetField(ref exchange, value);
+            set => SetField(ref exchange, value, delegateCommandsChanged: new[] { publishCommand });
         }
 
 
         public string RoutingKey
         {
             get => routingKey;
-            set => SetField(ref routingKey, value, otherPropertiesChanged: new[] { nameof(Title) });
+            set => SetField(ref routingKey, value, delegateCommandsChanged: new[] { publishCommand }, otherPropertiesChanged: new[] { nameof(Title) });
         }
 
 
         public string Queue
         {
             get => queue;
-            set => SetField(ref queue, value, otherPropertiesChanged: new[] { nameof(Title) });
+            set => SetField(ref queue, value, delegateCommandsChanged: new[] { publishCommand }, otherPropertiesChanged: new[] { nameof(Title) });
         }
 
 
@@ -183,6 +185,17 @@ namespace PettingZoo.UI.Tab.Publisher
 
         private bool PublishCanExecute()
         {
+            if (SendToExchange)
+            {
+                if (string.IsNullOrWhiteSpace(Exchange) || string.IsNullOrWhiteSpace(RoutingKey))
+                    return false;
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(Queue))
+                    return false;
+            }
+
             return messageTypePublishCommand?.CanExecute(null) ?? false;
         }
 
@@ -197,6 +210,11 @@ namespace PettingZoo.UI.Tab.Publisher
                     if (rawPublisherView == null)
                     {
                         rawPublisherViewModel = new RawPublisherViewModel(connection, this);
+                        rawPublisherViewModel.PublishCommand.CanExecuteChanged += (_, _) =>
+                        {
+                            publishCommand.RaiseCanExecuteChanged();
+                        };
+
                         rawPublisherView ??= new RawPublisherView(rawPublisherViewModel);
                     }
                     else
@@ -213,6 +231,11 @@ namespace PettingZoo.UI.Tab.Publisher
                     if (tapetiPublisherView == null)
                     {
                         tapetiPublisherViewModel = new TapetiPublisherViewModel(connection, this, exampleGenerator);
+                        tapetiPublisherViewModel.PublishCommand.CanExecuteChanged += (_, _) =>
+                        {
+                            publishCommand.RaiseCanExecuteChanged();
+                        };
+
                         tapetiPublisherView ??= new TapetiPublisherView(tapetiPublisherViewModel);
 
                         if (tabHostWindow != null)
