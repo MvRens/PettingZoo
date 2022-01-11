@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace PettingZoo.Core.Connection
 {
@@ -10,6 +11,7 @@ namespace PettingZoo.Core.Connection
         
         event EventHandler<MessageReceivedEventArgs>? MessageReceived;
 
+        IEnumerable<ReceivedMessageInfo> GetInitialMessages();
         void Start();
     }
 

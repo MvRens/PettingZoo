@@ -6,14 +6,18 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
-using Microsoft.Win32;
 using PettingZoo.Core.Connection;
-using PettingZoo.Core.Export;
+using PettingZoo.Core.ExportImport;
 using PettingZoo.Core.Rendering;
+using PettingZoo.WPF.ProgressWindow;
 using PettingZoo.WPF.ViewModel;
 using Serilog;
+using Application = System.Windows.Application;
 using IConnection = PettingZoo.Core.Connection.IConnection;
+using MessageBox = System.Windows.MessageBox;
+using Timer = System.Threading.Timer;
 
 namespace PettingZoo.UI.Tab.Subscriber
 {
@@ -22,9 +26,9 @@ namespace PettingZoo.UI.Tab.Subscriber
         private readonly ILogger logger;
         private readonly ITabHostProvider tabHostProvider;
         private readonly ITabFactory tabFactory;
-        private readonly IConnection connection;
+        private readonly IConnection? connection;
         private readonly ISubscriber subscriber;
-        private readonly IExportFormatProvider exportFormatProvider;
+        private readonly IExportImportFormatProvider exportImportFormatProvider;
         private ReceivedMessageInfo? selectedMessage;
         private readonly DelegateCommand clearCommand;
         private readonly DelegateCommand exportCommand;
@@ -78,16 +82,18 @@ namespace PettingZoo.UI.Tab.Subscriber
         public IEnumerable<TabToolbarCommand> ToolbarCommands => toolbarCommands;
 
 
-        public SubscriberViewModel(ILogger logger, ITabHostProvider tabHostProvider, ITabFactory tabFactory, IConnection connection, ISubscriber subscriber, IExportFormatProvider exportFormatProvider)
+        public SubscriberViewModel(ILogger logger, ITabHostProvider tabHostProvider, ITabFactory tabFactory, IConnection? connection, ISubscriber subscriber, IExportImportFormatProvider exportImportFormatProvider)
         {
             this.logger = logger;
             this.tabHostProvider = tabHostProvider;
             this.tabFactory = tabFactory;
             this.connection = connection;
             this.subscriber = subscriber;
-            this.exportFormatProvider = exportFormatProvider;
+            this.exportImportFormatProvider = exportImportFormatProvider;
 
             Messages = new ObservableCollectionEx<ReceivedMessageInfo>();
+            Messages.AddRange(subscriber.GetInitialMessages());
+
             UnreadMessages = new ObservableCollectionEx<ReceivedMessageInfo>();
 
             clearCommand = new DelegateCommand(ClearExecute, HasMessagesCanExecute);
@@ -130,14 +136,14 @@ namespace PettingZoo.UI.Tab.Subscriber
 
         private void ExportExecute()
         {
-            var formats = exportFormatProvider.Formats.ToArray();
+            var formats = exportImportFormatProvider.ExportFormats.ToArray();
 
             var dialog = new SaveFileDialog
             {
                 Filter = string.Join('|', formats.Select(f => f.Filter))
             };
 
-            if (!dialog.ShowDialog().GetValueOrDefault())
+            if (dialog.ShowDialog() != DialogResult.OK)
                 return;
 
             // 1-based? Seriously?
@@ -148,19 +154,42 @@ namespace PettingZoo.UI.Tab.Subscriber
             var filename = dialog.FileName;
             var format = formats[dialog.FilterIndex - 1];
 
+            var progressWindow = new ProgressWindow(SubscriberViewStrings.ExportProgressWindowTitle)
+            {
+                Owner = Application.Current.MainWindow,  // TODO I forgot if we have access to our host window here (which can be main or undocked), would be nicer if we did
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+            progressWindow.Show();
+
+
             Task.Run(async () =>
             {
                 try
                 {
-                    await using var exportFile = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.Read);
-                    await format.Export(exportFile, messages);
+                    await using (var exportFile = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.Read))
+                    {
+                        await format.Export(
+                            exportFile, 
+                            new ListEnumerableProgressDecorator<ReceivedMessageInfo>(messages, progressWindow), 
+                            progressWindow.CancellationToken);
+                    }
+
+                    if (progressWindow.CancellationToken.IsCancellationRequested)
+                        return;
 
                     await Application.Current.Dispatcher.BeginInvoke(() =>
                     {
+                        progressWindow.Close();
+                        progressWindow = null;
+
                         MessageBox.Show(string.Format(SubscriberViewStrings.ExportSuccess, messages.Length, filename),
                             SubscriberViewStrings.ExportResultTitle,
                             MessageBoxButton.OK, MessageBoxImage.Information);
                     });
+                }
+                catch (OperationCanceledException)
+                {
+                    // User cancelled
                 }
                 catch (Exception e)
                 {
@@ -168,10 +197,21 @@ namespace PettingZoo.UI.Tab.Subscriber
 
                     await Application.Current.Dispatcher.BeginInvoke(() =>
                     {
+                        progressWindow?.Close();
+                        progressWindow = null;
+
                         MessageBox.Show(string.Format(SubscriberViewStrings.ExportError, e.Message),
                             SubscriberViewStrings.ExportResultTitle,
                             MessageBoxButton.OK, MessageBoxImage.Information);
                     });
+                }
+                finally
+                {
+                    if (progressWindow != null)
+                        await Application.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            progressWindow.Close();
+                        });
                 }
             });
         }
@@ -179,6 +219,9 @@ namespace PettingZoo.UI.Tab.Subscriber
 
         private void CreatePublisherExecute()
         {
+            if (connection == null)
+                return;
+
             var publisherTab = tabFactory.CreatePublisherTab(connection, SelectedMessage);
             tabHostProvider.Instance.AddTab(publisherTab);
         }
@@ -186,7 +229,7 @@ namespace PettingZoo.UI.Tab.Subscriber
 
         private bool CreatePublisherCanExecute()
         {
-            return SelectedMessage != null;
+            return connection != null && SelectedMessage != null;
         }
 
 
@@ -311,9 +354,16 @@ namespace PettingZoo.UI.Tab.Subscriber
             public event EventHandler<MessageReceivedEventArgs>? MessageReceived;
             #pragma warning restore CS0067
 
+
+            public IEnumerable<ReceivedMessageInfo> GetInitialMessages()
+            {
+                return Enumerable.Empty<ReceivedMessageInfo>();
+            }
+
+
             public void Start()
             {
             }
-        }    
+        }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using PettingZoo.Core.Connection;
-using PettingZoo.Core.Export;
+using PettingZoo.Core.ExportImport;
 using PettingZoo.Core.Generator;
 using PettingZoo.UI.Tab.Publisher;
 using PettingZoo.UI.Tab.Subscriber;
@@ -12,21 +12,21 @@ namespace PettingZoo.UI.Tab
         private readonly ILogger logger;
         private readonly ITabHostProvider tabHostProvider;
         private readonly IExampleGenerator exampleGenerator;
-        private readonly IExportFormatProvider exportFormatProvider;
+        private readonly IExportImportFormatProvider exportImportFormatProvider;
 
 
-        public ViewTabFactory(ILogger logger, ITabHostProvider tabHostProvider, IExampleGenerator exampleGenerator, IExportFormatProvider exportFormatProvider)
+        public ViewTabFactory(ILogger logger, ITabHostProvider tabHostProvider, IExampleGenerator exampleGenerator, IExportImportFormatProvider exportImportFormatProvider)
         {
             this.logger = logger;
             this.tabHostProvider = tabHostProvider;
             this.exampleGenerator = exampleGenerator;
-            this.exportFormatProvider = exportFormatProvider;
+            this.exportImportFormatProvider = exportImportFormatProvider;
         }
 
 
-        public ITab CreateSubscriberTab(IConnection connection, ISubscriber subscriber)
+        public ITab CreateSubscriberTab(IConnection? connection, ISubscriber subscriber)
         {
-            var viewModel = new SubscriberViewModel(logger, tabHostProvider, this, connection, subscriber, exportFormatProvider);
+            var viewModel = new SubscriberViewModel(logger, tabHostProvider, this, connection, subscriber, exportImportFormatProvider);
             return new ViewTab<SubscriberView, SubscriberViewModel>(
                 new SubscriberView(viewModel),
                 viewModel,

@@ -11,8 +11,8 @@ using PettingZoo.Core.Settings;
 using PettingZoo.Tapeti.AssemblyLoader;
 using PettingZoo.Tapeti.NuGet;
 using PettingZoo.Tapeti.UI.ClassSelection;
-using PettingZoo.Tapeti.UI.PackageProgress;
 using PettingZoo.Tapeti.UI.PackageSelection;
+using PettingZoo.WPF.ProgressWindow;
 using Serilog;
 
 namespace PettingZoo.Tapeti
@@ -47,7 +47,7 @@ namespace PettingZoo.Tapeti
                     var windowBounds = selectionWindow.RestoreBounds;
                     selectionWindow.Close();
 
-                    var progressWindow = new PackageProgressWindow();
+                    var progressWindow = new ProgressWindow(TapetiClassLibraryExampleGeneratorStrings.ProgressWindowTitle);
                     progressWindow.Left = windowBounds.Left + (windowBounds.Width - progressWindow.Width) / 2;
                     progressWindow.Top = windowBounds.Top + (windowBounds.Height - progressWindow.Height) / 2;
                     progressWindow.Show();

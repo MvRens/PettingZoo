@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PettingZoo.Tapeti.UI.PackageProgress {
+namespace PettingZoo.WPF.ProgressWindow {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace PettingZoo.Tapeti.UI.PackageProgress {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class PackageProgressStrings {
+    public class ProgressStrings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal PackageProgressStrings() {
+        internal ProgressStrings() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace PettingZoo.Tapeti.UI.PackageProgress {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PettingZoo.Tapeti.UI.PackageProgress.PackageProgressStrings", typeof(PackageProgressStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PettingZoo.WPF.ProgressWindow.ProgressStrings", typeof(ProgressStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -66,15 +66,6 @@ namespace PettingZoo.Tapeti.UI.PackageProgress {
         public static string ButtonCancel {
             get {
                 return ResourceManager.GetString("ButtonCancel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Reading message classes....
-        /// </summary>
-        public static string WindowTitle {
-            get {
-                return ResourceManager.GetString("WindowTitle", resourceCulture);
             }
         }
     }

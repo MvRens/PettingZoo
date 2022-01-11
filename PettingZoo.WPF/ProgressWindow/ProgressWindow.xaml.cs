@@ -3,21 +3,22 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace PettingZoo.Tapeti.UI.PackageProgress
+namespace PettingZoo.WPF.ProgressWindow
 {
     /// <summary>
-    /// Interaction logic for PackageProgressWindow.xaml
+    /// Interaction logic for ProgressWindow.xaml
     /// </summary>
-    public partial class PackageProgressWindow : IProgress<int>
+    public partial class ProgressWindow : IProgress<int>
     {
         private readonly CancellationTokenSource cancellationTokenSource = new();
 
         public CancellationToken CancellationToken => cancellationTokenSource.Token;
 
 
-        public PackageProgressWindow()
+        public ProgressWindow(string title)
         {
             InitializeComponent();
+            Title = title;
 
             Closed += (_, _) =>
             {

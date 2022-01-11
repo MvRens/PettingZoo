@@ -115,6 +115,15 @@ namespace PettingZoo.UI.Tab.Subscriber {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Exporting messages....
+        /// </summary>
+        public static string ExportProgressWindowTitle {
+            get {
+                return ResourceManager.GetString("ExportProgressWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Export.
         /// </summary>
         public static string ExportResultTitle {

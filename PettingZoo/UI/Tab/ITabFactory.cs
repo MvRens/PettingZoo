@@ -8,7 +8,7 @@ namespace PettingZoo.UI.Tab
     
     public interface ITabFactory
     {
-        ITab CreateSubscriberTab(IConnection connection, ISubscriber subscriber);
+        ITab CreateSubscriberTab(IConnection? connection, ISubscriber subscriber);
         ITab CreatePublisherTab(IConnection connection, ReceivedMessageInfo? fromReceivedMessage = null);
     }
 }

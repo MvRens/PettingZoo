@@ -3,31 +3,33 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PettingZoo.Core.Connection;
-using PettingZoo.Core.Export;
+using PettingZoo.Core.ExportImport;
+
 
 namespace PettingZoo.Tapeti.Export
 {
-    public class TapetiCmdExportFormat : IExportFormat
+    public class TapetiCmdExportFormat : BaseTapetiCmdExportImportFormat, IExportFormat
     {
-        public string Filter => TapetiCmdExportStrings.TapetiCmdFilter;
-
-
         private static readonly JsonSerializerSettings SerializerSettings = new()
         {
             NullValueHandling = NullValueHandling.Ignore
         };
 
 
-        public async Task Export(Stream stream, IEnumerable<ReceivedMessageInfo> messages)
+        public async Task Export(Stream stream, IEnumerable<ReceivedMessageInfo> messages, CancellationToken cancellationToken)
         {
             await using var exportFile = new StreamWriter(stream, Encoding.UTF8);
 
             foreach (var message in messages)
             {
+                if (cancellationToken.IsCancellationRequested)
+                    break;
+
                 var serializableMessage = new SerializableMessage
                 {
                     Exchange = message.Exchange,
@@ -79,41 +81,5 @@ namespace PettingZoo.Tapeti.Export
                 await exportFile.WriteLineAsync(serialized);
             }
         }
-    }
-
-
-    // It would be nicer if Tapeti.Cmd exposed it's file format in a NuGet package... if only I knew the author ¯\_(ツ)_/¯
-    public class SerializableMessage
-    {
-        //public ulong DeliveryTag;
-        //public bool Redelivered;
-        public string? Exchange;
-        public string? RoutingKey;
-        //public string? Queue;
-
-        // ReSharper disable once FieldCanBeMadeReadOnly.Local - must be settable by JSON deserialization
-        public SerializableMessageProperties? Properties;
-
-        public JObject? Body;
-        public byte[]? RawBody;
-    }
-
-
-    public class SerializableMessageProperties
-    {
-        public string? AppId;
-        //public string? ClusterId;
-        public string? ContentEncoding;
-        public string? ContentType;
-        public string? CorrelationId;
-        public byte? DeliveryMode;
-        public string? Expiration;
-        public IDictionary<string, string>? Headers;
-        public string? MessageId;
-        public byte? Priority;
-        public string? ReplyTo;
-        public long? Timestamp;
-        public string? Type;
-        public string? UserId;
     }
 }

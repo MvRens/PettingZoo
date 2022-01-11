@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PettingZoo.Tapeti.Export {
+namespace PettingZoo.Tapeti {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace PettingZoo.Tapeti.Export {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class TapetiCmdExportStrings {
+    internal class TapetiClassLibraryExampleGeneratorStrings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal TapetiCmdExportStrings() {
+        internal TapetiClassLibraryExampleGeneratorStrings() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace PettingZoo.Tapeti.Export {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PettingZoo.Tapeti.Export.TapetiCmdExportStrings", typeof(TapetiCmdExportStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PettingZoo.Tapeti.TapetiClassLibraryExampleGeneratorStrings", typeof(TapetiClassLibraryExampleGeneratorStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,11 +61,11 @@ namespace PettingZoo.Tapeti.Export {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tapeti.Cmd single-file JSON (*.json)|*.json.
+        ///   Looks up a localized string similar to Reading message classes....
         /// </summary>
-        internal static string TapetiCmdFilter {
+        internal static string ProgressWindowTitle {
             get {
-                return ResourceManager.GetString("TapetiCmdFilter", resourceCulture);
+                return ResourceManager.GetString("ProgressWindowTitle", resourceCulture);
             }
         }
     }

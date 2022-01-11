@@ -1,16 +1,25 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 using PettingZoo.Core.Connection;
+using PettingZoo.Core.ExportImport;
 using PettingZoo.UI.Connection;
 using PettingZoo.UI.Subscribe;
 using PettingZoo.UI.Tab;
+using PettingZoo.UI.Tab.Subscriber;
 using PettingZoo.UI.Tab.Undocked;
+using PettingZoo.WPF.ProgressWindow;
 using PettingZoo.WPF.ViewModel;
+using Serilog;
+using Application = System.Windows.Application;
+using MessageBox = System.Windows.MessageBox;
 
 namespace PettingZoo.UI.Main
 {
@@ -24,12 +33,14 @@ namespace PettingZoo.UI.Main
 
     public class MainWindowViewModel : BaseViewModel, IAsyncDisposable, ITabHost
     {
+        private readonly ILogger logger;
         private readonly IConnectionFactory connectionFactory;
         private readonly IConnectionDialog connectionDialog;
         private readonly ISubscribeDialog subscribeDialog;
         private readonly ITabContainer tabContainer;
         private readonly ITabHostProvider tabHostProvider;
         private readonly ITabFactory tabFactory;
+        private readonly IExportImportFormatProvider exportImportFormatProvider;
 
         private SubscribeDialogParams? subscribeDialogParams;
         private IConnection? connection;
@@ -43,6 +54,7 @@ namespace PettingZoo.UI.Main
         private readonly DelegateCommand subscribeCommand;
         private readonly DelegateCommand closeTabCommand;
         private readonly DelegateCommand undockTabCommand;
+        private readonly DelegateCommand importCommand;
 
         private ConnectionStatusType connectionStatusType;
 
@@ -90,6 +102,7 @@ namespace PettingZoo.UI.Main
         public ICommand SubscribeCommand => subscribeCommand;
         public ICommand CloseTabCommand => closeTabCommand;
         public ICommand UndockTabCommand => undockTabCommand;
+        public ICommand ImportCommand => importCommand;
 
         public IEnumerable<TabToolbarCommand> ToolbarCommands => ActiveTab is ITabToolbarCommands tabToolbarCommands 
             ? tabToolbarCommands.ToolbarCommands 
@@ -102,17 +115,20 @@ namespace PettingZoo.UI.Main
             Tabs.Count > 0 ? Visibility.Collapsed : Visibility.Visible;
 
 
-        public MainWindowViewModel(IConnectionFactory connectionFactory, IConnectionDialog connectionDialog, 
-            ISubscribeDialog subscribeDialog, ITabContainer tabContainer, ITabHostProvider tabHostProvider, ITabFactory tabFactory)
+        public MainWindowViewModel(ILogger logger, IConnectionFactory connectionFactory, IConnectionDialog connectionDialog, 
+            ISubscribeDialog subscribeDialog, ITabContainer tabContainer, ITabHostProvider tabHostProvider, ITabFactory tabFactory,
+            IExportImportFormatProvider exportImportFormatProvider)
         {
             tabHostProvider.SetInstance(this);
 
+            this.logger = logger;
             this.connectionFactory = connectionFactory;
             this.connectionDialog = connectionDialog;
             this.subscribeDialog = subscribeDialog;
             this.tabContainer = tabContainer;
             this.tabHostProvider = tabHostProvider;
             this.tabFactory = tabFactory;
+            this.exportImportFormatProvider = exportImportFormatProvider;
 
             connectionStatus = GetConnectionStatus(null);
             connectionStatusType = ConnectionStatusType.Error;
@@ -124,6 +140,7 @@ namespace PettingZoo.UI.Main
             subscribeCommand = new DelegateCommand(SubscribeExecute, IsConnectedCanExecute);
             closeTabCommand = new DelegateCommand(CloseTabExecute, HasActiveTabCanExecute);
             undockTabCommand = new DelegateCommand(UndockTabExecute, HasActiveTabCanExecute);
+            importCommand = new DelegateCommand(ImportExecute);
         }
 
 
@@ -236,6 +253,87 @@ namespace PettingZoo.UI.Main
         }
 
 
+        private void ImportExecute()
+        {
+            var formats = exportImportFormatProvider.ImportFormats.ToArray();
+
+            var dialog = new OpenFileDialog
+            {
+                Filter = string.Join('|', formats.Select(f => f.Filter))
+            };
+
+            if (dialog.ShowDialog() != DialogResult.OK)
+                return;
+
+            if (dialog.FilterIndex <= 0 || dialog.FilterIndex > formats.Length)
+                return;
+
+            var filename = dialog.FileName;
+            var format = formats[dialog.FilterIndex - 1];
+
+            var progressWindow = new ProgressWindow(MainWindowStrings.ImportProgressWindowTitle)
+            {
+                Owner = TabHostWindow,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+            progressWindow.Show();
+
+
+            Task.Run(async () =>
+            {
+                try
+                {
+                    IReadOnlyList<ReceivedMessageInfo> messages;
+                    await using (var importFile =
+                                 new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    {
+                        messages = await format.Import(
+                            new StreamProgressDecorator(importFile, progressWindow).Stream,
+                            progressWindow.CancellationToken);
+                    }
+
+                    if (progressWindow.CancellationToken.IsCancellationRequested)
+                        return;
+
+                    await Application.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        progressWindow.Close();
+                        progressWindow = null;
+
+                        AddTab(tabFactory.CreateSubscriberTab(connection,
+                            new ImportSubscriber(filename, messages)));
+                    });
+                }
+                catch (OperationCanceledException)
+                {
+                    // User cancelled
+                }
+                catch (Exception e)
+                {
+                    logger.Error(e, "Error while importing messages");
+
+                    await Application.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        progressWindow?.Close();
+                        progressWindow = null;
+
+                        MessageBox.Show(string.Format(SubscriberViewStrings.ExportError, e.Message),
+                            SubscriberViewStrings.ExportResultTitle,
+                            MessageBoxButton.OK, MessageBoxImage.Information);
+                    });
+                }
+                finally
+                {
+                    if (progressWindow != null)
+                        await Application.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            progressWindow.Close();
+                        });
+                }
+            }, CancellationToken.None);
+        }
+
+
         private ITab? RemoveActiveTab()
         {
             if (ActiveTab == null)
@@ -332,8 +430,18 @@ namespace PettingZoo.UI.Main
     
     public class DesignTimeMainWindowViewModel : MainWindowViewModel
     {
-        public DesignTimeMainWindowViewModel() : base(null!, null!, null!, null!, null!, null!)
+        public DesignTimeMainWindowViewModel() : base(null!, null!, null!, null!, null!, new DesignTimeTabHostProvider(), null!, null!)
         {
+        }
+
+
+        private class DesignTimeTabHostProvider : ITabHostProvider
+        {
+            public ITabHost Instance => null!;
+
+            public void SetInstance(ITabHost instance)
+            {
+            }
         }
     }
 }
