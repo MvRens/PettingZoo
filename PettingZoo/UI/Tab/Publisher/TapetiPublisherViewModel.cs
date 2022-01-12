@@ -2,7 +2,6 @@
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 using PettingZoo.Core.Connection;
 using PettingZoo.Core.Generator;
 using PettingZoo.Core.Validation;
@@ -151,7 +150,10 @@ namespace PettingZoo.UI.Tab.Publisher
             {
                 return string.IsNullOrEmpty(value) ? null : value;
             }
-            
+
+            var publishCorrelationId = NullIfEmpty(CorrelationId);
+            var replyTo = publishDestination.GetReplyTo(ref publishCorrelationId);
+
             connection.Publish(new PublishMessageInfo(
                 publishDestination.Exchange,
                 publishDestination.RoutingKey,
@@ -162,9 +164,9 @@ namespace PettingZoo.UI.Tab.Publisher
                 })
                 {
                     ContentType = @"application/json",
-                    CorrelationId = NullIfEmpty(CorrelationId),
+                    CorrelationId = publishCorrelationId,
                     DeliveryMode = MessageDeliveryMode.Persistent,
-                    ReplyTo = publishDestination.GetReplyTo()
+                    ReplyTo = replyTo
                 }));
         }
 

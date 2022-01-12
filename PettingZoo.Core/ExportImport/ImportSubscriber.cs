@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using PettingZoo.Core.Connection;
 
 namespace PettingZoo.Core.ExportImport
@@ -13,7 +12,10 @@ namespace PettingZoo.Core.ExportImport
         public string? QueueName { get; }
         public string? Exchange => null;
         public string? RoutingKey => null;
+
+        #pragma warning disable CS0067 // "The event ... is never used" - it's part of the interface so it's required.
         public event EventHandler<MessageReceivedEventArgs>? MessageReceived;
+        #pragma warning restore CS0067
 
 
         public ImportSubscriber(string filename, IReadOnlyList<ReceivedMessageInfo> messages)
@@ -23,10 +25,9 @@ namespace PettingZoo.Core.ExportImport
         }
 
 
-        public ValueTask DisposeAsync()
+        public void Dispose()
         {
             GC.SuppressFinalize(this);
-            return default;
         }
 
 

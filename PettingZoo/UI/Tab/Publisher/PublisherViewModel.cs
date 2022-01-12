@@ -21,7 +21,6 @@ namespace PettingZoo.UI.Tab.Publisher
         private readonly IConnection connection;
         private readonly IExampleGenerator exampleGenerator;
         private readonly ITabFactory tabFactory;
-        private readonly ITabHostProvider tabHostProvider;
 
         private bool sendToExchange = true;
         private string exchange = "";
@@ -156,12 +155,11 @@ namespace PettingZoo.UI.Tab.Publisher
         string IPublishDestination.RoutingKey => SendToExchange ? RoutingKey : Queue;
 
 
-        public PublisherViewModel(ITabHostProvider tabHostProvider, ITabFactory tabFactory, IConnection connection, IExampleGenerator exampleGenerator, ReceivedMessageInfo? fromReceivedMessage = null)
+        public PublisherViewModel(ITabFactory tabFactory, IConnection connection, IExampleGenerator exampleGenerator, ReceivedMessageInfo? fromReceivedMessage = null)
         {
             this.connection = connection;
             this.exampleGenerator = exampleGenerator;
             this.tabFactory = tabFactory;
-            this.tabHostProvider = tabHostProvider;
 
             publishCommand = new DelegateCommand(PublishExecute, PublishCanExecute);
 
@@ -280,17 +278,13 @@ namespace PettingZoo.UI.Tab.Publisher
         }
 
 
-        public string? GetReplyTo()
+        public string? GetReplyTo(ref string? correlationId)
         {
             if (ReplyToSpecified)
                 return string.IsNullOrEmpty(ReplyTo) ? null : ReplyTo;
 
-            var subscriber = connection.Subscribe();
-            var tab = tabFactory.CreateSubscriberTab(connection, subscriber);
-            tabHostProvider.Instance.AddTab(tab);
-
-            subscriber.Start();
-            return subscriber.QueueName;
+            correlationId = SendToExchange ? RoutingKey : Queue;
+            return tabFactory.CreateReplySubscriberTab(connection);
         }
 
 
@@ -305,7 +299,7 @@ namespace PettingZoo.UI.Tab.Publisher
 
     public class DesignTimePublisherViewModel : PublisherViewModel
     {
-        public DesignTimePublisherViewModel() : base(null!, null!, null!, null!)
+        public DesignTimePublisherViewModel() : base(null!, null!, null!)
         {
         }
 

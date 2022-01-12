@@ -21,10 +21,9 @@ using Timer = System.Threading.Timer;
 
 namespace PettingZoo.UI.Tab.Subscriber
 {
-    public class SubscriberViewModel : BaseViewModel, ITabToolbarCommands, ITabActivate
+    public class SubscriberViewModel : BaseViewModel, IDisposable, ITabToolbarCommands, ITabActivate
     {
         private readonly ILogger logger;
-        private readonly ITabHostProvider tabHostProvider;
         private readonly ITabFactory tabFactory;
         private readonly IConnection? connection;
         private readonly ISubscriber subscriber;
@@ -76,16 +75,43 @@ namespace PettingZoo.UI.Tab.Subscriber
             set => SetField(ref selectedMessageProperties, value);
         }
 
-        public string Title => 
-            (subscriber.Exchange != null ? $"{subscriber.Exchange} - {subscriber.RoutingKey}" : $"{subscriber.QueueName}") +
-            (tabActive || unreadCount == 0 ? "" : $" ({unreadCount})");
+        public string Title
+        {
+            get
+            {
+                var title = new StringBuilder();
+
+                if (IsReplyTab)
+                    title.Append(SubscriberViewStrings.ReplyTabTitle);
+                else if (subscriber.Exchange != null)
+                    title.Append(subscriber.Exchange).Append(" - ").Append(subscriber.RoutingKey);
+                else
+                    title.Append(subscriber.QueueName);
+
+                if (!tabActive && unreadCount > 0)
+                    title.Append(" (").Append(unreadCount).Append(')');
+
+                return title.ToString();
+            }
+        }
+
+
         public IEnumerable<TabToolbarCommand> ToolbarCommands => toolbarCommands;
 
 
-        public SubscriberViewModel(ILogger logger, ITabHostProvider tabHostProvider, ITabFactory tabFactory, IConnection? connection, ISubscriber subscriber, IExportImportFormatProvider exportImportFormatProvider)
+        public bool IsReplyTab { get; }
+
+        // ReSharper disable UnusedMember.Global - used via BindingProxy
+        public Visibility StandardTabVisibility => !IsReplyTab ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility ReplyTabVisibility => IsReplyTab ? Visibility.Visible : Visibility.Collapsed;
+        // ReSharper restore UnusedMember.Global
+
+
+        public SubscriberViewModel(ILogger logger, ITabFactory tabFactory, IConnection? connection, ISubscriber subscriber, IExportImportFormatProvider exportImportFormatProvider, bool isReplyTab)
         {
+            IsReplyTab = isReplyTab;
+
             this.logger = logger;
-            this.tabHostProvider = tabHostProvider;
             this.tabFactory = tabFactory;
             this.connection = connection;
             this.subscriber = subscriber;
@@ -110,6 +136,15 @@ namespace PettingZoo.UI.Tab.Subscriber
             subscriber.MessageReceived += SubscriberMessageReceived;
             subscriber.Start();
         }
+
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            newMessageTimer?.Dispose();
+            subscriber.Dispose();
+        }
+
 
         private void ClearExecute()
         {
@@ -222,8 +257,7 @@ namespace PettingZoo.UI.Tab.Subscriber
             if (connection == null)
                 return;
 
-            var publisherTab = tabFactory.CreatePublisherTab(connection, SelectedMessage);
-            tabHostProvider.Instance.AddTab(publisherTab);
+            tabFactory.CreatePublisherTab(connection, SelectedMessage);
         }
 
 
@@ -320,7 +354,7 @@ namespace PettingZoo.UI.Tab.Subscriber
     
     public class DesignTimeSubscriberViewModel : SubscriberViewModel
     {
-        public DesignTimeSubscriberViewModel() : base(null!, null!, null!, null!, new DesignTimeSubscriber(), null!)
+        public DesignTimeSubscriberViewModel() : base(null!, null!, null!, new DesignTimeSubscriber(), null!, false)
         {
             for (var i = 1; i <= 5; i++)
                 (i > 2 ? UnreadMessages : Messages).Add(new ReceivedMessageInfo(
@@ -340,9 +374,9 @@ namespace PettingZoo.UI.Tab.Subscriber
 
         private class DesignTimeSubscriber : ISubscriber
         {
-            public ValueTask DisposeAsync()
+            public void Dispose()
             {
-                return default;
+                GC.SuppressFinalize(this);
             }
 
 

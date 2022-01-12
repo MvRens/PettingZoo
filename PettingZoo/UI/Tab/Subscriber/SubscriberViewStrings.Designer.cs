@@ -185,5 +185,14 @@ namespace PettingZoo.UI.Tab.Subscriber {
                 return ResourceManager.GetString("PropertyValue", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replies.
+        /// </summary>
+        public static string ReplyTabTitle {
+            get {
+                return ResourceManager.GetString("ReplyTabTitle", resourceCulture);
+            }
+        }
     }
 }

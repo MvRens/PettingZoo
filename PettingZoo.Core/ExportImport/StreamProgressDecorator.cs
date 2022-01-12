@@ -58,7 +58,7 @@ namespace PettingZoo.Core.ExportImport
             public StreamWrapper(StreamProgressDecorator owner, Stream decoratedStream)
             {
                 this.owner = owner;
-                this.DecoratedStream = decoratedStream;
+                DecoratedStream = decoratedStream;
             }
 
 

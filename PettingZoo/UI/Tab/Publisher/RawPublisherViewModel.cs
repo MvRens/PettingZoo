@@ -244,6 +244,8 @@ namespace PettingZoo.UI.Tab.Publisher
 
 
             var headers = Headers.Where(h => h.IsValid()).ToDictionary(h => h.Key, h => h.Value);
+            var publishCorrelationId = NullIfEmpty(CorrelationId);
+            var replyTo = publishDestination.GetReplyTo(ref publishCorrelationId);
 
             connection.Publish(new PublishMessageInfo(
                 publishDestination.Exchange, 
@@ -254,12 +256,12 @@ namespace PettingZoo.UI.Tab.Publisher
                     AppId = NullIfEmpty(AppId),
                     ContentEncoding = NullIfEmpty(ContentEncoding),
                     ContentType = NullIfEmpty(ContentType),
-                    CorrelationId = NullIfEmpty(CorrelationId),
+                    CorrelationId = publishCorrelationId,
                     DeliveryMode = deliveryMode,
                     Expiration = NullIfEmpty(Expiration),
                     MessageId = NullIfEmpty(MessageId),
                     Priority = priorityValue,
-                    ReplyTo = publishDestination.GetReplyTo(),
+                    ReplyTo = replyTo,
                     Timestamp = timestampValue,
                     Type = NullIfEmpty(TypeProperty),
                     UserId = NullIfEmpty(UserId)

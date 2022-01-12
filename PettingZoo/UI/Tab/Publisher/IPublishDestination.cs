@@ -5,6 +5,6 @@
         string Exchange { get; }
         string RoutingKey { get; }
 
-        string? GetReplyTo();
+        string? GetReplyTo(ref string? correlationId);
     }
 }

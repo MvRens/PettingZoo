@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using PettingZoo.Core.Connection;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -29,14 +28,12 @@ namespace PettingZoo.RabbitMQ
         }
 
 
-        public ValueTask DisposeAsync()
+        public void Dispose()
         {
             GC.SuppressFinalize(this);
 
             if (model != null && consumerTag != null && model.IsOpen)
                 model.BasicCancelNoWait(consumerTag);
-
-            return default;
         }
 
 
