@@ -283,7 +283,7 @@ namespace PettingZoo.UI.Tab.Publisher
             if (ReplyToSpecified)
                 return string.IsNullOrEmpty(ReplyTo) ? null : ReplyTo;
 
-            correlationId = SendToExchange ? RoutingKey : Queue;
+            correlationId = PublisherViewStrings.ReplyToCorrelationIdPrefix + (SendToExchange ? RoutingKey : Queue);
             return tabFactory.CreateReplySubscriberTab(connection);
         }
 

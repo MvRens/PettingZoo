@@ -169,6 +169,15 @@ namespace PettingZoo.UI.Tab.Publisher {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Re: .
+        /// </summary>
+        public static string ReplyToCorrelationIdPrefix {
+            get {
+                return ResourceManager.GetString("ReplyToCorrelationIdPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish: {0}.
         /// </summary>
         public static string TabTitle {
