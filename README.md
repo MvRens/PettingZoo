@@ -14,7 +14,7 @@ PettingZoo requires .NET 6 to run.
  5. Support for exporting and importing [Tapeti.Cmd](https://github.com/MvRens/Tapeti.Cmd) compatible single-file JSON
 
 ## Builds
-Builds are automatically run using AppVeyor. Release versions are available as a [GitHub release](https://github.com/MvRens/PettingZoo/releases) and include a ZIP file containing the executable and required files.
+Builds are automatically run using AppVeyor. Release versions are available as a [GitHub release](https://github.com/MvRens/PettingZoo/releases) and include a ZIP file containing the executable and required files for 64-bits Windows.
 
 Extract the ZIP file and run PettingZoo.exe to get started.
 
@@ -22,11 +22,9 @@ Extract the ZIP file and run PettingZoo.exe to get started.
 The source code is compiled using Visual Studio 2022.
 
 
-Master build (stable release)
-[![Build status](https://ci.appveyor.com/api/projects/status/gqsw03v2evy0l0gv/branch/master?svg=true)](https://ci.appveyor.com/project/MvRens/pettingzoo/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/gqsw03v2evy0l0gv/branch/master?svg=true)](https://ci.appveyor.com/project/MvRens/pettingzoo/branch/master) Master build (stable release)
 
-Latest build
-[![Build status](https://ci.appveyor.com/api/projects/status/gqsw03v2evy0l0gv?svg=true)](https://ci.appveyor.com/project/MvRens/pettingzoo)
+[![Build status](https://ci.appveyor.com/api/projects/status/gqsw03v2evy0l0gv?svg=true)](https://ci.appveyor.com/project/MvRens/pettingzoo) Latest build
 
 ## Screenshots
 ##### Subscribing to messages
