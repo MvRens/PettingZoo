@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using PettingZoo.Core.Connection;
 using RabbitMQ.Client;
@@ -35,6 +37,12 @@ namespace PettingZoo.RabbitMQ
                 model.BasicCancelNoWait(consumerTag);
 
             return default;
+        }
+
+
+        public IEnumerable<ReceivedMessageInfo> GetInitialMessages()
+        {
+            return Enumerable.Empty<ReceivedMessageInfo>();
         }
 
 

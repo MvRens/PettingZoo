@@ -21,7 +21,7 @@ namespace PettingZoo.UI.Tab.Publisher
         private readonly IConnection connection;
         private readonly IExampleGenerator exampleGenerator;
         private readonly ITabFactory tabFactory;
-        private readonly ITabHost tabHost;
+        private readonly ITabHostProvider tabHostProvider;
 
         private bool sendToExchange = true;
         private string exchange = "";
@@ -45,7 +45,9 @@ namespace PettingZoo.UI.Tab.Publisher
         public bool SendToExchange
         {
             get => sendToExchange;
-            set => SetField(ref sendToExchange, value, otherPropertiesChanged: new[] { nameof(SendToQueue), nameof(ExchangeVisibility), nameof(QueueVisibility), nameof(Title) });
+            set => SetField(ref sendToExchange, value, 
+                delegateCommandsChanged: new [] { publishCommand },
+                otherPropertiesChanged: new[] { nameof(SendToQueue), nameof(ExchangeVisibility), nameof(QueueVisibility), nameof(Title) });
         }
 
 
@@ -59,21 +61,21 @@ namespace PettingZoo.UI.Tab.Publisher
         public string Exchange
         {
             get => exchange;
-            set => SetField(ref exchange, value);
+            set => SetField(ref exchange, value, delegateCommandsChanged: new[] { publishCommand });
         }
 
 
         public string RoutingKey
         {
             get => routingKey;
-            set => SetField(ref routingKey, value, otherPropertiesChanged: new[] { nameof(Title) });
+            set => SetField(ref routingKey, value, delegateCommandsChanged: new[] { publishCommand }, otherPropertiesChanged: new[] { nameof(Title) });
         }
 
 
         public string Queue
         {
             get => queue;
-            set => SetField(ref queue, value, otherPropertiesChanged: new[] { nameof(Title) });
+            set => SetField(ref queue, value, delegateCommandsChanged: new[] { publishCommand }, otherPropertiesChanged: new[] { nameof(Title) });
         }
 
 
@@ -154,12 +156,12 @@ namespace PettingZoo.UI.Tab.Publisher
         string IPublishDestination.RoutingKey => SendToExchange ? RoutingKey : Queue;
 
 
-        public PublisherViewModel(ITabHost tabHost, ITabFactory tabFactory, IConnection connection, IExampleGenerator exampleGenerator, ReceivedMessageInfo? fromReceivedMessage = null)
+        public PublisherViewModel(ITabHostProvider tabHostProvider, ITabFactory tabFactory, IConnection connection, IExampleGenerator exampleGenerator, ReceivedMessageInfo? fromReceivedMessage = null)
         {
             this.connection = connection;
             this.exampleGenerator = exampleGenerator;
             this.tabFactory = tabFactory;
-            this.tabHost = tabHost;
+            this.tabHostProvider = tabHostProvider;
 
             publishCommand = new DelegateCommand(PublishExecute, PublishCanExecute);
 
@@ -183,6 +185,17 @@ namespace PettingZoo.UI.Tab.Publisher
 
         private bool PublishCanExecute()
         {
+            if (SendToExchange)
+            {
+                if (string.IsNullOrWhiteSpace(Exchange) || string.IsNullOrWhiteSpace(RoutingKey))
+                    return false;
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(Queue))
+                    return false;
+            }
+
             return messageTypePublishCommand?.CanExecute(null) ?? false;
         }
 
@@ -197,6 +210,11 @@ namespace PettingZoo.UI.Tab.Publisher
                     if (rawPublisherView == null)
                     {
                         rawPublisherViewModel = new RawPublisherViewModel(connection, this);
+                        rawPublisherViewModel.PublishCommand.CanExecuteChanged += (_, _) =>
+                        {
+                            publishCommand.RaiseCanExecuteChanged();
+                        };
+
                         rawPublisherView ??= new RawPublisherView(rawPublisherViewModel);
                     }
                     else
@@ -213,6 +231,11 @@ namespace PettingZoo.UI.Tab.Publisher
                     if (tapetiPublisherView == null)
                     {
                         tapetiPublisherViewModel = new TapetiPublisherViewModel(connection, this, exampleGenerator);
+                        tapetiPublisherViewModel.PublishCommand.CanExecuteChanged += (_, _) =>
+                        {
+                            publishCommand.RaiseCanExecuteChanged();
+                        };
+
                         tapetiPublisherView ??= new TapetiPublisherView(tapetiPublisherViewModel);
 
                         if (tabHostWindow != null)
@@ -264,7 +287,7 @@ namespace PettingZoo.UI.Tab.Publisher
 
             var subscriber = connection.Subscribe();
             var tab = tabFactory.CreateSubscriberTab(connection, subscriber);
-            tabHost.AddTab(tab);
+            tabHostProvider.Instance.AddTab(tab);
 
             subscriber.Start();
             return subscriber.QueueName;

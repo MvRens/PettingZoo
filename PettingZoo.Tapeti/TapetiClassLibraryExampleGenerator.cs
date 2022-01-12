@@ -11,8 +11,8 @@ using PettingZoo.Core.Settings;
 using PettingZoo.Tapeti.AssemblyLoader;
 using PettingZoo.Tapeti.NuGet;
 using PettingZoo.Tapeti.UI.ClassSelection;
-using PettingZoo.Tapeti.UI.PackageProgress;
 using PettingZoo.Tapeti.UI.PackageSelection;
+using PettingZoo.WPF.ProgressWindow;
 using Serilog;
 
 namespace PettingZoo.Tapeti
@@ -34,8 +34,6 @@ namespace PettingZoo.Tapeti
                 .WithSourcesFrom(Path.Combine(PettingZooPaths.InstallationRoot, @"nuget.config"))
                 .WithSourcesFrom(Path.Combine(PettingZooPaths.AppDataRoot, @"nuget.config"));
 
-            var dispatcher = Dispatcher.CurrentDispatcher;
-
             var viewModel = new PackageSelectionViewModel(packageManager);
             var selectionWindow = new PackageSelectionWindow(viewModel)
             {
@@ -44,27 +42,28 @@ namespace PettingZoo.Tapeti
 
             viewModel.Select += (_, args) =>
             {
-                dispatcher.Invoke(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     var windowBounds = selectionWindow.RestoreBounds;
                     selectionWindow.Close();
 
-                    var progressWindow = new PackageProgressWindow();
+                    var progressWindow = new ProgressWindow(TapetiClassLibraryExampleGeneratorStrings.ProgressWindowTitle);
                     progressWindow.Left = windowBounds.Left + (windowBounds.Width - progressWindow.Width) / 2;
                     progressWindow.Top = windowBounds.Top + (windowBounds.Height - progressWindow.Height) / 2;
                     progressWindow.Show();
+
+                    var cancellationToken = progressWindow.CancellationToken;
 
                     Task.Run(async () =>
                     {
                         try
                         {
-                            // TODO allow cancelling (by closing the progress window and optionally a Cancel button)
-                            var assemblies = await args.Assemblies.GetAssemblies(progressWindow, CancellationToken.None);
+                            var assemblies = await args.Assemblies.GetAssemblies(progressWindow, cancellationToken);
 
                             // var classes = 
                             var examples = LoadExamples(assemblies);
 
-                            dispatcher.Invoke(() =>
+                            Application.Current.Dispatcher.Invoke(() =>
                             {
                                 progressWindow.Close();
                                 progressWindow = null;
@@ -89,15 +88,16 @@ namespace PettingZoo.Tapeti
                         }
                         catch (Exception e)
                         {
-                            dispatcher.Invoke(() =>
+                            Application.Current.Dispatcher.Invoke(() =>
                             {
                                 // ReSharper disable once ConstantConditionalAccessQualifier - if I remove it, there's a "Dereference of a possibly null reference" warning instead
                                 progressWindow?.Close();
 
-                                MessageBox.Show($"Error while loading assembly: {e.Message}", "Petting Zoo - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                                if (e is not OperationCanceledException)
+                                    MessageBox.Show($"Error while loading assembly: {e.Message}", "Petting Zoo - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
                             });
                         }
-                    });
+                    }, CancellationToken.None);
                 });
             };
 

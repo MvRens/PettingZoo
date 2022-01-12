@@ -36,10 +36,15 @@ namespace PettingZoo.UI.Tab.Publisher
 
         public string ClassName
         {
-            get => string.IsNullOrEmpty(className) ? AssemblyName + "." : className;
+            get => string.IsNullOrWhiteSpace(className) 
+                ? string.IsNullOrWhiteSpace(AssemblyName) 
+                    ? "" 
+                    : AssemblyName + "." 
+                : className;
+
             set
             {
-                if (SetField(ref className, value))
+                if (SetField(ref className, value, delegateCommandsChanged: new[] { publishCommand }))
                     validatingExample = null;
             }
         }
@@ -48,7 +53,7 @@ namespace PettingZoo.UI.Tab.Publisher
         public string AssemblyName
         {
             get => assemblyName;
-            set => SetField(ref assemblyName, value, otherPropertiesChanged:
+            set => SetField(ref assemblyName, value, delegateCommandsChanged: new[] { publishCommand }, otherPropertiesChanged:
                 string.IsNullOrEmpty(value) || string.IsNullOrEmpty(className)
                     ? new [] { nameof(ClassName) } 
                     : null
@@ -59,7 +64,7 @@ namespace PettingZoo.UI.Tab.Publisher
         public string Payload
         {
             get => payload;
-            set => SetField(ref payload, value);
+            set => SetField(ref payload, value, delegateCommandsChanged: new[] { publishCommand });
         }
 
 
@@ -119,7 +124,7 @@ namespace PettingZoo.UI.Tab.Publisher
         {
             exampleGenerator.Select(tabHostWindow, example =>
             {
-                Dispatcher.CurrentDispatcher.BeginInvoke(() =>
+                Application.Current.Dispatcher.BeginInvoke(() =>
                 {
                     switch (example)
                     {
@@ -164,11 +169,14 @@ namespace PettingZoo.UI.Tab.Publisher
         }
 
 
-        private static bool PublishCanExecute()
+        private bool PublishCanExecute()
         {
-            // TODO validate input
-            return true;
+            return
+                !string.IsNullOrWhiteSpace(assemblyName) &&
+                !string.IsNullOrWhiteSpace(ClassName) && 
+                !string.IsNullOrWhiteSpace(Payload);
         }
+
 
         public void HostWindowChanged(Window? hostWindow)
         {

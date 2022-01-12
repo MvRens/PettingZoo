@@ -38,6 +38,13 @@
                 </StackPanel>
             </Button>
             <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+            <Button Command="{Binding ImportCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{svgc:SvgImage Source=/Images/Import.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                    <TextBlock Margin="3,0,0,0" Text="{x:Static main:MainWindowStrings.CommandImport}" />
+                </StackPanel>
+            </Button>
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
             <Button Command="{Binding SubscribeCommand}">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="{svgc:SvgImage Source=/Images/Subscribe.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>

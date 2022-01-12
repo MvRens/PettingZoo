@@ -23,7 +23,9 @@
     <None Remove="Images\Dock.svg" />
     <None Remove="Images\Error.svg" />
     <None Remove="Images\Example.svg" />
+    <None Remove="Images\Export.svg" />
     <None Remove="Images\Folder.svg" />
+    <None Remove="Images\Import.svg" />
     <None Remove="Images\Ok.svg" />
     <None Remove="Images\PublishSend.svg" />
     <None Remove="Images\Undock.svg" />
@@ -36,7 +38,9 @@
     <Resource Include="Images\Dock.svg" />
     <Resource Include="Images\Error.svg" />
     <Resource Include="Images\Example.svg" />
+    <Resource Include="Images\Export.svg" />
     <Resource Include="Images\Folder.svg" />
+    <Resource Include="Images\Import.svg" />
     <Resource Include="Images\Ok.svg" />
     <Resource Include="Images\Publish.svg" />
     <Resource Include="Images\PublishSend.svg" />

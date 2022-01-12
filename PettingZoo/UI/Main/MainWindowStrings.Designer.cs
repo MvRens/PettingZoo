@@ -79,6 +79,15 @@ namespace PettingZoo.UI.Main {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Import....
+        /// </summary>
+        public static string CommandImport {
+            get {
+                return ResourceManager.GetString("CommandImport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New Publisher.
         /// </summary>
         public static string CommandPublish {
@@ -138,6 +147,15 @@ namespace PettingZoo.UI.Main {
         public static string DeliveryModePersistent {
             get {
                 return ResourceManager.GetString("DeliveryModePersistent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Importing messages....
+        /// </summary>
+        public static string ImportProgressWindowTitle {
+            get {
+                return ResourceManager.GetString("ImportProgressWindowTitle", resourceCulture);
             }
         }
         

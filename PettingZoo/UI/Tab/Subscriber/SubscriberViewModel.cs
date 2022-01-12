@@ -1,45 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Threading;
 using PettingZoo.Core.Connection;
+using PettingZoo.Core.ExportImport;
 using PettingZoo.Core.Rendering;
+using PettingZoo.WPF.ProgressWindow;
 using PettingZoo.WPF.ViewModel;
-
-// TODO if the "New message" line is visible when this tab is undocked, the line in the ListBox does not shrink. Haven't been able to figure out yet how to solve it
+using Serilog;
+using Application = System.Windows.Application;
+using IConnection = PettingZoo.Core.Connection.IConnection;
+using MessageBox = System.Windows.MessageBox;
+using Timer = System.Threading.Timer;
 
 namespace PettingZoo.UI.Tab.Subscriber
 {
     public class SubscriberViewModel : BaseViewModel, ITabToolbarCommands, ITabActivate
     {
-        private readonly ITabHost tabHost;
+        private readonly ILogger logger;
+        private readonly ITabHostProvider tabHostProvider;
         private readonly ITabFactory tabFactory;
-        private readonly IConnection connection;
+        private readonly IConnection? connection;
         private readonly ISubscriber subscriber;
-        private readonly Dispatcher dispatcher;
+        private readonly IExportImportFormatProvider exportImportFormatProvider;
         private ReceivedMessageInfo? selectedMessage;
         private readonly DelegateCommand clearCommand;
+        private readonly DelegateCommand exportCommand;
         private readonly TabToolbarCommand[] toolbarCommands;
         private IDictionary<string, string>? selectedMessageProperties;
 
         private readonly DelegateCommand createPublisherCommand;
 
         private bool tabActive;
-        private ReceivedMessageInfo? newMessage;
         private Timer? newMessageTimer;
         private int unreadCount;
 
 
         public ICommand ClearCommand => clearCommand;
+        public ICommand ExportCommand => exportCommand;
 
         // ReSharper disable once UnusedMember.Global - it is, but via a proxy
         public ICommand CreatePublisherCommand => createPublisherCommand;
 
-        public ObservableCollection<ReceivedMessageInfo> Messages { get; }
+        public ObservableCollectionEx<ReceivedMessageInfo> Messages { get; }
+        public ObservableCollectionEx<ReceivedMessageInfo> UnreadMessages { get; }
 
         public ReceivedMessageInfo? SelectedMessage
         {
@@ -52,11 +62,7 @@ namespace PettingZoo.UI.Tab.Subscriber
         }
 
 
-        public ReceivedMessageInfo? NewMessage
-        {
-            get => newMessage;
-            set => SetField(ref newMessage, value);
-        }
+        public Visibility UnreadMessagesVisibility => UnreadMessages.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
 
         public string SelectedMessageBody =>
@@ -76,21 +82,27 @@ namespace PettingZoo.UI.Tab.Subscriber
         public IEnumerable<TabToolbarCommand> ToolbarCommands => toolbarCommands;
 
 
-        public SubscriberViewModel(ITabHost tabHost, ITabFactory tabFactory, IConnection connection, ISubscriber subscriber)
+        public SubscriberViewModel(ILogger logger, ITabHostProvider tabHostProvider, ITabFactory tabFactory, IConnection? connection, ISubscriber subscriber, IExportImportFormatProvider exportImportFormatProvider)
         {
-            this.tabHost = tabHost;
+            this.logger = logger;
+            this.tabHostProvider = tabHostProvider;
             this.tabFactory = tabFactory;
             this.connection = connection;
             this.subscriber = subscriber;
+            this.exportImportFormatProvider = exportImportFormatProvider;
 
-            dispatcher = Dispatcher.CurrentDispatcher;
+            Messages = new ObservableCollectionEx<ReceivedMessageInfo>();
+            Messages.AddRange(subscriber.GetInitialMessages());
 
-            Messages = new ObservableCollection<ReceivedMessageInfo>();
-            clearCommand = new DelegateCommand(ClearExecute, ClearCanExecute);
+            UnreadMessages = new ObservableCollectionEx<ReceivedMessageInfo>();
+
+            clearCommand = new DelegateCommand(ClearExecute, HasMessagesCanExecute);
+            exportCommand = new DelegateCommand(ExportExecute, HasMessagesCanExecute);
 
             toolbarCommands = new[]
             {
-                new TabToolbarCommand(ClearCommand, SubscriberViewStrings.CommandClear, SvgIconHelper.LoadFromResource("/Images/Clear.svg"))
+                new TabToolbarCommand(ClearCommand, SubscriberViewStrings.CommandClear, SvgIconHelper.LoadFromResource("/Images/Clear.svg")),
+                new TabToolbarCommand(ExportCommand, SubscriberViewStrings.CommandExport, SvgIconHelper.LoadFromResource("/Images/Export.svg"))
             };
 
             createPublisherCommand = new DelegateCommand(CreatePublisherExecute, CreatePublisherCanExecute);
@@ -99,47 +111,145 @@ namespace PettingZoo.UI.Tab.Subscriber
             subscriber.Start();
         }
 
-
         private void ClearExecute()
         {
             Messages.Clear();
-            clearCommand.RaiseCanExecuteChanged();
+            UnreadMessages.Clear();
+
+            HasMessagesChanged();
+            RaisePropertyChanged(nameof(UnreadMessagesVisibility));
         }
 
 
-        private bool ClearCanExecute()
+        private bool HasMessagesCanExecute()
         {
-            return Messages.Count > 0;
+            return Messages.Count > 0 || UnreadMessages.Count > 0;
+        }
+
+
+        private void HasMessagesChanged()
+        {
+            clearCommand.RaiseCanExecuteChanged();
+            exportCommand.RaiseCanExecuteChanged();
+        }
+
+
+        private void ExportExecute()
+        {
+            var formats = exportImportFormatProvider.ExportFormats.ToArray();
+
+            var dialog = new SaveFileDialog
+            {
+                Filter = string.Join('|', formats.Select(f => f.Filter))
+            };
+
+            if (dialog.ShowDialog() != DialogResult.OK)
+                return;
+
+            // 1-based? Seriously?
+            if (dialog.FilterIndex <= 0 || dialog.FilterIndex > formats.Length)
+                return;
+
+            var messages = Messages.Concat(UnreadMessages).ToArray();
+            var filename = dialog.FileName;
+            var format = formats[dialog.FilterIndex - 1];
+
+            var progressWindow = new ProgressWindow(SubscriberViewStrings.ExportProgressWindowTitle)
+            {
+                Owner = Application.Current.MainWindow,  // TODO I forgot if we have access to our host window here (which can be main or undocked), would be nicer if we did
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+            progressWindow.Show();
+
+
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await using (var exportFile = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.Read))
+                    {
+                        await format.Export(
+                            exportFile, 
+                            new ListEnumerableProgressDecorator<ReceivedMessageInfo>(messages, progressWindow), 
+                            progressWindow.CancellationToken);
+                    }
+
+                    if (progressWindow.CancellationToken.IsCancellationRequested)
+                        return;
+
+                    await Application.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        progressWindow.Close();
+                        progressWindow = null;
+
+                        MessageBox.Show(string.Format(SubscriberViewStrings.ExportSuccess, messages.Length, filename),
+                            SubscriberViewStrings.ExportResultTitle,
+                            MessageBoxButton.OK, MessageBoxImage.Information);
+                    });
+                }
+                catch (OperationCanceledException)
+                {
+                    // User cancelled
+                }
+                catch (Exception e)
+                {
+                    logger.Error(e, "Error while exporting messages");
+
+                    await Application.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        progressWindow?.Close();
+                        progressWindow = null;
+
+                        MessageBox.Show(string.Format(SubscriberViewStrings.ExportError, e.Message),
+                            SubscriberViewStrings.ExportResultTitle,
+                            MessageBoxButton.OK, MessageBoxImage.Information);
+                    });
+                }
+                finally
+                {
+                    if (progressWindow != null)
+                        await Application.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            progressWindow.Close();
+                        });
+                }
+            });
         }
 
 
         private void CreatePublisherExecute()
         {
+            if (connection == null)
+                return;
+
             var publisherTab = tabFactory.CreatePublisherTab(connection, SelectedMessage);
-            tabHost.AddTab(publisherTab);
+            tabHostProvider.Instance.AddTab(publisherTab);
         }
 
 
         private bool CreatePublisherCanExecute()
         {
-            return SelectedMessage != null;
+            return connection != null && SelectedMessage != null;
         }
 
 
         private void SubscriberMessageReceived(object? sender, MessageReceivedEventArgs args)
         {
-            dispatcher.BeginInvoke(() =>
+            Application.Current.Dispatcher.BeginInvoke(() =>
             {
                 if (!tabActive)
                 {
                     unreadCount++;
                     RaisePropertyChanged(nameof(Title));
 
-                    NewMessage ??= args.MessageInfo;
+                    UnreadMessages.Add(args.MessageInfo);
+                    if (UnreadMessages.Count == 1)
+                        RaisePropertyChanged(nameof(UnreadMessagesVisibility));
                 }
+                else
+                    Messages.Add(args.MessageInfo);
 
-                Messages.Add(args.MessageInfo);
-                clearCommand.RaiseCanExecuteChanged();
+                HasMessagesChanged();
             });
         }
 
@@ -161,22 +271,39 @@ namespace PettingZoo.UI.Tab.Subscriber
 
             RaisePropertyChanged(nameof(Title));
 
-            if (NewMessage == null) 
+            if (UnreadMessages.Count == 0) 
                 return;
 
             newMessageTimer?.Dispose();
             newMessageTimer = new Timer(
                 _ =>
                 {
-                    dispatcher.BeginInvoke(() =>
+                    Application.Current.Dispatcher.BeginInvoke(() =>
                     {
-                        NewMessage = null;
+                        if (UnreadMessages.Count == 0)
+                            return;
+
+                        Messages.BeginUpdate();
+                        UnreadMessages.BeginUpdate();
+                        try
+                        {
+                            Messages.AddRange(UnreadMessages);
+                            UnreadMessages.Clear();
+                        }
+                        finally
+                        {
+                            UnreadMessages.EndUpdate();
+                            Messages.EndUpdate();
+                        }
+
+                        RaisePropertyChanged(nameof(UnreadMessagesVisibility));
                     });
                 },
                 null,
                 TimeSpan.FromSeconds(5),
                 Timeout.InfiniteTimeSpan);
         }
+
 
         public void Deactivate()
         {
@@ -186,7 +313,6 @@ namespace PettingZoo.UI.Tab.Subscriber
                 newMessageTimer = null;
             }
 
-            NewMessage = null;
             tabActive = false;
         }
     }
@@ -194,25 +320,24 @@ namespace PettingZoo.UI.Tab.Subscriber
     
     public class DesignTimeSubscriberViewModel : SubscriberViewModel
     {
-        public DesignTimeSubscriberViewModel() : base(null!, null!, null!, new DesignTimeSubscriber())
+        public DesignTimeSubscriberViewModel() : base(null!, null!, null!, null!, new DesignTimeSubscriber(), null!)
         {
             for (var i = 1; i <= 5; i++)
-                Messages.Add(new ReceivedMessageInfo(
-                    "designtime", 
-                    $"designtime.message.{i}", 
-                    Encoding.UTF8.GetBytes(@"Design-time message"), 
+                (i > 2 ? UnreadMessages : Messages).Add(new ReceivedMessageInfo(
+                    "designtime",
+                    $"designtime.message.{i}",
+                    Encoding.UTF8.GetBytes(@"Design-time message"),
                     new MessageProperties(null)
                     {
                         ContentType = "text/fake",
                         ReplyTo = "/dev/null"
-                    }, 
+                    },
                     DateTime.Now));
 
-            SelectedMessage = Messages[2];
-            NewMessage = Messages[2];
+            SelectedMessage = UnreadMessages[0];
         }
-        
-        
+
+
         private class DesignTimeSubscriber : ISubscriber
         {
             public ValueTask DisposeAsync()
@@ -229,9 +354,16 @@ namespace PettingZoo.UI.Tab.Subscriber
             public event EventHandler<MessageReceivedEventArgs>? MessageReceived;
             #pragma warning restore CS0067
 
+
+            public IEnumerable<ReceivedMessageInfo> GetInitialMessages()
+            {
+                return Enumerable.Empty<ReceivedMessageInfo>();
+            }
+
+
             public void Start()
             {
             }
-        }    
+        }
     }
 }

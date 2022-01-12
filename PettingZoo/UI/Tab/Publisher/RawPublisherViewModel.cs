@@ -115,7 +115,7 @@ namespace PettingZoo.UI.Tab.Publisher
         public string Payload
         {
             get => payload;
-            set => SetField(ref payload, value);
+            set => SetField(ref payload, value, delegateCommandsChanged: new [] { publishCommand });
         }
 
 
@@ -267,10 +267,9 @@ namespace PettingZoo.UI.Tab.Publisher
         }
 
 
-        private static bool PublishCanExecute()
+        private bool PublishCanExecute()
         {
-            // TODO validate input
-            return true;
+            return !string.IsNullOrWhiteSpace(Payload);
         }
 
 

@@ -10,9 +10,9 @@ namespace PettingZoo.UI.Tab.Undocked
     /// </summary>
     public partial class UndockedTabHostWindow
     {
-        public static UndockedTabHostWindow Create(ITabHost tabHost, ITab tab, double width, double height)
+        public static UndockedTabHostWindow Create(ITabHostProvider tabHostProvider, ITab tab, double width, double height)
         {
-            var viewModel = new UndockedTabHostViewModel(tabHost, tab);
+            var viewModel = new UndockedTabHostViewModel(tabHostProvider, tab);
             var window = new UndockedTabHostWindow(viewModel)
             {
                 Width = width,

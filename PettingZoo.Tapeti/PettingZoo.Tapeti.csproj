@@ -32,18 +32,20 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AssemblyParserStrings.resx</DependentUpon>
     </Compile>
+    <Compile Update="Export\TapetiCmdImportExportStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TapetiCmdImportExportStrings.resx</DependentUpon>
+    </Compile>
+    <Compile Update="TapetiClassLibraryExampleGeneratorStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TapetiClassLibraryExampleGeneratorStrings.resx</DependentUpon>
+    </Compile>
     <Compile Update="UI\ClassSelection\ClassSelectionStrings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ClassSelectionStrings.resx</DependentUpon>
-    </Compile>
-    <Compile Update="UI\PackageProgress\PackageProgressStrings.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>PackageProgressStrings.resx</DependentUpon>
-    </Compile>
-    <Compile Update="UI\PackageProgress\PackageProgressWindow.xaml.cs">
-      <SubType>Code</SubType>
     </Compile>
     <Compile Update="UI\PackageSelection\PackageSelectionStrings.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -57,25 +59,22 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AssemblyParserStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Export\TapetiCmdImportExportStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TapetiCmdImportExportStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="TapetiClassLibraryExampleGeneratorStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TapetiClassLibraryExampleGeneratorStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="UI\ClassSelection\ClassSelectionStrings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ClassSelectionStrings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="UI\PackageProgress\PackageProgressStrings.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>PackageProgressStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="UI\PackageSelection\PackageSelectionStrings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>PackageSelectionStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Page Update="UI\PackageProgress\PackageProgressWindow.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
 
 </Project>
