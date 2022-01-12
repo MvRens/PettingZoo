@@ -93,6 +93,7 @@
 
     <Style x:Key="Payload" TargetType="{x:Type avalonedit:TextEditor}">
         <Setter Property="FontFamily" Value="Consolas,Courier New" />
+        <Setter Property="WordWrap" Value="True" />
     </Style>
 
     <Style x:Key="ControlBorder" TargetType="{x:Type Border}">
