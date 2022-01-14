@@ -288,6 +288,13 @@ namespace PettingZoo.UI.Tab.Publisher
         }
 
 
+        public void SetExchangeDestination(string newExchange, string newRoutingKey)
+        {
+            Exchange = newExchange;
+            RoutingKey = newRoutingKey;
+        }
+
+
         public void HostWindowChanged(Window? hostWindow)
         {
             tabHostWindow = hostWindow;

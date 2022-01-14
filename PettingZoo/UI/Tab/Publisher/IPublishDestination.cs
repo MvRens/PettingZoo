@@ -6,5 +6,6 @@
         string RoutingKey { get; }
 
         string? GetReplyTo(ref string? correlationId);
+        void SetExchangeDestination(string exchange, string routingKey);
     }
 }

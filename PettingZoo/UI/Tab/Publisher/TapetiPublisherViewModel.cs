@@ -134,6 +134,9 @@ namespace PettingZoo.UI.Tab.Publisher
                             AssemblyName = classTypeExample.AssemblyName;
                             ClassName = classTypeExample.FullClassName;
 
+                            if (classTypeExample.TryGetPublishDestination(out var exchange, out var routingKey))
+                                publishDestination.SetExchangeDestination(exchange, routingKey);
+
                             validatingExample = classTypeExample as IValidatingExample;
                             break;
                     }

@@ -17,11 +17,13 @@ namespace PettingZoo.Core.Generator
 
     public interface IClassTypeExample : IExample
     {
-        public string AssemblyName { get; }
-        public string? Namespace { get; }
-        public string ClassName { get; }
+        string AssemblyName { get; }
+        string? Namespace { get; }
+        string ClassName { get; }
 
-        public string FullClassName => (!string.IsNullOrEmpty(Namespace) ? Namespace + "." : "") + ClassName;
+        string FullClassName => (!string.IsNullOrEmpty(Namespace) ? Namespace + "." : "") + ClassName;
+
+        bool TryGetPublishDestination(out string exchange, out string routingKey);
     }
 
 
