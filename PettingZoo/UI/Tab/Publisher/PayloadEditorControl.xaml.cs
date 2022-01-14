@@ -2,7 +2,9 @@
 using System.Reactive.Linq;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
+using PettingZoo.Core.Macros;
 using PettingZoo.Core.Validation;
 
 namespace PettingZoo.UI.Tab.Publisher
@@ -88,10 +90,51 @@ namespace PettingZoo.UI.Tab.Publisher
         }
 
 
+        public static readonly DependencyProperty EnableMacrosProperty
+            = DependencyProperty.Register(
+                "EnableMacros",
+                typeof(bool),
+                typeof(PayloadEditorControl),
+                new FrameworkPropertyMetadata(false)
+                {
+                    BindsTwoWayByDefault = true,
+                    DefaultUpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                }
+            );
+
+
+        public bool EnableMacros
+        {
+            get => viewModel.EnableMacros;
+            set
+            {
+                if (value == viewModel.EnableMacros)
+                    return;
+
+                SetValue(EnableMacrosProperty, value);
+                viewModel.EnableMacros = value;
+            }
+        }
+
         public IPayloadValidator? Validator
         {
             get => viewModel.Validator;
             set => viewModel.Validator = value;
+        }
+
+
+        private IPayloadMacroProcessor? macroProcessor;
+        public IPayloadMacroProcessor? MacroProcessor
+        {
+            get => macroProcessor;
+            set
+            {
+                if (value == macroProcessor)
+                    return;
+
+                macroProcessor = value;
+                UpdateMacroContextMenu();
+            }
         }
 
 
@@ -123,6 +166,12 @@ namespace PettingZoo.UI.Tab.Publisher
                     viewModel.Payload = value;
                 });
 
+            this.OnPropertyChanges<bool>(EnableMacrosProperty)
+                .ObserveOn(SynchronizationContext.Current!)
+                .Subscribe(value =>
+                {
+                    viewModel.EnableMacros = value;
+                });
 
             viewModel.PropertyChanged += (_, args) =>
             {
@@ -138,6 +187,10 @@ namespace PettingZoo.UI.Tab.Publisher
 
                     case nameof(viewModel.Payload):
                         SetValue(PayloadProperty, viewModel.Payload);
+                        break;
+
+                    case nameof(viewModel.EnableMacros):
+                        SetValue(EnableMacrosProperty, viewModel.EnableMacros);
                         break;
                 }
             };
@@ -206,6 +259,71 @@ namespace PettingZoo.UI.Tab.Publisher
             // Setting the DataContext for the UserControl is a major PITA when binding the control's properties,
             // so I've moved the ViewModel one level down to get the best of both worlds...
             DataContextContainer.DataContext = viewModel;
+        }
+
+
+        private void UpdateMacroContextMenu()
+        {
+            ContextMenuInsertMacro.Items.Clear();
+
+            if (macroProcessor == null)
+                return;
+
+            foreach (var macro in macroProcessor.Macros)
+            {
+                var macroMenuItem = new MenuItem
+                {
+                    Header = macro.DisplayName
+                };
+
+                macroMenuItem.Click += (_, _) =>
+                {
+                    Editor.SelectedText = macro.MacroText;
+
+                    var length = Editor.SelectionLength;
+                    Editor.SelectionLength = 0;
+                    Editor.SelectionStart += length;
+
+                    viewModel.EnableMacros = true;
+                };
+
+                ContextMenuInsertMacro.Items.Add(macroMenuItem);
+            }
+        }
+
+
+        private void Undo_Click(object sender, RoutedEventArgs e)
+        {
+            Editor.Undo();
+        }
+
+        private void Redo_Click(object sender, RoutedEventArgs e)
+        {
+            Editor.Redo();
+        }
+
+        private void Cut_Click(object sender, RoutedEventArgs e)
+        {
+            Editor.Cut();
+        }
+
+        private void Copy_Click(object sender, RoutedEventArgs e)
+        {
+            Editor.Copy();
+        }
+
+        private void Paste_Click(object sender, RoutedEventArgs e)
+        {
+            Editor.Paste();
+        }
+
+        private void ContextMenu_OnOpened(object sender, RoutedEventArgs e)
+        {
+            ContextMenuUndo.IsEnabled = Editor.CanUndo;
+            ContextMenuRedo.IsEnabled = Editor.CanRedo;
+            ContextMenuCut.IsEnabled = Editor.SelectionLength > 0;
+            ContextMenuCopy.IsEnabled = Editor.SelectionLength > 0;
+            ContextMenuPaste.IsEnabled = Clipboard.ContainsText();
         }
     }
 }

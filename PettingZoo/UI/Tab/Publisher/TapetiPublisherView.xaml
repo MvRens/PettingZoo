@@ -46,6 +46,7 @@
         </Grid>
 
         <Label Grid.Row="6" Grid.Column="0" Content="{x:Static publisher:TapetiPublisherViewStrings.LabelPayload}" />
-        <publisher:PayloadEditorControl Grid.Row="6" Grid.Column="1" Payload="{Binding Payload}" FixedJson="True" Height="350" x:Name="PayloadEditor"/>
+        <publisher:PayloadEditorControl Grid.Row="6" Grid.Column="1" Payload="{Binding Payload}" FixedJson="True" Height="350" x:Name="PayloadEditor"
+                                        EnableMacros="{Binding EnableMacros}" />
     </controls:GridLayout>
 </UserControl>

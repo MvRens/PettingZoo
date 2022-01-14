@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using PettingZoo.Core.Macros;
 
 namespace PettingZoo.UI.Tab.Publisher
 {
@@ -21,6 +22,8 @@ namespace PettingZoo.UI.Tab.Publisher
 
             DataContext = viewModel;
             InitializeComponent();
+
+            PayloadEditor.MacroProcessor = viewModel.PayloadMacroProcessor;
 
             checkEmptyHeaderTimer = new DispatcherTimer();
             checkEmptyHeaderTimer.Tick += CheckEmptyHeaderTimerOnTick;

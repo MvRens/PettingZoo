@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Reactive.Linq;
 using System.Windows;
+using System.Windows.Input;
 using ICSharpCode.AvalonEdit.Highlighting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -60,10 +61,11 @@ namespace PettingZoo.UI.Tab.Publisher
         private string contentType = ContentTypeJson;
         private PayloadEditorContentType contentTypeSelection = PayloadEditorContentType.Json;
         private bool fixedJson;
-
+        
         private ValidationInfo validationInfo = new(ValidationStatus.OkSyntax);
 
         private string payload = "";
+        private bool enableMacros;
 
 
         public string ContentType
@@ -136,10 +138,18 @@ namespace PettingZoo.UI.Tab.Publisher
         public Visibility ContentTypeVisibility => FixedJson ? Visibility.Collapsed : Visibility.Visible;
 
 
+
         public string Payload
         {
             get => payload;
             set => SetField(ref payload, value);
+        }
+
+
+        public bool EnableMacros
+        {
+            get => enableMacros;
+            set => SetField(ref enableMacros, value);
         }
 
 

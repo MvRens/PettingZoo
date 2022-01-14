@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using PettingZoo.Core.Macros;
 
 namespace PettingZoo.UI.Tab.Publisher
 {
@@ -15,6 +16,7 @@ namespace PettingZoo.UI.Tab.Publisher
             InitializeComponent();
 
             PayloadEditor.Validator = viewModel;
+            PayloadEditor.MacroProcessor = viewModel.PayloadMacroProcessor;
         }
 
 

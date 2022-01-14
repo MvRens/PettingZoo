@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using PettingZoo.Core.Connection;
 using PettingZoo.Core.Generator;
+using PettingZoo.Core.Macros;
 using PettingZoo.WPF.ViewModel;
 
 namespace PettingZoo.UI.Tab.Publisher
@@ -20,6 +21,7 @@ namespace PettingZoo.UI.Tab.Publisher
     {
         private readonly IConnection connection;
         private readonly IExampleGenerator exampleGenerator;
+        private readonly IPayloadMacroProcessor payloadMacroProcessor;
         private readonly ITabFactory tabFactory;
 
         private bool sendToExchange = true;
@@ -155,10 +157,11 @@ namespace PettingZoo.UI.Tab.Publisher
         string IPublishDestination.RoutingKey => SendToExchange ? RoutingKey : Queue;
 
 
-        public PublisherViewModel(ITabFactory tabFactory, IConnection connection, IExampleGenerator exampleGenerator, ReceivedMessageInfo? fromReceivedMessage = null)
+        public PublisherViewModel(ITabFactory tabFactory, IConnection connection, IExampleGenerator exampleGenerator, IPayloadMacroProcessor payloadMacroProcessor, ReceivedMessageInfo? fromReceivedMessage = null)
         {
             this.connection = connection;
             this.exampleGenerator = exampleGenerator;
+            this.payloadMacroProcessor = payloadMacroProcessor;
             this.tabFactory = tabFactory;
 
             publishCommand = new DelegateCommand(PublishExecute, PublishCanExecute);
@@ -207,7 +210,7 @@ namespace PettingZoo.UI.Tab.Publisher
 
                     if (rawPublisherView == null)
                     {
-                        rawPublisherViewModel = new RawPublisherViewModel(connection, this);
+                        rawPublisherViewModel = new RawPublisherViewModel(connection, this, payloadMacroProcessor);
                         rawPublisherViewModel.PublishCommand.CanExecuteChanged += (_, _) =>
                         {
                             publishCommand.RaiseCanExecuteChanged();
@@ -228,7 +231,7 @@ namespace PettingZoo.UI.Tab.Publisher
 
                     if (tapetiPublisherView == null)
                     {
-                        tapetiPublisherViewModel = new TapetiPublisherViewModel(connection, this, exampleGenerator);
+                        tapetiPublisherViewModel = new TapetiPublisherViewModel(connection, this, exampleGenerator, payloadMacroProcessor);
                         tapetiPublisherViewModel.PublishCommand.CanExecuteChanged += (_, _) =>
                         {
                             publishCommand.RaiseCanExecuteChanged();
@@ -263,14 +266,14 @@ namespace PettingZoo.UI.Tab.Publisher
 
             if (TapetiPublisherViewModel.IsTapetiMessage(fromReceivedMessage))
             {
-                var tapetiPublisherViewModel = new TapetiPublisherViewModel(connection, this, exampleGenerator, fromReceivedMessage);
+                var tapetiPublisherViewModel = new TapetiPublisherViewModel(connection, this, exampleGenerator, payloadMacroProcessor, fromReceivedMessage);
                 tapetiPublisherView = new TapetiPublisherView(tapetiPublisherViewModel);
 
                 MessageType = MessageType.Tapeti;
             }
             else
             {
-                var rawPublisherViewModel = new RawPublisherViewModel(connection, this, fromReceivedMessage);
+                var rawPublisherViewModel = new RawPublisherViewModel(connection, this, payloadMacroProcessor, fromReceivedMessage);
                 rawPublisherView = new RawPublisherView(rawPublisherViewModel);
 
                 MessageType = MessageType.Raw;
@@ -306,7 +309,7 @@ namespace PettingZoo.UI.Tab.Publisher
 
     public class DesignTimePublisherViewModel : PublisherViewModel
     {
-        public DesignTimePublisherViewModel() : base(null!, null!, null!)
+        public DesignTimePublisherViewModel() : base(null!, null!, null!, null!)
         {
         }
 

@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CheckEnableMacros" xml:space="preserve">
+    <value>Enable macros (right-click editor to insert)</value>
+  </data>
   <data name="ContentTypeJson" xml:space="preserve">
     <value>JSON</value>
   </data>
@@ -125,6 +128,27 @@
   </data>
   <data name="ContentTypePlain" xml:space="preserve">
     <value>Plain text</value>
+  </data>
+  <data name="ContextMenuCopy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="ContextMenuCut" xml:space="preserve">
+    <value>Cut</value>
+  </data>
+  <data name="ContextMenuInsertMacro" xml:space="preserve">
+    <value>Insert macro</value>
+  </data>
+  <data name="ContextMenuPaste" xml:space="preserve">
+    <value>Paste</value>
+  </data>
+  <data name="ContextMenuRedo" xml:space="preserve">
+    <value>Redo</value>
+  </data>
+  <data name="ContextMenuUndo" xml:space="preserve">
+    <value>Undo</value>
+  </data>
+  <data name="ShowMacrosHint" xml:space="preserve">
+    <value>Show available macros</value>
   </data>
   <data name="ValidationError" xml:space="preserve">
     <value>Invalid: {0}</value>

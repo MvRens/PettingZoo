@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using PettingZoo.Core.Connection;
 using PettingZoo.Core.ExportImport;
 using PettingZoo.Core.Generator;
+using PettingZoo.Core.Macros;
 using PettingZoo.UI.Tab.Publisher;
 using PettingZoo.UI.Tab.Subscriber;
 using Serilog;
@@ -15,18 +16,21 @@ namespace PettingZoo.UI.Tab
         private readonly ITabHostProvider tabHostProvider;
         private readonly IExampleGenerator exampleGenerator;
         private readonly IExportImportFormatProvider exportImportFormatProvider;
+        private readonly IPayloadMacroProcessor payloadMacroProcessor;
 
         // Not the cleanest way, but this factory itself can't be singleton without (justifyable) upsetting SimpleInjector
         private static ISubscriber? replySubscriber;
         private static ITab? replySubscriberTab;
 
 
-        public ViewTabFactory(ILogger logger, ITabHostProvider tabHostProvider, IExampleGenerator exampleGenerator, IExportImportFormatProvider exportImportFormatProvider)
+        public ViewTabFactory(ILogger logger, ITabHostProvider tabHostProvider, IExampleGenerator exampleGenerator, IExportImportFormatProvider exportImportFormatProvider,
+            IPayloadMacroProcessor payloadMacroProcessor)
         {
             this.logger = logger;
             this.tabHostProvider = tabHostProvider;
             this.exampleGenerator = exampleGenerator;
             this.exportImportFormatProvider = exportImportFormatProvider;
+            this.payloadMacroProcessor = payloadMacroProcessor;
         }
 
 
@@ -59,7 +63,7 @@ namespace PettingZoo.UI.Tab
 
         public void CreatePublisherTab(IConnection connection, ReceivedMessageInfo? fromReceivedMessage = null)
         {
-            var viewModel = new PublisherViewModel(this, connection, exampleGenerator, fromReceivedMessage);
+            var viewModel = new PublisherViewModel(this, connection, exampleGenerator, payloadMacroProcessor, fromReceivedMessage);
             var tab = new ViewTab<PublisherView, PublisherViewModel>(
                 new PublisherView(viewModel),
                 viewModel,

@@ -6,6 +6,7 @@ using System.Windows.Markup;
 using PettingZoo.Core.Connection;
 using PettingZoo.Core.ExportImport;
 using PettingZoo.Core.Generator;
+using PettingZoo.Core.Macros;
 using PettingZoo.Core.Settings;
 using PettingZoo.RabbitMQ;
 using PettingZoo.Settings.LiteDB;
@@ -84,6 +85,7 @@ namespace PettingZoo
             container.Register<IExampleGenerator, TapetiClassLibraryExampleGenerator>();
             container.RegisterSingleton<ITabHostProvider, TabHostProvider>();
             container.Register<ITabFactory, ViewTabFactory>();
+            container.RegisterSingleton<IPayloadMacroProcessor, PayloadMacroProcessor>();
 
             container.RegisterInstance<IExportImportFormatProvider>(new ExportImportFormatProvider(
                 new TapetiCmdExportFormat(),
