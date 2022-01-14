@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using PettingZoo.Core.Connection;
 using PettingZoo.Core.Generator;
+using PettingZoo.Core.Macros;
 using PettingZoo.WPF.ViewModel;
 
 namespace PettingZoo.UI.Tab.Publisher
@@ -20,8 +21,8 @@ namespace PettingZoo.UI.Tab.Publisher
     {
         private readonly IConnection connection;
         private readonly IExampleGenerator exampleGenerator;
+        private readonly IPayloadMacroProcessor payloadMacroProcessor;
         private readonly ITabFactory tabFactory;
-        private readonly ITabHostProvider tabHostProvider;
 
         private bool sendToExchange = true;
         private string exchange = "";
@@ -156,12 +157,12 @@ namespace PettingZoo.UI.Tab.Publisher
         string IPublishDestination.RoutingKey => SendToExchange ? RoutingKey : Queue;
 
 
-        public PublisherViewModel(ITabHostProvider tabHostProvider, ITabFactory tabFactory, IConnection connection, IExampleGenerator exampleGenerator, ReceivedMessageInfo? fromReceivedMessage = null)
+        public PublisherViewModel(ITabFactory tabFactory, IConnection connection, IExampleGenerator exampleGenerator, IPayloadMacroProcessor payloadMacroProcessor, ReceivedMessageInfo? fromReceivedMessage = null)
         {
             this.connection = connection;
             this.exampleGenerator = exampleGenerator;
+            this.payloadMacroProcessor = payloadMacroProcessor;
             this.tabFactory = tabFactory;
-            this.tabHostProvider = tabHostProvider;
 
             publishCommand = new DelegateCommand(PublishExecute, PublishCanExecute);
 
@@ -209,7 +210,7 @@ namespace PettingZoo.UI.Tab.Publisher
 
                     if (rawPublisherView == null)
                     {
-                        rawPublisherViewModel = new RawPublisherViewModel(connection, this);
+                        rawPublisherViewModel = new RawPublisherViewModel(connection, this, payloadMacroProcessor);
                         rawPublisherViewModel.PublishCommand.CanExecuteChanged += (_, _) =>
                         {
                             publishCommand.RaiseCanExecuteChanged();
@@ -230,7 +231,7 @@ namespace PettingZoo.UI.Tab.Publisher
 
                     if (tapetiPublisherView == null)
                     {
-                        tapetiPublisherViewModel = new TapetiPublisherViewModel(connection, this, exampleGenerator);
+                        tapetiPublisherViewModel = new TapetiPublisherViewModel(connection, this, exampleGenerator, payloadMacroProcessor);
                         tapetiPublisherViewModel.PublishCommand.CanExecuteChanged += (_, _) =>
                         {
                             publishCommand.RaiseCanExecuteChanged();
@@ -265,14 +266,14 @@ namespace PettingZoo.UI.Tab.Publisher
 
             if (TapetiPublisherViewModel.IsTapetiMessage(fromReceivedMessage))
             {
-                var tapetiPublisherViewModel = new TapetiPublisherViewModel(connection, this, exampleGenerator, fromReceivedMessage);
+                var tapetiPublisherViewModel = new TapetiPublisherViewModel(connection, this, exampleGenerator, payloadMacroProcessor, fromReceivedMessage);
                 tapetiPublisherView = new TapetiPublisherView(tapetiPublisherViewModel);
 
                 MessageType = MessageType.Tapeti;
             }
             else
             {
-                var rawPublisherViewModel = new RawPublisherViewModel(connection, this, fromReceivedMessage);
+                var rawPublisherViewModel = new RawPublisherViewModel(connection, this, payloadMacroProcessor, fromReceivedMessage);
                 rawPublisherView = new RawPublisherView(rawPublisherViewModel);
 
                 MessageType = MessageType.Raw;
@@ -280,17 +281,20 @@ namespace PettingZoo.UI.Tab.Publisher
         }
 
 
-        public string? GetReplyTo()
+        public string? GetReplyTo(ref string? correlationId)
         {
             if (ReplyToSpecified)
                 return string.IsNullOrEmpty(ReplyTo) ? null : ReplyTo;
 
-            var subscriber = connection.Subscribe();
-            var tab = tabFactory.CreateSubscriberTab(connection, subscriber);
-            tabHostProvider.Instance.AddTab(tab);
+            correlationId = PublisherViewStrings.ReplyToCorrelationIdPrefix + (SendToExchange ? RoutingKey : Queue);
+            return tabFactory.CreateReplySubscriberTab(connection);
+        }
 
-            subscriber.Start();
-            return subscriber.QueueName;
+
+        public void SetExchangeDestination(string newExchange, string newRoutingKey)
+        {
+            Exchange = newExchange;
+            RoutingKey = newRoutingKey;
         }
 
 

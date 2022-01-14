@@ -131,6 +131,7 @@
         </Button>
 
         <Label Grid.Row="14" Grid.Column="0" Content="{x:Static publisher:RawPublisherViewStrings.LabelPayload}" />
-        <publisher:PayloadEditorControl Grid.Row="14" Grid.Column="1" Payload="{Binding Payload}" ContentType="{Binding ContentType}" Height="350"/>
+        <publisher:PayloadEditorControl Grid.Row="14" Grid.Column="1" Payload="{Binding Payload}" ContentType="{Binding ContentType}" Height="350" x:Name="PayloadEditor" 
+                                        EnableMacros="{Binding EnableMacros}" />
     </controls:GridLayout>
 </UserControl>

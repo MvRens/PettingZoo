@@ -170,7 +170,7 @@ namespace PettingZoo.UI.Main
             if (connectionSettings.Subscribe)
             {
                 var subscriber = connection.Subscribe(connectionSettings.Exchange, connectionSettings.RoutingKey);
-                AddTab(tabFactory.CreateSubscriberTab(connection, subscriber));
+                tabFactory.CreateSubscriberTab(connection, subscriber);
             }
 
             ConnectionChanged();
@@ -214,7 +214,7 @@ namespace PettingZoo.UI.Main
             subscribeDialogParams = newParams;
             
             var subscriber = connection.Subscribe(subscribeDialogParams.Exchange, subscribeDialogParams.RoutingKey);
-            AddTab(tabFactory.CreateSubscriberTab(connection, subscriber));
+            tabFactory.CreateSubscriberTab(connection, subscriber);
         }
 
 
@@ -223,7 +223,7 @@ namespace PettingZoo.UI.Main
             if (connection == null)
                 return;
             
-            AddTab(tabFactory.CreatePublisherTab(connection));
+            tabFactory.CreatePublisherTab(connection);
         }
         
 
@@ -235,7 +235,8 @@ namespace PettingZoo.UI.Main
 
         private void CloseTabExecute()
         {
-            RemoveActiveTab();
+            var tab = RemoveActiveTab();
+            (tab as IDisposable)?.Dispose();
         }
 
 
@@ -300,8 +301,7 @@ namespace PettingZoo.UI.Main
                         progressWindow.Close();
                         progressWindow = null;
 
-                        AddTab(tabFactory.CreateSubscriberTab(connection,
-                            new ImportSubscriber(filename, messages)));
+                        tabFactory.CreateSubscriberTab(connection, new ImportSubscriber(filename, messages));
                     });
                 }
                 catch (OperationCanceledException)
@@ -374,6 +374,15 @@ namespace PettingZoo.UI.Main
             closeTabCommand.RaiseCanExecuteChanged();
             undockTabCommand.RaiseCanExecuteChanged();
             RaisePropertyChanged(nameof(NoTabsVisibility));
+        }
+
+
+        public void ActivateTab(ITab tab)
+        {
+            if (undockedTabs.TryGetValue(tab, out var window))
+                window.Activate();
+            else if (Tabs.Contains(tab))
+                ActiveTab = tab;
         }
 
 

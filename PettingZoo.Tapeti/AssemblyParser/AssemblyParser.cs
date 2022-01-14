@@ -7,6 +7,7 @@ using System.Runtime.Loader;
 using Newtonsoft.Json;
 using PettingZoo.Core.Generator;
 using PettingZoo.Core.Validation;
+using Tapeti.Default;
 
 namespace PettingZoo.Tapeti.AssemblyParser
 {
@@ -80,6 +81,24 @@ namespace PettingZoo.Tapeti.AssemblyParser
             {
                 var serialized = TypeToJObjectConverter.Convert(type);
                 return serialized.ToString(Formatting.Indented);
+            }
+
+
+            public bool TryGetPublishDestination(out string exchange, out string routingKey)
+            {
+                try
+                {
+                    // Assume default strategies are used
+                    exchange = new NamespaceMatchExchangeStrategy().GetExchange(type);
+                    routingKey = new TypeNameRoutingKeyStrategy().GetRoutingKey(type);
+                    return true;
+                }
+                catch
+                {
+                    exchange = "";
+                    routingKey = "";
+                    return false;
+                }
             }
 
 

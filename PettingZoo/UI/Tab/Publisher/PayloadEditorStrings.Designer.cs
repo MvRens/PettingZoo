@@ -22,7 +22,7 @@ namespace PettingZoo.UI.Tab.Publisher {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class PayloadEditorStrings {
+    public class PayloadEditorStrings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace PettingZoo.UI.Tab.Publisher {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PettingZoo.UI.Tab.Publisher.PayloadEditorStrings", typeof(PayloadEditorStrings).Assembly);
@@ -51,7 +51,7 @@ namespace PettingZoo.UI.Tab.Publisher {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,9 +61,18 @@ namespace PettingZoo.UI.Tab.Publisher {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable macros (right-click editor to insert).
+        /// </summary>
+        public static string CheckEnableMacros {
+            get {
+                return ResourceManager.GetString("CheckEnableMacros", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to JSON.
         /// </summary>
-        internal static string ContentTypeJson {
+        public static string ContentTypeJson {
             get {
                 return ResourceManager.GetString("ContentTypeJson", resourceCulture);
             }
@@ -72,7 +81,7 @@ namespace PettingZoo.UI.Tab.Publisher {
         /// <summary>
         ///   Looks up a localized string similar to Other.
         /// </summary>
-        internal static string ContentTypeOther {
+        public static string ContentTypeOther {
             get {
                 return ResourceManager.GetString("ContentTypeOther", resourceCulture);
             }
@@ -81,16 +90,79 @@ namespace PettingZoo.UI.Tab.Publisher {
         /// <summary>
         ///   Looks up a localized string similar to Plain text.
         /// </summary>
-        internal static string ContentTypePlain {
+        public static string ContentTypePlain {
             get {
                 return ResourceManager.GetString("ContentTypePlain", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy.
+        /// </summary>
+        public static string ContextMenuCopy {
+            get {
+                return ResourceManager.GetString("ContextMenuCopy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cut.
+        /// </summary>
+        public static string ContextMenuCut {
+            get {
+                return ResourceManager.GetString("ContextMenuCut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Insert macro.
+        /// </summary>
+        public static string ContextMenuInsertMacro {
+            get {
+                return ResourceManager.GetString("ContextMenuInsertMacro", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paste.
+        /// </summary>
+        public static string ContextMenuPaste {
+            get {
+                return ResourceManager.GetString("ContextMenuPaste", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redo.
+        /// </summary>
+        public static string ContextMenuRedo {
+            get {
+                return ResourceManager.GetString("ContextMenuRedo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undo.
+        /// </summary>
+        public static string ContextMenuUndo {
+            get {
+                return ResourceManager.GetString("ContextMenuUndo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show available macros.
+        /// </summary>
+        public static string ShowMacrosHint {
+            get {
+                return ResourceManager.GetString("ShowMacrosHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid: {0}.
         /// </summary>
-        internal static string ValidationError {
+        public static string ValidationError {
             get {
                 return ResourceManager.GetString("ValidationError", resourceCulture);
             }
@@ -99,7 +171,7 @@ namespace PettingZoo.UI.Tab.Publisher {
         /// <summary>
         ///   Looks up a localized string similar to Valid.
         /// </summary>
-        internal static string ValidationOk {
+        public static string ValidationOk {
             get {
                 return ResourceManager.GetString("ValidationOk", resourceCulture);
             }
@@ -108,7 +180,7 @@ namespace PettingZoo.UI.Tab.Publisher {
         /// <summary>
         ///   Looks up a localized string similar to Valid syntax.
         /// </summary>
-        internal static string ValidationOkSyntax {
+        public static string ValidationOkSyntax {
             get {
                 return ResourceManager.GetString("ValidationOkSyntax", resourceCulture);
             }
@@ -117,7 +189,7 @@ namespace PettingZoo.UI.Tab.Publisher {
         /// <summary>
         ///   Looks up a localized string similar to Validating....
         /// </summary>
-        internal static string ValidationValidating {
+        public static string ValidationValidating {
             get {
                 return ResourceManager.GetString("ValidationValidating", resourceCulture);
             }

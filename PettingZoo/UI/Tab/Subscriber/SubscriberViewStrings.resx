@@ -159,4 +159,7 @@
   <data name="PropertyValue" xml:space="preserve">
     <value>Value</value>
   </data>
+  <data name="ReplyTabTitle" xml:space="preserve">
+    <value>Replies</value>
+  </data>
 </root>

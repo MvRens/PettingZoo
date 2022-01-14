@@ -21,18 +21,36 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Visibility="{Binding ValidationVisibility}" Margin="0,8,0,0">
-            <Image Source="{svgc:SvgImage Source=/Images/Ok.svg, AppName=PettingZoo}" Width="16" Height="16" Margin="4" Visibility="{Binding ValidationOk}" />
-            <Image Source="{svgc:SvgImage Source=/Images/Error.svg, AppName=PettingZoo}" Width="16" Height="16" Margin="4" Visibility="{Binding ValidationError}" />
-            <Image Source="{svgc:SvgImage Source=/Images/Busy.svg, AppName=PettingZoo}" Width="16" Height="16" Margin="4" Visibility="{Binding ValidationValidating}" />
+            <Image Source="{svgc:SvgImage Source=/Images/Ok.svg, AppName=PettingZoo}" Width="16" Height="16" Margin="1,4,0,0" Visibility="{Binding ValidationOk}" />
+            <Image Source="{svgc:SvgImage Source=/Images/Error.svg, AppName=PettingZoo}" Width="16" Height="16" Margin="1,4,0,0" Visibility="{Binding ValidationError}" />
+            <Image Source="{svgc:SvgImage Source=/Images/Busy.svg, AppName=PettingZoo}" Width="16" Height="16" Margin="1,4,0,0" Visibility="{Binding ValidationValidating}" />
             <TextBlock Text="{Binding ValidationMessage}" Margin="4" />
         </StackPanel>
+
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Margin="0,8,0,0">
+            <CheckBox Content="{x:Static publisher:PayloadEditorStrings.CheckEnableMacros}" VerticalAlignment="Center" IsChecked="{Binding EnableMacros}" />
+        </StackPanel>
+
 
         <Border Style="{StaticResource ControlBorder}" Name="EditorBorder">
             <avalonedit:TextEditor
                 xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
                 Name="Editor"
                 SyntaxHighlighting="{Binding SyntaxHighlighting}"
-                Style="{StaticResource Payload}" />
+                Style="{StaticResource Payload}">
+                <avalonedit:TextEditor.ContextMenu>
+                    <ContextMenu Opened="ContextMenu_OnOpened">
+                        <MenuItem Header="{x:Static publisher:PayloadEditorStrings.ContextMenuUndo}" Name="ContextMenuUndo" Click="Undo_Click" InputGestureText="Ctrl+Z" />
+                        <MenuItem Header="{x:Static publisher:PayloadEditorStrings.ContextMenuRedo}" Name="ContextMenuRedo" Click="Redo_Click" InputGestureText="Ctrl+Y "/>
+                        <Separator/>
+                        <MenuItem Header="{x:Static publisher:PayloadEditorStrings.ContextMenuCut}" Name="ContextMenuCut" Click="Cut_Click" InputGestureText="Ctrl+X "/>
+                        <MenuItem Header="{x:Static publisher:PayloadEditorStrings.ContextMenuCopy}" Name="ContextMenuCopy" Click="Copy_Click" InputGestureText="Ctrl+C "/>
+                        <MenuItem Header="{x:Static publisher:PayloadEditorStrings.ContextMenuPaste}" Name="ContextMenuPaste" Click="Paste_Click" InputGestureText="Ctrl+V "/>
+                        <Separator/>
+                        <MenuItem Header="{x:Static publisher:PayloadEditorStrings.ContextMenuInsertMacro}" Name="ContextMenuInsertMacro" />
+                    </ContextMenu>
+                </avalonedit:TextEditor.ContextMenu>
+            </avalonedit:TextEditor>
         </Border>
     </DockPanel>
 </UserControl>

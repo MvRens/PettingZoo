@@ -2,9 +2,9 @@
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 using PettingZoo.Core.Connection;
 using PettingZoo.Core.Generator;
+using PettingZoo.Core.Macros;
 using PettingZoo.Core.Validation;
 using PettingZoo.WPF.ViewModel;
 using IConnection = PettingZoo.Core.Connection.IConnection;
@@ -21,6 +21,7 @@ namespace PettingZoo.UI.Tab.Publisher
 
         private string correlationId = "";
         private string payload = "";
+        private bool enableMacros;
         private string className = "";
         private string assemblyName = "";
         private Window? tabHostWindow;
@@ -68,9 +69,17 @@ namespace PettingZoo.UI.Tab.Publisher
         }
 
 
+        public bool EnableMacros
+        {
+            get => enableMacros;
+            set => SetField(ref enableMacros, value);
+        }
+
+
         public ICommand PublishCommand => publishCommand;
         public ICommand BrowseClassCommand => browseClassCommand;
 
+        public IPayloadMacroProcessor PayloadMacroProcessor { get; }
 
 
         public static bool IsTapetiMessage(ReceivedMessageInfo receivedMessage)
@@ -100,8 +109,11 @@ namespace PettingZoo.UI.Tab.Publisher
         }
 
 
-        public TapetiPublisherViewModel(IConnection connection, IPublishDestination publishDestination, IExampleGenerator exampleGenerator, ReceivedMessageInfo? receivedMessage = null)
+        public TapetiPublisherViewModel(IConnection connection, IPublishDestination publishDestination, IExampleGenerator exampleGenerator, 
+            IPayloadMacroProcessor payloadMacroProcessor, ReceivedMessageInfo? receivedMessage = null)
         {
+            PayloadMacroProcessor = payloadMacroProcessor;
+
             this.connection = connection;
             this.publishDestination = publishDestination;
             this.exampleGenerator = exampleGenerator;
@@ -135,6 +147,9 @@ namespace PettingZoo.UI.Tab.Publisher
                             AssemblyName = classTypeExample.AssemblyName;
                             ClassName = classTypeExample.FullClassName;
 
+                            if (classTypeExample.TryGetPublishDestination(out var exchange, out var routingKey))
+                                publishDestination.SetExchangeDestination(exchange, routingKey);
+
                             validatingExample = classTypeExample as IValidatingExample;
                             break;
                     }
@@ -151,20 +166,30 @@ namespace PettingZoo.UI.Tab.Publisher
             {
                 return string.IsNullOrEmpty(value) ? null : value;
             }
-            
+
+            var encodedPayload = Encoding.UTF8.GetBytes(
+                    EnableMacros
+                        ? PayloadMacroProcessor.Apply(Payload)
+                        : Payload
+                );
+
+
+            var publishCorrelationId = NullIfEmpty(CorrelationId);
+            var replyTo = publishDestination.GetReplyTo(ref publishCorrelationId);
+
             connection.Publish(new PublishMessageInfo(
                 publishDestination.Exchange,
                 publishDestination.RoutingKey,
-                Encoding.UTF8.GetBytes(Payload),
+                encodedPayload,
                 new MessageProperties(new Dictionary<string, string>
                 {
                     { @"classType", $"{ClassName}:{AssemblyName}" }
                 })
                 {
                     ContentType = @"application/json",
-                    CorrelationId = NullIfEmpty(CorrelationId),
+                    CorrelationId = publishCorrelationId,
                     DeliveryMode = MessageDeliveryMode.Persistent,
-                    ReplyTo = publishDestination.GetReplyTo()
+                    ReplyTo = replyTo
                 }));
         }
 
@@ -199,7 +224,7 @@ namespace PettingZoo.UI.Tab.Publisher
 
     public class DesignTimeTapetiPublisherViewModel : TapetiPublisherViewModel
     {
-        public DesignTimeTapetiPublisherViewModel() : base(null!, null!, null!)
+        public DesignTimeTapetiPublisherViewModel() : base(null!, null!, null!, null!)
         {
             AssemblyName = "Messaging.Example";
             ClassName = "Messaging.Example.ExampleMessage";

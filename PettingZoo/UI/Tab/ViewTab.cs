@@ -8,7 +8,7 @@ using System.Windows.Controls;
 
 namespace PettingZoo.UI.Tab
 {
-    public class ViewTab<TView, TViewModel> : ITab, ITabToolbarCommands, ITabActivate, ITabHostWindowNotify where TView : ContentControl where TViewModel : INotifyPropertyChanged
+    public class ViewTab<TView, TViewModel> : IDisposable, ITab, ITabToolbarCommands, ITabActivate, ITabHostWindowNotify where TView : ContentControl where TViewModel : INotifyPropertyChanged
     {
         public string Title => getTitle(viewModel);
         public ContentControl Content { get; }
@@ -62,6 +62,13 @@ namespace PettingZoo.UI.Tab
         public void HostWindowChanged(Window? hostWindow)
         {
             (viewModel as ITabHostWindowNotify)?.HostWindowChanged(hostWindow);
+        }
+
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            (viewModel as IDisposable)?.Dispose();
         }
     }
 }

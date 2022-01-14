@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:res="clr-namespace:PettingZoo.UI.Tab.Publisher"
              xmlns:controls="clr-namespace:PettingZoo.WPF.Controls;assembly=PettingZoo.WPF"
+             xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
              mc:Ignorable="d" 
              d:DesignHeight="450" 
              d:DesignWidth="800"
@@ -14,14 +15,15 @@
         <controls:GridLayout Style="{StaticResource Form}" Margin="4" Grid.IsSharedSizeScope="True">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="8"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="16"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="16"/>
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="16" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
@@ -30,37 +32,47 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Label Grid.Row="0" Grid.Column="1">
+            <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
+                <ToggleButton Style="{StaticResource TypeSelection}" IsChecked="{Binding MessageTypeRaw}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{svgc:SvgImage Source=/Images/RabbitMQ.svg, AppName=PettingZoo}" Style="{StaticResource ButtonIcon}" />
+                        <TextBlock Text="{x:Static res:PublisherViewStrings.OptionMessageTypeRaw}" />
+                    </StackPanel>
+                </ToggleButton>
+                <ToggleButton Style="{StaticResource TypeSelection}" IsChecked="{Binding MessageTypeTapeti}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Images/Tapeti.png" Style="{StaticResource ButtonIcon}" />
+                        <TextBlock Text="{x:Static res:PublisherViewStrings.OptionMessageTypeTapeti}" />
+                    </StackPanel>
+                </ToggleButton>
+            </StackPanel>
+
+            <Label Grid.Row="2" Grid.Column="1">
                 <StackPanel Orientation="Horizontal">
                     <RadioButton Content="{x:Static res:PublisherViewStrings.LabelSendToExchange}" IsChecked="{Binding SendToExchange}" Style="{StaticResource TypeSelection}" />
                     <RadioButton Content="{x:Static res:PublisherViewStrings.LabelSendToQueue}" IsChecked="{Binding SendToQueue}" Style="{StaticResource TypeSelection}" />
                 </StackPanel>
             </Label>
 
-            <Label Grid.Row="1" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelExchange}" Visibility="{Binding ExchangeVisibility}" />
-            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Exchange, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ExchangeVisibility}" />
+            <Label Grid.Row="3" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelExchange}" Visibility="{Binding ExchangeVisibility}" />
+            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Exchange, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ExchangeVisibility}" />
 
-            <Label Grid.Row="2" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelRoutingKey}" Visibility="{Binding ExchangeVisibility}" />
-            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding RoutingKey, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ExchangeVisibility}" />
+            <Label Grid.Row="4" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelRoutingKey}" Visibility="{Binding ExchangeVisibility}" />
+            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding RoutingKey, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ExchangeVisibility}" />
 
-            <Label Grid.Row="3" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelQueue}" Visibility="{Binding QueueVisibility}" />
-            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Queue, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding QueueVisibility}" />
+            <Label Grid.Row="5" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelQueue}" Visibility="{Binding QueueVisibility}" />
+            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Queue, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding QueueVisibility}" />
 
-            <Label Grid.Row="5" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelReplyTo}" />
-            <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="1">
+            <Label Grid.Row="7" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelReplyTo}" />
+            <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="1">
                 <RadioButton Content="{x:Static res:PublisherViewStrings.LabelReplyToSpecified}" IsChecked="{Binding ReplyToSpecified}" Style="{StaticResource TypeSelection}" />
                 <RadioButton Content="{x:Static res:PublisherViewStrings.LabelReplyToNewSubscriber}" IsChecked="{Binding ReplyToNewSubscriber}" Style="{StaticResource TypeSelection}" />
             </StackPanel>
-            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding ReplyTo}" IsEnabled="{Binding ReplyToSpecified}" />
+            <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding ReplyTo}" IsEnabled="{Binding ReplyToSpecified}" />
 
-            <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center">
-                <ToggleButton Content="{x:Static res:PublisherViewStrings.OptionMessageTypeRaw}" Style="{StaticResource TypeSelection}" IsChecked="{Binding MessageTypeRaw}" />
-                <ToggleButton Content="{x:Static res:PublisherViewStrings.OptionMessageTypeTapeti}" Style="{StaticResource TypeSelection}" IsChecked="{Binding MessageTypeTapeti}" />
-            </StackPanel>
+            <ContentControl Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 8 0 0" Content="{Binding MessageTypeControl}" />
 
-            <ContentControl Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 8 0 0" Content="{Binding MessageTypeControl}" />
-
-            <Button Grid.Row="10" Grid.Column="1" Command="{Binding PublishCommand}" Content="{x:Static res:PublisherViewStrings.CommandPublish}" HorizontalAlignment="Left" />
+            <Button Grid.Row="11" Grid.Column="1" Command="{Binding PublishCommand}" Content="{x:Static res:PublisherViewStrings.CommandPublish}" HorizontalAlignment="Left" />
         </controls:GridLayout>
     </ScrollViewer>
 </UserControl>

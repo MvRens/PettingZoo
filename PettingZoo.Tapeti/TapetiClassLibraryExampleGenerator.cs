@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
 using PettingZoo.Core.Generator;
 using PettingZoo.Core.Settings;
 using PettingZoo.Tapeti.AssemblyLoader;

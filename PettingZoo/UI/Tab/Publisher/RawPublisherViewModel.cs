@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using PettingZoo.Core.Connection;
+using PettingZoo.Core.Macros;
 using PettingZoo.WPF.ViewModel;
 
 namespace PettingZoo.UI.Tab.Publisher
@@ -32,6 +33,7 @@ namespace PettingZoo.UI.Tab.Publisher
         private string typeProperty = "";
         private string userId = "";
         private string payload = "";
+        private bool enableMacros;
 
 
 
@@ -118,12 +120,20 @@ namespace PettingZoo.UI.Tab.Publisher
             set => SetField(ref payload, value, delegateCommandsChanged: new [] { publishCommand });
         }
 
+        public bool EnableMacros
+        {
+            get => enableMacros;
+            set => SetField(ref enableMacros, value);
+        }
+
 
         public ObservableCollection<Header> Headers { get; } = new();
 
 
         public ICommand PublishCommand => publishCommand;
         public ICommand PropertiesExpandCollapseCommand => propertiesExpandCollapseCommand;
+
+        public IPayloadMacroProcessor PayloadMacroProcessor { get; }
 
 
         public bool PropertiesExpanded
@@ -145,8 +155,10 @@ namespace PettingZoo.UI.Tab.Publisher
         protected Header LastHeader;
 
 
-        public RawPublisherViewModel(IConnection connection, IPublishDestination publishDestination, BaseMessageInfo? receivedMessage = null)
+        public RawPublisherViewModel(IConnection connection, IPublishDestination publishDestination, IPayloadMacroProcessor payloadMacroProcessor, BaseMessageInfo? receivedMessage = null)
         {
+            PayloadMacroProcessor = payloadMacroProcessor;
+
             this.connection = connection;
             this.publishDestination = publishDestination;
 
@@ -242,24 +254,31 @@ namespace PettingZoo.UI.Tab.Publisher
                 }
             }
 
+            var encodedPayload = Encoding.UTF8.GetBytes(
+                EnableMacros
+                    ? PayloadMacroProcessor.Apply(Payload)
+                    : Payload
+            );
 
             var headers = Headers.Where(h => h.IsValid()).ToDictionary(h => h.Key, h => h.Value);
+            var publishCorrelationId = NullIfEmpty(CorrelationId);
+            var replyTo = publishDestination.GetReplyTo(ref publishCorrelationId);
 
             connection.Publish(new PublishMessageInfo(
                 publishDestination.Exchange, 
                 publishDestination.RoutingKey,
-                Encoding.UTF8.GetBytes(Payload),
+                encodedPayload,
                 new MessageProperties(headers)
                 {
                     AppId = NullIfEmpty(AppId),
                     ContentEncoding = NullIfEmpty(ContentEncoding),
                     ContentType = NullIfEmpty(ContentType),
-                    CorrelationId = NullIfEmpty(CorrelationId),
+                    CorrelationId = publishCorrelationId,
                     DeliveryMode = deliveryMode,
                     Expiration = NullIfEmpty(Expiration),
                     MessageId = NullIfEmpty(MessageId),
                     Priority = priorityValue,
-                    ReplyTo = publishDestination.GetReplyTo(),
+                    ReplyTo = replyTo,
                     Timestamp = timestampValue,
                     Type = NullIfEmpty(TypeProperty),
                     UserId = NullIfEmpty(UserId)
@@ -309,7 +328,7 @@ namespace PettingZoo.UI.Tab.Publisher
 
     public class DesignTimeRawPublisherViewModel : RawPublisherViewModel
     {
-        public DesignTimeRawPublisherViewModel() : base(null!, null!)
+        public DesignTimeRawPublisherViewModel() : base(null!, null!, null!)
         {
             PropertiesExpanded = true;
 

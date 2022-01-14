@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PettingZoo.Core.Connection
 {
-    public interface ISubscriber : IAsyncDisposable
+    public interface ISubscriber : IDisposable
     {
         string? QueueName { get; }
         string? Exchange {get; }

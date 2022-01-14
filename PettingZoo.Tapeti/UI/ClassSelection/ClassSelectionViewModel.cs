@@ -300,6 +300,14 @@ namespace PettingZoo.Tapeti.UI.ClassSelection
             {
                 return "";
             }
+
+
+            public bool TryGetPublishDestination(out string exchange, out string routingKey)
+            {
+                exchange = "";
+                routingKey = "";
+                return false;
+            }
         }
     }
 }

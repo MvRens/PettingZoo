@@ -28,6 +28,8 @@
     <None Remove="Images\Import.svg" />
     <None Remove="Images\Ok.svg" />
     <None Remove="Images\PublishSend.svg" />
+    <None Remove="Images\RabbitMQ.svg" />
+    <None Remove="Images\Tapeti.png" />
     <None Remove="Images\Undock.svg" />
   </ItemGroup>
 
@@ -44,6 +46,7 @@
     <Resource Include="Images\Ok.svg" />
     <Resource Include="Images\Publish.svg" />
     <Resource Include="Images\PublishSend.svg" />
+    <Resource Include="Images\RabbitMQ.svg" />
     <Resource Include="Images\Subscribe.svg" />
   </ItemGroup>
 
@@ -66,6 +69,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\Tapeti.png" />
     <Resource Include="Images\Undock.svg" />
     <Resource Include="Images\Busy.svg" />
   </ItemGroup>
@@ -144,7 +148,7 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="UI\Tab\Publisher\PayloadEditorStrings.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>PayloadEditorStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="UI\Tab\Publisher\TapetiPublisherViewStrings.resx">

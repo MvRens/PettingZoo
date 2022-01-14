@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -13,6 +14,7 @@ namespace PettingZoo.UI.Tab.Undocked
         private readonly ITabHostProvider tabHostProvider;
         private readonly ITab tab;
         private readonly DelegateCommand dockCommand;
+        private bool docked;
 
 
         public string Title => tab.Title;
@@ -43,13 +45,18 @@ namespace PettingZoo.UI.Tab.Undocked
 
         private void DockCommandExecute()
         {
+            docked = true;
             tabHostProvider.Instance.DockTab(tab);
         }
 
 
         public void WindowClosed()
         {
+            if (docked)
+                return;
+
             tabHostProvider.Instance.UndockedTabClosed(tab);
+            (tab as IDisposable)?.Dispose();
         }
 
 
