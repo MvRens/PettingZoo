@@ -11,7 +11,7 @@ using PettingZoo.Core.Settings;
 using PettingZoo.RabbitMQ;
 using PettingZoo.Settings.LiteDB;
 using PettingZoo.Tapeti;
-using PettingZoo.Tapeti.Export;
+using PettingZoo.Tapeti.ExportImport;
 using PettingZoo.UI.Connection;
 using PettingZoo.UI.Main;
 using PettingZoo.UI.Subscribe;

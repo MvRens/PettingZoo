@@ -32,21 +32,15 @@ namespace PettingZoo.UI.Tab.Publisher
         }
 
 
-        public void Save(StoredPublisherMessage? selectedMessage, PublisherMessage message, Action<StoredPublisherMessage> onSaved)
+        public void Save(StoredPublisherMessage overwriteMessage, PublisherMessage message, Action<StoredPublisherMessage> onSaved)
         {
-            if (selectedMessage == null)
-            {
-                SaveAs(message, null, onSaved);
-                return;
-            }
-
             Task.Run(async () =>
             {
-                var updatedMessage = await publisherMessagesRepository.Update(selectedMessage.Id, selectedMessage.DisplayName, message);
+                var updatedMessage = await publisherMessagesRepository.Update(overwriteMessage.Id, overwriteMessage.DisplayName, message);
 
                 await Application.Current.Dispatcher.BeginInvoke(() =>
                 {
-                    var index = StoredMessages.IndexOf(selectedMessage);
+                    var index = StoredMessages.IndexOf(overwriteMessage);
                     if (index >= 0)
                         StoredMessages[index] = updatedMessage;
                     else
@@ -75,7 +69,6 @@ namespace PettingZoo.UI.Tab.Publisher
                     onSaved(storedMessage);
                 });
             });
-
         }
 
 

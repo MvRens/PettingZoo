@@ -25,7 +25,7 @@
         <ui:BindingProxy x:Key="ContextMenuProxy" Data="{Binding}" />
     </Window.Resources>
     <DockPanel>
-        <controls:NoOverflowToolbar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
+        <controls:AutoOverflowToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
             <Button Command="{Binding ConnectCommand}">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="{svgc:SvgImage Source=/Images/Connect.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
@@ -83,7 +83,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-        </controls:NoOverflowToolbar>
+        </controls:AutoOverflowToolBar>
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem>
                 <StackPanel Orientation="Horizontal">

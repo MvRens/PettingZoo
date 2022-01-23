@@ -12,7 +12,7 @@
         WindowStartupLocation="CenterOwner"
         Style="{StaticResource WindowStyle}"
         Title="{Binding Title}" 
-        FocusManager.FocusedElement="{Binding ElementName=DisplayNameTextBox}"
+        FocusManager.FocusedElement="{Binding ElementName=ValueTextBox}"
         d:DataContext="{d:DesignInstance local:InputDialogViewModel}">
     <StackPanel Margin="8">
         <TextBox Name="ValueTextBox" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" />

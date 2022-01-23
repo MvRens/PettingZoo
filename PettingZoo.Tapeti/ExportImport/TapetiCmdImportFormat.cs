@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 using PettingZoo.Core.Connection;
 using PettingZoo.Core.ExportImport.Subscriber;
 
-namespace PettingZoo.Tapeti.Export
+namespace PettingZoo.Tapeti.ExportImport
 {
     public class TapetiCmdImportFormat : BaseTapetiCmdExportImportFormat, IImportFormat
     {

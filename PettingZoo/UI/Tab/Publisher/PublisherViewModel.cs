@@ -1,16 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
+using Accessibility;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using PettingZoo.Core.Connection;
 using PettingZoo.Core.ExportImport.Publisher;
 using PettingZoo.Core.Generator;
 using PettingZoo.Core.Macros;
 using PettingZoo.Core.Settings;
 using PettingZoo.WPF.ViewModel;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace PettingZoo.UI.Tab.Publisher
 {
@@ -46,10 +53,13 @@ namespace PettingZoo.UI.Tab.Publisher
         private readonly DelegateCommand saveCommand;
         private readonly DelegateCommand saveAsCommand;
         private readonly DelegateCommand deleteCommand;
-        private readonly DelegateCommand loadStoredMessage;
+        private readonly DelegateCommand loadStoredMessageCommand;
+        private readonly DelegateCommand exportCommand;
+        private readonly DelegateCommand importCommand;
 
         private readonly TabToolbarCommand[] toolbarCommands;
         private Window? tabHostWindow;
+        private bool disableCheckCanSave;
 
 
         public bool SendToExchange
@@ -167,11 +177,9 @@ namespace PettingZoo.UI.Tab.Publisher
         public StoredPublisherMessage? SelectedStoredMessage
         {
             get => selectedStoredMessage;
-            set => SetField(ref selectedStoredMessage, value, delegateCommandsChanged: new[] { deleteCommand });
+            set => SetField(ref selectedStoredMessage, value, delegateCommandsChanged: new[] { loadStoredMessageCommand, deleteCommand, exportCommand });
         }
 
-
-        // TODO detect changes from ActiveStoredMessage and show indication in the UI
 
         public StoredPublisherMessage? ActiveStoredMessage
         {
@@ -184,7 +192,9 @@ namespace PettingZoo.UI.Tab.Publisher
         public ICommand SaveCommand => saveCommand;
         public ICommand SaveAsCommand => saveAsCommand;
         public ICommand DeleteCommand => deleteCommand;
-        public ICommand LoadStoredMessage => loadStoredMessage;
+        public ICommand LoadStoredMessageCommand => loadStoredMessageCommand;
+        public ICommand ExportCommand => exportCommand;
+        public ICommand ImportCommand => importCommand;
 
 
         public string Title => SendToQueue
@@ -214,10 +224,12 @@ namespace PettingZoo.UI.Tab.Publisher
             this.tabFactory = tabFactory;
 
             publishCommand = new DelegateCommand(PublishExecute, PublishCanExecute);
-            saveCommand = new DelegateCommand(SaveExecute);
+            saveCommand = new DelegateCommand(SaveExecute, SaveCanExecute);
             saveAsCommand = new DelegateCommand(SaveAsExecute);
-            deleteCommand = new DelegateCommand(DeleteExecute, DeleteCanExecute);
-            loadStoredMessage = new DelegateCommand(LoadStoredMessageExecute, LoadStoredMessageCanExecute);
+            deleteCommand = new DelegateCommand(DeleteExecute, SelectedMessageCanExecute);
+            loadStoredMessageCommand = new DelegateCommand(LoadStoredMessageExecute, SelectedMessageCanExecute);
+            exportCommand = new DelegateCommand(ExportExecute, SelectedMessageCanExecute);
+            importCommand = new DelegateCommand(ImportExecute);
 
             toolbarCommands = new[]
             {
@@ -229,6 +241,9 @@ namespace PettingZoo.UI.Tab.Publisher
                 SetMessageTypeControl(fromReceivedMessage);
             else
                 SetMessageTypeControl(PublisherMessageType.Raw);
+
+
+            PropertyChanged += (_, _) => { saveCommand.RaiseCanExecuteChanged(); };
         }
 
 
@@ -268,6 +283,11 @@ namespace PettingZoo.UI.Tab.Publisher
                             publishCommand.RaiseCanExecuteChanged();
                         };
 
+                        // This is becoming a bit messy, find a cleaner way... 
+                        // TODO monitor header changes as well, instead of only the collection
+                        rawPublisherViewModel.PropertyChanged += (_, _) => { saveCommand.RaiseCanExecuteChanged(); };
+                        rawPublisherViewModel.Headers.CollectionChanged += (_, _) => { saveCommand.RaiseCanExecuteChanged(); };
+
                         rawPublisherView = new RawPublisherView(rawPublisherViewModel);
                     }
                     else
@@ -286,6 +306,8 @@ namespace PettingZoo.UI.Tab.Publisher
                         {
                             publishCommand.RaiseCanExecuteChanged();
                         };
+
+                        tapetiPublisherViewModel.PropertyChanged += (_, _) => { saveCommand.RaiseCanExecuteChanged(); };
 
                         tapetiPublisherView = new TapetiPublisherView(tapetiPublisherViewModel);
 
@@ -356,19 +378,33 @@ namespace PettingZoo.UI.Tab.Publisher
         }
 
 
+        private bool SaveCanExecute()
+        {
+            if (disableCheckCanSave)
+                return false;
+
+            return ActiveStoredMessage != null && !GetPublisherMessage().Equals(ActiveStoredMessage.Message);
+        }
+
+
         private void SaveExecute()
         {
-            storedPublisherMessagesViewModel.Save(SelectedStoredMessage, GetPublisherMessage(), message =>
+            if (ActiveStoredMessage == null)
+                return;
+
+            storedPublisherMessagesViewModel.Save(ActiveStoredMessage, GetPublisherMessage(), message =>
             {
                 ActiveStoredMessage = message;
                 SelectedStoredMessage = message;
+
+                saveCommand.RaiseCanExecuteChanged();
             });
         }
 
 
         private void SaveAsExecute()
         {
-            storedPublisherMessagesViewModel.SaveAs(GetPublisherMessage(), SelectedStoredMessage?.DisplayName, message =>
+            storedPublisherMessagesViewModel.SaveAs(GetPublisherMessage(), ActiveStoredMessage?.DisplayName, message =>
             {
                 ActiveStoredMessage = message;
                 SelectedStoredMessage = message;
@@ -394,7 +430,7 @@ namespace PettingZoo.UI.Tab.Publisher
         }
 
 
-        private bool DeleteCanExecute()
+        private bool SelectedMessageCanExecute()
         {
             return SelectedStoredMessage != null;
         }
@@ -407,37 +443,95 @@ namespace PettingZoo.UI.Tab.Publisher
 
             var message = SelectedStoredMessage.Message;
 
-            MessageType = message.MessageType;
-            SendToExchange = message.SendToExchange;
-            Exchange = message.Exchange ?? "";
-            RoutingKey = message.RoutingKey ?? "";
-            Queue = message.Queue ?? "";
-            ReplyToNewSubscriber = message.ReplyToNewSubscriber;
-            ReplyTo = message.ReplyTo ?? "";
-
-            // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
-            switch (message.MessageType)
+            disableCheckCanSave = true;
+            try
             {
-                case PublisherMessageType.Raw:
-                    if (message.RawPublisherMessage != null)
-                        rawPublisherViewModel?.LoadPublisherMessage(message.RawPublisherMessage);
+                MessageType = message.MessageType;
+                SendToExchange = message.SendToExchange;
+                Exchange = message.Exchange ?? "";
+                RoutingKey = message.RoutingKey ?? "";
+                Queue = message.Queue ?? "";
+                ReplyToNewSubscriber = message.ReplyToNewSubscriber;
+                ReplyTo = message.ReplyTo ?? "";
 
-                    break;
+                // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+                switch (message.MessageType)
+                {
+                    case PublisherMessageType.Raw:
+                        if (message.RawPublisherMessage != null)
+                            rawPublisherViewModel?.LoadPublisherMessage(message.RawPublisherMessage);
 
-                case PublisherMessageType.Tapeti:
-                    if (message.TapetiPublisherMessage != null)
-                        tapetiPublisherViewModel?.LoadPublisherMessage(message.TapetiPublisherMessage);
+                        break;
 
-                    break;
+                    case PublisherMessageType.Tapeti:
+                        if (message.TapetiPublisherMessage != null)
+                            tapetiPublisherViewModel?.LoadPublisherMessage(message.TapetiPublisherMessage);
+
+                        break;
+                }
+
+                ActiveStoredMessage = SelectedStoredMessage;
             }
-
-            ActiveStoredMessage = SelectedStoredMessage;
+            finally
+            {
+                disableCheckCanSave = false;
+                saveCommand.RaiseCanExecuteChanged();
+            }
         }
 
 
-        private bool LoadStoredMessageCanExecute()
+        private static readonly JsonSerializerSettings ExportImportSettings = new()
         {
-            return SelectedStoredMessage != null;
+            Converters = new List<JsonConverter> { new StringEnumConverter() }
+        };
+
+
+
+        private void ExportExecute()
+        {
+            if (SelectedStoredMessage == null)
+                return;
+
+            var invalidChars = Regex.Escape(new string(Path.GetInvalidFileNameChars()));
+            var invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
+            var suggestedFilename = Regex.Replace(SelectedStoredMessage.DisplayName, invalidRegStr, "_");
+
+            var dialog = new SaveFileDialog
+            {
+                Filter = PublisherViewStrings.StoredMessagesExportImportFilter,
+                FileName = suggestedFilename
+            };
+
+            if (dialog.ShowDialog() != DialogResult.OK)
+                return;
+
+            File.WriteAllText(dialog.FileName, JsonConvert.SerializeObject(SelectedStoredMessage.Message, ExportImportSettings), Encoding.UTF8);
+        }
+
+
+        private void ImportExecute()
+        {
+            var dialog = new OpenFileDialog
+            {
+                Filter = PublisherViewStrings.StoredMessagesExportImportFilter
+            };
+
+            if (dialog.ShowDialog() != DialogResult.OK)
+                return;
+
+            var fileContents = File.ReadAllText(dialog.FileName, Encoding.UTF8);
+            var message = JsonConvert.DeserializeObject<PublisherMessage>(fileContents, ExportImportSettings);
+            if (message == null)
+                return;
+
+            var displayName = dialog.FileName.EndsWith(".pubmsg.json")
+                ? Path.GetFileName(dialog.FileName)[..^".pubmsg.json".Length]
+                : Path.GetFileNameWithoutExtension(dialog.FileName);
+
+            storedPublisherMessagesViewModel.SaveAs(message, displayName, storedMessage =>
+            {
+                SelectedStoredMessage = storedMessage;
+            });
         }
 
 

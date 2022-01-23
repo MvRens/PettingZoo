@@ -33,7 +33,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>AssemblyParserStrings.resx</DependentUpon>
     </Compile>
-    <Compile Update="Export\TapetiCmdImportExportStrings.Designer.cs">
+    <Compile Update="ExportImport\TapetiCmdImportExportStrings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>TapetiCmdImportExportStrings.resx</DependentUpon>
@@ -60,7 +60,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AssemblyParserStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Export\TapetiCmdImportExportStrings.resx">
+    <EmbeddedResource Update="ExportImport\TapetiCmdImportExportStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>TapetiCmdImportExportStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>

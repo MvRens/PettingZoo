@@ -16,7 +16,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="350" />
         </Grid.ColumnDefinitions>
 
         <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
@@ -95,7 +95,7 @@
 
             <Label Grid.Row="0" Style="{StaticResource HeaderLabel}" Content="{x:Static res:PublisherViewStrings.PanelTitleMessages}"/>
 
-            <controls:NoOverflowToolbar Grid.Row="1" ToolBarTray.IsLocked="True" Margin="0,0,0,4">
+            <controls:AutoOverflowToolBar Grid.Row="1" ToolBarTray.IsLocked="True" Margin="0,0,0,4">
                 <!-- TODO load button in addition to double-click. I don't like hidden-only functionality -->
                 <Button Command="{Binding SaveCommand}">
                     <StackPanel Orientation="Horizontal">
@@ -116,8 +116,21 @@
                         <TextBlock Margin="3,0,0,0" Text="{x:Static res:PublisherViewStrings.ToolbarDelete}" />
                     </StackPanel>
                 </Button>
+                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                <Button Command="{Binding ExportCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{svgc:SvgImage Source=/Images/Export.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                        <TextBlock Margin="3,0,0,0" Text="{x:Static res:PublisherViewStrings.ToolbarExport}" />
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding ImportCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{svgc:SvgImage Source=/Images/Import.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                        <TextBlock Margin="3,0,0,0" Text="{x:Static res:PublisherViewStrings.ToolbarImport}" />
+                    </StackPanel>
+                </Button>
                 <!-- TODO export / import -->
-            </controls:NoOverflowToolbar>
+            </controls:AutoOverflowToolBar>
 
             <ListBox Grid.Row="2" ItemsSource="{Binding StoredMessages}" SelectedValue="{Binding SelectedStoredMessage}">
                 <ListBox.Resources>
@@ -147,7 +160,7 @@
                                 </Style>
                             </TextBlock.Style>
                             <TextBlock.InputBindings>
-                                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DataContext.LoadStoredMessage, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}" />
+                                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DataContext.LoadStoredMessageCommand, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}" />
                             </TextBlock.InputBindings>
                         </TextBlock>
                     </DataTemplate>

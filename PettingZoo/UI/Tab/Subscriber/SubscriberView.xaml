@@ -83,14 +83,14 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="200"/>
             </Grid.RowDefinitions>
-            <controls:NoOverflowToolbar Grid.Column="0" Grid.Row="0" ToolBarTray.IsLocked="True" Margin="0,0,0,4" Background="Transparent">
+            <controls:AutoOverflowToolBar Grid.Column="0" Grid.Row="0" ToolBarTray.IsLocked="True" Margin="0,0,0,4" Background="Transparent">
                 <Button Command="{Binding CreatePublisherCommand}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{svgc:SvgImage Source=/Images/Publish.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
                         <TextBlock Margin="3,0,0,0" Text="{x:Static res:SubscriberViewStrings.ContextPublish}" />
                     </StackPanel>
                 </Button>
-            </controls:NoOverflowToolbar>
+            </controls:AutoOverflowToolBar>
 
             <Border Grid.Column="0" Grid.Row="1" Style="{StaticResource SidePanel}">
                 <DockPanel>

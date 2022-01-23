@@ -2,7 +2,7 @@
 using Newtonsoft.Json.Linq;
 using PettingZoo.Core.ExportImport.Subscriber;
 
-namespace PettingZoo.Tapeti.Export
+namespace PettingZoo.Tapeti.ExportImport
 {
     public abstract class BaseTapetiCmdExportImportFormat : IExportImportFormat
     {

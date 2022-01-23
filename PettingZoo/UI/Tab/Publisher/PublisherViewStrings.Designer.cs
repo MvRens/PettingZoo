@@ -187,6 +187,15 @@ namespace PettingZoo.UI.Tab.Publisher {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PettingZoo message (*.pubmsg.json)|*.pubmsg.json.
+        /// </summary>
+        public static string StoredMessagesExportImportFilter {
+            get {
+                return ResourceManager.GetString("StoredMessagesExportImportFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish: {0}.
         /// </summary>
         public static string TabTitle {
@@ -210,6 +219,24 @@ namespace PettingZoo.UI.Tab.Publisher {
         public static string ToolbarDelete {
             get {
                 return ResourceManager.GetString("ToolbarDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export....
+        /// </summary>
+        public static string ToolbarExport {
+            get {
+                return ResourceManager.GetString("ToolbarExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import....
+        /// </summary>
+        public static string ToolbarImport {
+            get {
+                return ResourceManager.GetString("ToolbarImport", resourceCulture);
             }
         }
         

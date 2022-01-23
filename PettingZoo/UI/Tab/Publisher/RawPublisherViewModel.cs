@@ -219,9 +219,7 @@ namespace PettingZoo.UI.Tab.Publisher
                 Payload = Payload,
                 EnableMacros = EnableMacros,
 
-                Headers = Headers.Count > 0 
-                    ? Headers.ToDictionary(h => h.Key, h => h.Value)
-                    : null
+                Headers = Headers.Where(h => !h.IsEmpty()).ToDictionary(h => h.Key, h => h.Value)
             };
         }
 
@@ -243,11 +241,17 @@ namespace PettingZoo.UI.Tab.Publisher
             EnableMacros = message.EnableMacros;
 
             if (message.Headers != null)
+            {
                 Headers.ReplaceAll(message.Headers.Select(p => new Header
                 {
                     Key = p.Key,
                     Value = p.Value
                 }));
+            }
+            else
+                Headers.Clear();
+
+            AddHeader();
         }
 
 
