@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace PettingZoo.Core.Rendering
 {
@@ -26,8 +28,18 @@ namespace PettingZoo.Core.Rendering
             var bodyText = Encoding.UTF8.GetString(body);
             try
             {
-                var obj = JsonConvert.DeserializeObject(bodyText);
-                return JsonConvert.SerializeObject(obj, Formatting.Indented);
+                using var stringReader = new StringReader(bodyText);
+                using var jsonTextReader = new JsonTextReader(stringReader);
+                using var stringWriter = new StringWriter();
+                using var jsonWriter = new JsonTextWriter(stringWriter);
+
+                jsonWriter.Formatting = Formatting.Indented;
+
+                while (jsonTextReader.Read())
+                    jsonWriter.WriteToken(jsonTextReader);
+
+                jsonWriter.Flush();
+                return stringWriter.ToString();
             }
             catch
             {
