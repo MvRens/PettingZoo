@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -7,6 +6,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using PettingZoo.Core.Connection;
+using PettingZoo.Core.ExportImport.Publisher;
 using PettingZoo.Core.Macros;
 using PettingZoo.WPF.ViewModel;
 
@@ -37,10 +37,17 @@ namespace PettingZoo.UI.Tab.Publisher
 
 
 
+        public MessageDeliveryMode DeliveryMode
+        {
+            get => deliveryMode;
+            set => SetField(ref deliveryMode, value, otherPropertiesChanged: new[] { nameof(DeliveryModeIndex) });
+        }
+
+
         public int DeliveryModeIndex
         {
-            get => deliveryMode == MessageDeliveryMode.Persistent ? 1 : 0;
-            set => SetField(ref deliveryMode, value == 1 ? MessageDeliveryMode.Persistent : MessageDeliveryMode.NonPersistent);
+            get => DeliveryMode == MessageDeliveryMode.Persistent ? 1 : 0;
+            set => DeliveryMode = value == 1 ? MessageDeliveryMode.Persistent : MessageDeliveryMode.NonPersistent;
         }
 
 
@@ -127,7 +134,7 @@ namespace PettingZoo.UI.Tab.Publisher
         }
 
 
-        public ObservableCollection<Header> Headers { get; } = new();
+        public ObservableCollectionEx<Header> Headers { get; } = new();
 
 
         public ICommand PublishCommand => publishCommand;
@@ -191,6 +198,56 @@ namespace PettingZoo.UI.Tab.Publisher
             }
 
             AddHeader();
+        }
+
+
+        public RawPublisherMessage GetPublisherMessage()
+        {
+            return new RawPublisherMessage
+            {
+                DeliveryMode = DeliveryMode,
+                ContentType = ContentType,
+                CorrelationId = CorrelationId,
+                AppId = AppId,
+                ContentEncoding = ContentEncoding,
+                Expiration = Expiration,
+                MessageId = MessageId,
+                Priority = Priority,
+                Timestamp = Timestamp,
+                TypeProperty = TypeProperty,
+                UserId = UserId,
+                Payload = Payload,
+                EnableMacros = EnableMacros,
+
+                Headers = Headers.Count > 0 
+                    ? Headers.ToDictionary(h => h.Key, h => h.Value)
+                    : null
+            };
+        }
+
+
+        public void LoadPublisherMessage(RawPublisherMessage message)
+        {
+            DeliveryMode = message.DeliveryMode;
+            ContentType = message.ContentType ?? "";
+            CorrelationId = message.CorrelationId ?? "";
+            AppId = message.AppId ?? "";
+            ContentEncoding = message.ContentEncoding ?? "";
+            Expiration = message.Expiration ?? "";
+            MessageId = message.MessageId ?? "";
+            Priority = message.Priority ?? "";
+            Timestamp = message.Timestamp ?? "";
+            TypeProperty = message.TypeProperty ?? "";
+            UserId = message.UserId ?? "";
+            Payload = message.Payload ?? "";
+            EnableMacros = message.EnableMacros;
+
+            if (message.Headers != null)
+                Headers.ReplaceAll(message.Headers.Select(p => new Header
+                {
+                    Key = p.Key,
+                    Value = p.Value
+                }));
         }
 
 

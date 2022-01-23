@@ -214,6 +214,15 @@ namespace PettingZoo.UI.Connection {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Profile name.
+        /// </summary>
+        public static string ProfileNameDialogTitle {
+            get {
+                return ResourceManager.GetString("ProfileNameDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connection parameters.
         /// </summary>
         public static string WindowTitle {

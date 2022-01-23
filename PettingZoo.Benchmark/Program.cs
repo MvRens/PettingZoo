@@ -73,7 +73,7 @@ namespace PettingZoo.Benchmark
 
 
         [Benchmark]
-        public string? TestReaderWriter()
+        public string TestReaderWriter()
         {
             using var stringReader = new StringReader(testJson);
             using var jsonTextReader = new JsonTextReader(stringReader);

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace PettingZoo.Core.ExportImport
+namespace PettingZoo.Core.ExportImport.Subscriber
 {
     public class ExportImportFormatProvider : IExportImportFormatProvider
     {

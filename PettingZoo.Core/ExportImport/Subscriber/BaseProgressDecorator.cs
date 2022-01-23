@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PettingZoo.Core.ExportImport
+namespace PettingZoo.Core.ExportImport.Subscriber
 {
     public abstract class BaseProgressDecorator
     {

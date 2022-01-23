@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using PettingZoo.Core.Connection;
-using PettingZoo.Core.ExportImport;
+using PettingZoo.Core.ExportImport.Subscriber;
 using PettingZoo.Core.Rendering;
 using PettingZoo.WPF.ProgressWindow;
 using PettingZoo.WPF.ViewModel;

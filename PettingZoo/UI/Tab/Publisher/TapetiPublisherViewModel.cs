@@ -3,6 +3,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using PettingZoo.Core.Connection;
+using PettingZoo.Core.ExportImport.Publisher;
 using PettingZoo.Core.Generator;
 using PettingZoo.Core.Macros;
 using PettingZoo.Core.Validation;
@@ -129,6 +130,29 @@ namespace PettingZoo.UI.Tab.Publisher
             ClassName = receivedClassName;
             CorrelationId = receivedMessage.Properties.CorrelationId ?? "";
             Payload = Encoding.UTF8.GetString(receivedMessage.Body);
+        }
+
+
+        public TapetiPublisherMessage GetPublisherMessage()
+        {
+            return new TapetiPublisherMessage
+            {
+                CorrelationId = CorrelationId,
+                Payload = Payload,
+                EnableMacros = EnableMacros,
+                ClassName = ClassName,
+                AssemblyName = AssemblyName
+            };
+        }
+
+
+        public void LoadPublisherMessage(TapetiPublisherMessage message)
+        {
+            CorrelationId = message.CorrelationId ?? "";
+            Payload = message.Payload ?? "";
+            EnableMacros = message.EnableMacros;
+            ClassName = message.ClassName ?? "";
+            AssemblyName = message.AssemblyName ?? "";
         }
 
 

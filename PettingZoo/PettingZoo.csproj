@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <None Remove="Images\Busy.svg" />
+    <None Remove="Images\Delete.svg" />
     <None Remove="Images\Dock.svg" />
     <None Remove="Images\Error.svg" />
     <None Remove="Images\Example.svg" />
@@ -29,6 +30,8 @@
     <None Remove="Images\Ok.svg" />
     <None Remove="Images\PublishSend.svg" />
     <None Remove="Images\RabbitMQ.svg" />
+    <None Remove="Images\Save.svg" />
+    <None Remove="Images\SaveAs.svg" />
     <None Remove="Images\Tapeti.png" />
     <None Remove="Images\Undock.svg" />
   </ItemGroup>
@@ -36,6 +39,7 @@
   <ItemGroup>
     <Resource Include="Images\Clear.svg" />
     <Resource Include="Images\Connect.svg" />
+    <Resource Include="Images\Delete.svg" />
     <Resource Include="Images\Disconnect.svg" />
     <Resource Include="Images\Dock.svg" />
     <Resource Include="Images\Error.svg" />
@@ -47,6 +51,8 @@
     <Resource Include="Images\Publish.svg" />
     <Resource Include="Images\PublishSend.svg" />
     <Resource Include="Images\RabbitMQ.svg" />
+    <Resource Include="Images\Save.svg" />
+    <Resource Include="Images\SaveAs.svg" />
     <Resource Include="Images\Subscribe.svg" />
   </ItemGroup>
 
@@ -75,10 +81,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="UI\Connection\ConnectionDisplayNameStrings.Designer.cs">
+    <Compile Update="UI\InputDialogStrings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>ConnectionDisplayNameStrings.resx</DependentUpon>
+      <DependentUpon>InputDialogStrings.resx</DependentUpon>
     </Compile>
     <Compile Update="UI\Connection\ConnectionWindowStrings.Designer.cs">
       <DependentUpon>ConnectionWindowStrings.resx</DependentUpon>
@@ -99,6 +105,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>PayloadEditorStrings.resx</DependentUpon>
+    </Compile>
+    <Compile Update="UI\Tab\Publisher\StoredPublisherMessagesStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>StoredPublisherMessagesStrings.resx</DependentUpon>
     </Compile>
     <Compile Update="UI\Tab\Publisher\TapetiPublisherViewStrings.Designer.cs">
       <DependentUpon>TapetiPublisherViewStrings.resx</DependentUpon>
@@ -131,9 +142,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="UI\Connection\ConnectionDisplayNameStrings.resx">
+    <EmbeddedResource Update="UI\InputDialogStrings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>ConnectionDisplayNameStrings.Designer.cs</LastGenOutput>
+      <LastGenOutput>InputDialogStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="UI\Connection\ConnectionWindowStrings.resx">
       <LastGenOutput>ConnectionWindowStrings.Designer.cs</LastGenOutput>
@@ -150,6 +161,10 @@
     <EmbeddedResource Update="UI\Tab\Publisher\PayloadEditorStrings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>PayloadEditorStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="UI\Tab\Publisher\StoredPublisherMessagesStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>StoredPublisherMessagesStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="UI\Tab\Publisher\TapetiPublisherViewStrings.resx">
       <LastGenOutput>TapetiPublisherViewStrings.Designer.cs</LastGenOutput>

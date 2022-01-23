@@ -169,6 +169,15 @@ namespace PettingZoo.UI.Tab.Publisher {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Saved messages.
+        /// </summary>
+        public static string PanelTitleMessages {
+            get {
+                return ResourceManager.GetString("PanelTitleMessages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Re: .
         /// </summary>
         public static string ReplyToCorrelationIdPrefix {
@@ -192,6 +201,33 @@ namespace PettingZoo.UI.Tab.Publisher {
         public static string TabTitleEmpty {
             get {
                 return ResourceManager.GetString("TabTitleEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string ToolbarDelete {
+            get {
+                return ResourceManager.GetString("ToolbarDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string ToolbarSave {
+            get {
+                return ResourceManager.GetString("ToolbarSave", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save as....
+        /// </summary>
+        public static string ToolbarSaveAs {
+            get {
+                return ResourceManager.GetString("ToolbarSaveAs", resourceCulture);
             }
         }
     }

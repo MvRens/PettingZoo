@@ -1,18 +1,19 @@
 ﻿using System.Linq;
 using System.Windows;
 
-namespace PettingZoo.UI.Connection
+namespace PettingZoo.UI
 {
     /// <summary>
-    /// Interaction logic for ConnectionDisplayNameDialog.xaml
+    /// Interaction logic for InputDialog.xaml
     /// </summary>
-    public partial class ConnectionDisplayNameDialog
+    public partial class InputDialog
     {
-        public static bool Execute(ref string displayName)
+        public static bool Execute(ref string value, string title)
         {
-            var viewModel = new ConnectionDisplayNameViewModel
+            var viewModel = new InputDialogViewModel
             {
-                DisplayName = displayName
+                Value = value,
+                Title = title
             };
 
 
@@ -20,7 +21,7 @@ namespace PettingZoo.UI.Connection
                 .Cast<Window>()
                 .FirstOrDefault(applicationWindow => applicationWindow.IsActive);
 
-            var window = new ConnectionDisplayNameDialog(viewModel)
+            var window = new InputDialog(viewModel)
             {
                 Owner = activeWindow ?? Application.Current.MainWindow
             };
@@ -28,12 +29,12 @@ namespace PettingZoo.UI.Connection
             if (!window.ShowDialog().GetValueOrDefault())
                 return false;
 
-            displayName = viewModel.DisplayName;
+            value = viewModel.Value;
             return true;
         }
 
 
-        public ConnectionDisplayNameDialog(ConnectionDisplayNameViewModel viewModel)
+        public InputDialog(InputDialogViewModel viewModel)
         {
             viewModel.OkClick += (_, _) =>
             {
@@ -43,7 +44,7 @@ namespace PettingZoo.UI.Connection
             DataContext = viewModel;
             InitializeComponent();
 
-            DisplayNameTextBox.CaretIndex = DisplayNameTextBox.Text.Length;
+            ValueTextBox.CaretIndex = ValueTextBox.Text.Length;
         }
     }
 }

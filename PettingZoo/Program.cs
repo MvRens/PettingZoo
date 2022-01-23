@@ -4,7 +4,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Markup;
 using PettingZoo.Core.Connection;
-using PettingZoo.Core.ExportImport;
+using PettingZoo.Core.ExportImport.Subscriber;
 using PettingZoo.Core.Generator;
 using PettingZoo.Core.Macros;
 using PettingZoo.Core.Settings;
@@ -16,6 +16,7 @@ using PettingZoo.UI.Connection;
 using PettingZoo.UI.Main;
 using PettingZoo.UI.Subscribe;
 using PettingZoo.UI.Tab;
+using PettingZoo.UI.Tab.Publisher;
 using Serilog;
 using SimpleInjector;
 
@@ -82,10 +83,12 @@ namespace PettingZoo
             container.Register<ISubscribeDialog, WindowSubscribeDialog>();
             container.Register<IConnectionSettingsRepository, LiteDBConnectionSettingsRepository>();
             container.Register<IUISettingsRepository, LiteDBUISettingsRepository>();
+            container.RegisterSingleton<IPublisherMessagesRepository, LiteDBPublisherMessagesRepository>();
             container.Register<IExampleGenerator, TapetiClassLibraryExampleGenerator>();
             container.RegisterSingleton<ITabHostProvider, TabHostProvider>();
             container.Register<ITabFactory, ViewTabFactory>();
             container.RegisterSingleton<IPayloadMacroProcessor, PayloadMacroProcessor>();
+            container.RegisterSingleton<StoredPublisherMessagesViewModel>();
 
             container.RegisterInstance<IExportImportFormatProvider>(new ExportImportFormatProvider(
                 new TapetiCmdExportFormat(),

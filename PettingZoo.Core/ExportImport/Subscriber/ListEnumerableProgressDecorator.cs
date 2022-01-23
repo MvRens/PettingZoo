@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace PettingZoo.Core.ExportImport
+namespace PettingZoo.Core.ExportImport.Subscriber
 {
     public class ListEnumerableProgressDecorator<T> : BaseProgressDecorator, IEnumerable<T>
     {

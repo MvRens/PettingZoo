@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using PettingZoo.Core.Connection;
-using PettingZoo.Core.ExportImport;
+using PettingZoo.Core.ExportImport.Subscriber;
 using PettingZoo.UI.Connection;
 using PettingZoo.UI.Subscribe;
 using PettingZoo.UI.Tab;

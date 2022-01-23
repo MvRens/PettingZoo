@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using PettingZoo.Core.Connection;
-using PettingZoo.Core.ExportImport;
+using PettingZoo.Core.ExportImport.Subscriber;
 using PettingZoo.Core.Generator;
 using PettingZoo.Core.Macros;
 using PettingZoo.UI.Tab.Publisher;
@@ -17,6 +17,7 @@ namespace PettingZoo.UI.Tab
         private readonly IExampleGenerator exampleGenerator;
         private readonly IExportImportFormatProvider exportImportFormatProvider;
         private readonly IPayloadMacroProcessor payloadMacroProcessor;
+        private readonly StoredPublisherMessagesViewModel storedPublisherMessagesViewModel;
 
         // Not the cleanest way, but this factory itself can't be singleton without (justifyable) upsetting SimpleInjector
         private static ISubscriber? replySubscriber;
@@ -24,13 +25,14 @@ namespace PettingZoo.UI.Tab
 
 
         public ViewTabFactory(ILogger logger, ITabHostProvider tabHostProvider, IExampleGenerator exampleGenerator, IExportImportFormatProvider exportImportFormatProvider,
-            IPayloadMacroProcessor payloadMacroProcessor)
+            IPayloadMacroProcessor payloadMacroProcessor, StoredPublisherMessagesViewModel storedPublisherMessagesViewModel)
         {
             this.logger = logger;
             this.tabHostProvider = tabHostProvider;
             this.exampleGenerator = exampleGenerator;
             this.exportImportFormatProvider = exportImportFormatProvider;
             this.payloadMacroProcessor = payloadMacroProcessor;
+            this.storedPublisherMessagesViewModel = storedPublisherMessagesViewModel;
         }
 
 
@@ -63,7 +65,7 @@ namespace PettingZoo.UI.Tab
 
         public void CreatePublisherTab(IConnection connection, ReceivedMessageInfo? fromReceivedMessage = null)
         {
-            var viewModel = new PublisherViewModel(this, connection, exampleGenerator, payloadMacroProcessor, fromReceivedMessage);
+            var viewModel = new PublisherViewModel(this, connection, exampleGenerator, payloadMacroProcessor, storedPublisherMessagesViewModel, fromReceivedMessage);
             var tab = new ViewTab<PublisherView, PublisherViewModel>(
                 new PublisherView(viewModel),
                 viewModel,

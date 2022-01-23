@@ -117,61 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CommandPublish" xml:space="preserve">
-    <value>Publish</value>
+  <data name="ButtonCancel" xml:space="preserve">
+    <value>Cancel</value>
   </data>
-  <data name="LabelExchange" xml:space="preserve">
-    <value>Exchange</value>
-  </data>
-  <data name="LabelMessageType" xml:space="preserve">
-    <value>Message type: </value>
-  </data>
-  <data name="LabelQueue" xml:space="preserve">
-    <value>Queue</value>
-  </data>
-  <data name="LabelReplyTo" xml:space="preserve">
-    <value>Reply To</value>
-  </data>
-  <data name="LabelReplyToNewSubscriber" xml:space="preserve">
-    <value>New subscriber tab</value>
-  </data>
-  <data name="LabelReplyToSpecified" xml:space="preserve">
-    <value>Specified queue</value>
-  </data>
-  <data name="LabelRoutingKey" xml:space="preserve">
-    <value>Routing key</value>
-  </data>
-  <data name="LabelSendToExchange" xml:space="preserve">
-    <value>Publish to exchange (topic)</value>
-  </data>
-  <data name="LabelSendToQueue" xml:space="preserve">
-    <value>Publish to queue (direct)</value>
-  </data>
-  <data name="OptionMessageTypeRaw" xml:space="preserve">
-    <value>Raw message</value>
-  </data>
-  <data name="OptionMessageTypeTapeti" xml:space="preserve">
-    <value>Tapeti message</value>
-  </data>
-  <data name="PanelTitleMessages" xml:space="preserve">
-    <value>Saved messages</value>
-  </data>
-  <data name="ReplyToCorrelationIdPrefix" xml:space="preserve">
-    <value>Re: </value>
-  </data>
-  <data name="TabTitle" xml:space="preserve">
-    <value>Publish: {0}</value>
-  </data>
-  <data name="TabTitleEmpty" xml:space="preserve">
-    <value>Publish</value>
-  </data>
-  <data name="ToolbarDelete" xml:space="preserve">
-    <value>Delete</value>
-  </data>
-  <data name="ToolbarSave" xml:space="preserve">
-    <value>Save</value>
-  </data>
-  <data name="ToolbarSaveAs" xml:space="preserve">
-    <value>Save as...</value>
+  <data name="ButtonOK" xml:space="preserve">
+    <value>OK</value>
   </data>
 </root>
