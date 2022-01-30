@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
-using Accessibility;
+using System.Windows.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using PettingZoo.Core.Connection;
@@ -17,11 +17,12 @@ using PettingZoo.Core.Generator;
 using PettingZoo.Core.Macros;
 using PettingZoo.Core.Settings;
 using PettingZoo.WPF.ViewModel;
+using Application = System.Windows.Application;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace PettingZoo.UI.Tab.Publisher
 {
-    public class PublisherViewModel : BaseViewModel, ITabToolbarCommands, ITabHostWindowNotify, IPublishDestination
+    public class PublisherViewModel : BaseViewModel, IDisposable, ITabToolbarCommands, ITabHostWindowNotify, IPublishDestination
     {
         private readonly IConnection connection;
         private readonly IExampleGenerator exampleGenerator;
@@ -197,6 +198,19 @@ namespace PettingZoo.UI.Tab.Publisher
         public ICommand ImportCommand => importCommand;
 
 
+        private readonly DispatcherTimer publishedVisibilityTimer = new()
+        {
+            Interval = TimeSpan.FromSeconds(1)
+        };
+
+        private Visibility publishedVisibility = Visibility.Hidden;
+        public Visibility PublishedVisibility
+        {
+            get => publishedVisibility;
+            set => SetField(ref publishedVisibility, value);
+        }
+
+
         public string Title => SendToQueue
             ? string.IsNullOrWhiteSpace(Queue) ? PublisherViewStrings.TabTitleEmpty :
             string.Format(PublisherViewStrings.TabTitle, Queue)
@@ -244,17 +258,51 @@ namespace PettingZoo.UI.Tab.Publisher
 
 
             PropertyChanged += (_, _) => { saveCommand.RaiseCanExecuteChanged(); };
+
+
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse - null in design time
+            if (connection != null)
+                connection.StatusChanged += ConnectionStatusChanged;
+
+            publishedVisibilityTimer.Tick += (_, _) =>
+            {
+                PublishedVisibility = Visibility.Hidden;
+                publishedVisibilityTimer.Stop();
+            };
         }
 
 
+        public void Dispose()
+        {
+            connection.StatusChanged -= ConnectionStatusChanged;
+            GC.SuppressFinalize(this);
+        }
+
+
+        private void ConnectionStatusChanged(object? sender, StatusChangedEventArgs e)
+        {
+            Application.Current.Dispatcher.BeginInvoke(() =>
+            {
+                publishCommand.RaiseCanExecuteChanged();
+            });
+        }
+
+        
         private void PublishExecute()
         {
             messageTypePublishCommand?.Execute(null);
+
+            PublishedVisibility = Visibility.Visible;
+            publishedVisibilityTimer.Stop();
+            publishedVisibilityTimer.Start();
         }
 
 
         private bool PublishCanExecute()
         {
+            if (connection.Status != ConnectionStatus.Connected)
+                return false;
+
             if (SendToExchange)
             {
                 if (string.IsNullOrWhiteSpace(Exchange) || string.IsNullOrWhiteSpace(RoutingKey))
@@ -571,6 +619,8 @@ namespace PettingZoo.UI.Tab.Publisher
                 SelectedStoredMessage = StoredMessages[0];
                 ActiveStoredMessage = StoredMessages[1];
             };
+
+            PublishedVisibility = Visibility.Visible;
         }
 
         public override Visibility ExchangeVisibility => Visibility.Visible;

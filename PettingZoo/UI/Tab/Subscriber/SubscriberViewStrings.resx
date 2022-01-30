@@ -162,4 +162,10 @@
   <data name="ReplyTabTitle" xml:space="preserve">
     <value>Replies</value>
   </data>
+  <data name="StatusConnecting" xml:space="preserve">
+    <value>Connecting...</value>
+  </data>
+  <data name="StatusDisconnected" xml:space="preserve">
+    <value>Disconnected</value>
+  </data>
 </root>

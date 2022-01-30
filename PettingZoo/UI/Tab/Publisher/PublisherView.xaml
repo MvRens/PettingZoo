@@ -8,7 +8,7 @@
              xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
              xmlns:valueConverters="clr-namespace:PettingZoo.WPF.ValueConverters;assembly=PettingZoo.WPF"
              mc:Ignorable="d" 
-             d:DesignHeight="450" 
+             d:DesignHeight="1200" 
              d:DesignWidth="800"
              d:DataContext="{d:DesignInstance res:DesignTimePublisherViewModel, IsDesignTimeCreatable=True}"
              Background="White">
@@ -32,6 +32,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="16" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
@@ -81,6 +82,7 @@
                 <ContentControl Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 8 0 0" Content="{Binding MessageTypeControl}" />
 
                 <Button Grid.Row="11" Grid.Column="1" Command="{Binding PublishCommand}" Content="{x:Static res:PublisherViewStrings.CommandPublish}" HorizontalAlignment="Left" />
+                <TextBlock Grid.Row="12" Grid.Column="1" Text="{x:Static res:PublisherViewStrings.Published}" Visibility="{Binding PublishedVisibility}" />
             </controls:GridLayout>
         </ScrollViewer>
 

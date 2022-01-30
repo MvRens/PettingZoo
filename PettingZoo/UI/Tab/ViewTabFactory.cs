@@ -36,7 +36,7 @@ namespace PettingZoo.UI.Tab
         }
 
 
-        public void CreateSubscriberTab(IConnection? connection, ISubscriber subscriber)
+        public void CreateSubscriberTab(IConnection connection, ISubscriber subscriber)
         {
             InternalCreateSubscriberTab(connection, subscriber, false);
         }
@@ -75,7 +75,7 @@ namespace PettingZoo.UI.Tab
         }
 
 
-        private ITab InternalCreateSubscriberTab(IConnection? connection, ISubscriber subscriber, bool isReplyTab)
+        private ITab InternalCreateSubscriberTab(IConnection connection, ISubscriber subscriber, bool isReplyTab)
         {
             var viewModel = new SubscriberViewModel(logger, this, connection, subscriber, exportImportFormatProvider, isReplyTab);
             var tab = new ViewTab<SubscriberView, SubscriberViewModel>(

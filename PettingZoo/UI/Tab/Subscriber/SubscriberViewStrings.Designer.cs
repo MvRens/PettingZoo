@@ -194,5 +194,23 @@ namespace PettingZoo.UI.Tab.Subscriber {
                 return ResourceManager.GetString("ReplyTabTitle", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connecting....
+        /// </summary>
+        public static string StatusConnecting {
+            get {
+                return ResourceManager.GetString("StatusConnecting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disconnected.
+        /// </summary>
+        public static string StatusDisconnected {
+            get {
+                return ResourceManager.GetString("StatusDisconnected", resourceCulture);
+            }
+        }
     }
 }

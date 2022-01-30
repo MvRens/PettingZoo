@@ -3,51 +3,56 @@ using System.Threading;
 using System.Threading.Tasks;
 using PettingZoo.Core.Connection;
 using RabbitMQ.Client;
+using IConnection = RabbitMQ.Client.IConnection;
 
 namespace PettingZoo.RabbitMQ
 {
     public class RabbitMQClientConnection : Core.Connection.IConnection
     {
+        public Guid ConnectionId { get; } = Guid.NewGuid();
+        public ConnectionParams? ConnectionParams { get; }
+        public ConnectionStatus Status { get; set; }
+        public event EventHandler<StatusChangedEventArgs>? StatusChanged;
+
+        
         private const int ConnectRetryDelay = 5000;
 
         private readonly CancellationTokenSource connectionTaskToken = new();
-        private readonly Task connectionTask;
+        private Task? connectionTask;
         private readonly object connectionLock = new();
-        private global::RabbitMQ.Client.IConnection? connection;
-        private IModel? model;
+        private IConnection? connection;
 
-
-        public event EventHandler<StatusChangedEventArgs>? StatusChanged;
-        
 
         public RabbitMQClientConnection(ConnectionParams connectionParams)
         {
-            connectionTask = Task.Factory.StartNew(() => TryConnection(connectionParams, connectionTaskToken.Token), CancellationToken.None);
+            ConnectionParams = connectionParams;
         }
 
 
         public async ValueTask DisposeAsync()
         {
+            GC.SuppressFinalize(this);
+            if (connectionTask == null)
+                return;
+
             connectionTaskToken.Cancel();
             if (!connectionTask.IsCompleted)
                 await connectionTask;
 
             lock (connectionLock)
             {
-                if (model != null)
-                {
-                    model.Dispose();
-                    model = null;
-                }
-
                 if (connection != null)
                 {
                     connection.Dispose();
                     connection = null;
                 }
             }
+        }
 
-            GC.SuppressFinalize(this);
+
+        public void Connect()
+        {
+            connectionTask = Task.Factory.StartNew(() => TryConnection(ConnectionParams!, connectionTaskToken.Token), CancellationToken.None);
         }
 
 
@@ -67,6 +72,7 @@ namespace PettingZoo.RabbitMQ
         {
             lock (connectionLock)
             {
+                var model = connection?.CreateModel();
                 var subscriber = new RabbitMQClientSubscriber(model, exchange, routingKey);
                 if (model != null)
                     return subscriber;
@@ -79,10 +85,10 @@ namespace PettingZoo.RabbitMQ
 
                     lock (connectionLock)
                     {
-                        if (model == null)
+                        if (connection == null)
                             return;
 
-                        subscriber.Connected(model);
+                        subscriber.Connected(connection.CreateModel());
                     }
 
                     StatusChanged -= ConnectSubscriber;
@@ -97,12 +103,30 @@ namespace PettingZoo.RabbitMQ
 
         public Task Publish(PublishMessageInfo messageInfo)
         {
-            if (model == null)
+            IConnection? lockedConnection;
+
+            lock (connectionLock)
+            {
+                lockedConnection = connection;
+            }
+
+            if (lockedConnection == null)
                 throw new InvalidOperationException("Not connected");
 
-            model.BasicPublish(messageInfo.Exchange, messageInfo.RoutingKey, false,
-                RabbitMQClientPropertiesConverter.Convert(messageInfo.Properties, model.CreateBasicProperties()),
-                messageInfo.Body);
+            using (var model = lockedConnection.CreateModel())
+            {
+                try
+                {
+                    model.BasicPublish(messageInfo.Exchange, messageInfo.RoutingKey, false,
+                        RabbitMQClientPropertiesConverter.Convert(messageInfo.Properties,
+                            model.CreateBasicProperties()),
+                        messageInfo.Body);
+                }
+                finally
+                {
+                    model.Close();
+                }
+            }
 
             return Task.CompletedTask;
         }
@@ -119,22 +143,22 @@ namespace PettingZoo.RabbitMQ
                 Password = connectionParams.Password
             };
 
-            var statusContext = $"{connectionParams.Host}:{connectionParams.Port}{connectionParams.VirtualHost}";
-
             while (!cancellationToken.IsCancellationRequested)
             {
-                DoStatusChanged(ConnectionStatus.Connecting, statusContext);
+                DoStatusChanged(ConnectionStatus.Connecting);
                 try
                 {
-                    connection = factory.CreateConnection();
-                    model = connection.CreateModel();
-                    
-                    DoStatusChanged(ConnectionStatus.Connected, statusContext);
+                    lock (connectionLock)
+                    {
+                        connection = factory.CreateConnection();
+                    }
+
+                    DoStatusChanged(ConnectionStatus.Connected);
                     break;
                 }
                 catch (Exception e)
                 {
-                    DoStatusChanged(ConnectionStatus.Error, e.Message);
+                    DoStatusChanged(ConnectionStatus.Error, e);
 
                     try
                     {
@@ -148,9 +172,10 @@ namespace PettingZoo.RabbitMQ
         }
 
 
-        private void DoStatusChanged(ConnectionStatus status, string? context = null)
+        private void DoStatusChanged(ConnectionStatus status, Exception? exception = null)
         {
-            StatusChanged?.Invoke(this, new StatusChangedEventArgs(status, context));
+            Status = status;
+            StatusChanged?.Invoke(this, new StatusChangedEventArgs(ConnectionId, status, ConnectionParams, exception));
         }
     }
 }
