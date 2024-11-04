@@ -153,13 +153,37 @@
   <data name="OptionMessageTypeTapeti" xml:space="preserve">
     <value>Tapeti message</value>
   </data>
+  <data name="PanelTitleMessages" xml:space="preserve">
+    <value>Saved messages</value>
+  </data>
+  <data name="Published" xml:space="preserve">
+    <value>Message published</value>
+  </data>
   <data name="ReplyToCorrelationIdPrefix" xml:space="preserve">
     <value>Re: </value>
+  </data>
+  <data name="StoredMessagesExportImportFilter" xml:space="preserve">
+    <value>PettingZoo message (*.pubmsg.json)|*.pubmsg.json</value>
   </data>
   <data name="TabTitle" xml:space="preserve">
     <value>Publish: {0}</value>
   </data>
   <data name="TabTitleEmpty" xml:space="preserve">
     <value>Publish</value>
+  </data>
+  <data name="ToolbarDelete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="ToolbarExport" xml:space="preserve">
+    <value>Export...</value>
+  </data>
+  <data name="ToolbarImport" xml:space="preserve">
+    <value>Import...</value>
+  </data>
+  <data name="ToolbarSave" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="ToolbarSaveAs" xml:space="preserve">
+    <value>Save as...</value>
   </data>
 </root>

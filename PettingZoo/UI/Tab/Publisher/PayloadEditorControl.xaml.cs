@@ -123,16 +123,15 @@ namespace PettingZoo.UI.Tab.Publisher
         }
 
 
-        private IPayloadMacroProcessor? macroProcessor;
         public IPayloadMacroProcessor? MacroProcessor
         {
-            get => macroProcessor;
+            get => viewModel.MacroProcessor;
             set
             {
-                if (value == macroProcessor)
+                if (value == viewModel.MacroProcessor)
                     return;
 
-                macroProcessor = value;
+                viewModel.MacroProcessor = value;
                 UpdateMacroContextMenu();
             }
         }
@@ -266,10 +265,10 @@ namespace PettingZoo.UI.Tab.Publisher
         {
             ContextMenuInsertMacro.Items.Clear();
 
-            if (macroProcessor == null)
+            if (MacroProcessor == null)
                 return;
 
-            foreach (var macro in macroProcessor.Macros)
+            foreach (var macro in MacroProcessor.Macros)
             {
                 var macroMenuItem = new MenuItem
                 {

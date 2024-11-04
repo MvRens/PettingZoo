@@ -2,27 +2,36 @@
 using System.Windows.Input;
 using PettingZoo.WPF.ViewModel;
 
-namespace PettingZoo.UI.Connection
+namespace PettingZoo.UI
 {
-    public class ConnectionDisplayNameViewModel : BaseViewModel
+    public class InputDialogViewModel : BaseViewModel
     {
-        private string displayName = "";
+        private string title = "";
+        private string value = "";
 
         private readonly DelegateCommand okCommand;
 
 
-        public string DisplayName
+        public string Title
         {
-            get => displayName;
-            set => SetField(ref displayName, value, delegateCommandsChanged: new [] { okCommand });
+            get => title;
+            set => SetField(ref title, value);
         }
+
+
+        public string Value
+        {
+            get => value;
+            set => SetField(ref this.value, value, delegateCommandsChanged: new [] { okCommand });
+        }
+
 
         public ICommand OkCommand => okCommand;
 
         public event EventHandler? OkClick;
 
 
-        public ConnectionDisplayNameViewModel()
+        public InputDialogViewModel()
         {
             okCommand = new DelegateCommand(OkExecute, OkCanExecute);
         }
@@ -36,7 +45,7 @@ namespace PettingZoo.UI.Connection
 
         private bool OkCanExecute()
         {
-            return !string.IsNullOrWhiteSpace(DisplayName);
+            return !string.IsNullOrWhiteSpace(Value);
         }
     }
 }

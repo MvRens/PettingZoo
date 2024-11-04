@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using PettingZoo.Core.Connection;
-using PettingZoo.Core.ExportImport;
+using PettingZoo.Core.ExportImport.Subscriber;
 using PettingZoo.Core.Rendering;
 using PettingZoo.WPF.ProgressWindow;
 using PettingZoo.WPF.ViewModel;
@@ -25,7 +25,7 @@ namespace PettingZoo.UI.Tab.Subscriber
     {
         private readonly ILogger logger;
         private readonly ITabFactory tabFactory;
-        private readonly IConnection? connection;
+        private readonly IConnection connection;
         private readonly ISubscriber subscriber;
         private readonly IExportImportFormatProvider exportImportFormatProvider;
         private ReceivedMessageInfo? selectedMessage;
@@ -106,8 +106,14 @@ namespace PettingZoo.UI.Tab.Subscriber
         public Visibility ReplyTabVisibility => IsReplyTab ? Visibility.Visible : Visibility.Collapsed;
         // ReSharper restore UnusedMember.Global
 
+        private readonly Guid subscribeConnectionId;
+        private ConnectionStatus connectionStatus = ConnectionStatus.Connecting;
 
-        public SubscriberViewModel(ILogger logger, ITabFactory tabFactory, IConnection? connection, ISubscriber subscriber, IExportImportFormatProvider exportImportFormatProvider, bool isReplyTab)
+        public Visibility StatusVisibility => connectionStatus is ConnectionStatus.Connecting or ConnectionStatus.Disconnected or ConnectionStatus.Error ? Visibility.Visible : Visibility.Collapsed;
+        public string StatusText => connectionStatus == ConnectionStatus.Connecting ? SubscriberViewStrings.StatusConnecting : SubscriberViewStrings.StatusDisconnected;
+
+
+        public SubscriberViewModel(ILogger logger, ITabFactory tabFactory, IConnection connection, ISubscriber subscriber, IExportImportFormatProvider exportImportFormatProvider, bool isReplyTab)
         {
             IsReplyTab = isReplyTab;
 
@@ -133,6 +139,8 @@ namespace PettingZoo.UI.Tab.Subscriber
 
             createPublisherCommand = new DelegateCommand(CreatePublisherExecute, CreatePublisherCanExecute);
 
+            subscribeConnectionId = connection.ConnectionId;
+            connection.StatusChanged += ConnectionStatusChanged;
             subscriber.MessageReceived += SubscriberMessageReceived;
             subscriber.Start();
         }
@@ -141,8 +149,44 @@ namespace PettingZoo.UI.Tab.Subscriber
         public void Dispose()
         {
             GC.SuppressFinalize(this);
+            connection.StatusChanged -= ConnectionStatusChanged;
             newMessageTimer?.Dispose();
             subscriber.Dispose();
+        }
+
+
+        private void ConnectionStatusChanged(object? sender, StatusChangedEventArgs e)
+        {
+            // If another connection has been made, this does not concern us
+            if (e.ConnectionId != subscribeConnectionId)
+                return;
+
+            // The subscriber will not reconnect, so after the first disconnect it's over for us
+            if (connectionStatus is ConnectionStatus.Disconnected)
+                return;
+
+            switch (e.Status)
+            {
+                case ConnectionStatus.Connecting:
+                case ConnectionStatus.Error:
+                    return;
+
+                case ConnectionStatus.Connected:
+                    connectionStatus = ConnectionStatus.Connected;
+                    break;
+
+                case ConnectionStatus.Disconnected:
+                default:
+                    connectionStatus = ConnectionStatus.Disconnected;
+                    break;
+            }
+
+            Application.Current.Dispatcher.BeginInvoke(() =>
+            {
+
+                RaisePropertyChanged(nameof(StatusVisibility));
+                RaisePropertyChanged(nameof(StatusText));
+            });
         }
 
 
@@ -254,7 +298,7 @@ namespace PettingZoo.UI.Tab.Subscriber
 
         private void CreatePublisherExecute()
         {
-            if (connection == null)
+            if (connection.Status != ConnectionStatus.Connected)
                 return;
 
             tabFactory.CreatePublisherTab(connection, SelectedMessage);
@@ -263,7 +307,7 @@ namespace PettingZoo.UI.Tab.Subscriber
 
         private bool CreatePublisherCanExecute()
         {
-            return connection != null && SelectedMessage != null;
+            return SelectedMessage != null;
         }
 
 

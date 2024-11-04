@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace PettingZoo.Core.ExportImport
+namespace PettingZoo.Core.ExportImport.Subscriber
 {
     public interface IExportImportFormatProvider
     {

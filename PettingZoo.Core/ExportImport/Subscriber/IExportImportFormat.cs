@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using PettingZoo.Core.Connection;
 
-namespace PettingZoo.Core.ExportImport
+namespace PettingZoo.Core.ExportImport.Subscriber
 {
     public interface IExportImportFormat
     {

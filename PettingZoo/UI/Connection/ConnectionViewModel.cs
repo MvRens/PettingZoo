@@ -262,7 +262,7 @@ namespace PettingZoo.UI.Connection
             // TODO create and enforce unique name?
             var displayName = SelectedStoredConnection != null && SelectedStoredConnection.Id != Guid.Empty ? SelectedStoredConnection.DisplayName : "";
 
-            if (!ConnectionDisplayNameDialog.Execute(ref displayName))
+            if (!InputDialog.Execute(ref displayName, ConnectionWindowStrings.ProfileNameDialogTitle))
                 return;
 
             var storedConnectionSettings = await connectionSettingsRepository.Add(displayName, StorePassword, ToModel());

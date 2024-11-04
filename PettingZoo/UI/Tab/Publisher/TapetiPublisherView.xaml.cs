@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using PettingZoo.Core.Macros;
 
 namespace PettingZoo.UI.Tab.Publisher
 {

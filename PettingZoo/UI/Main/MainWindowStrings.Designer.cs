@@ -160,7 +160,7 @@ namespace PettingZoo.UI.Main {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connected.
+        ///   Looks up a localized string similar to Connected to {0}.
         /// </summary>
         public static string StatusConnected {
             get {

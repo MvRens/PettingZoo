@@ -2,7 +2,7 @@ image: Visual Studio 2022
 
 
 install:
-  - choco install gitversion.portable -pre -y
+  - choco install gitversion.portable -pre -y --version 5.12.0
 
 before_build:
   - nuget restore
@@ -31,7 +31,7 @@ configuration:
 deploy:
   - provider: GitHub
     auth_token:
-      secure: dWOConKg3VTPvd9DmWOOKiX1SJCalaqKInuk9GlKQOZX2s+Bia49J7q+AHO8wFj7
+      secure: l7meLHe4l/JZh+J0Gfd+Z+fMviSg3FDz4mIjp+S+PGdPgkpcc45t8Ae3EP2+dTGJkTvhSKNZB5Hmc76DOpfNKfrIQdBlQLDrQVS1nZRunjqL0klHVFRKqvwyH0DK5GK3
     artifact: /PettingZoo-.*\.zip/
     draft: false
     prerelease: false

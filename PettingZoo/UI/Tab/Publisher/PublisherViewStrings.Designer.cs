@@ -169,11 +169,38 @@ namespace PettingZoo.UI.Tab.Publisher {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Saved messages.
+        /// </summary>
+        public static string PanelTitleMessages {
+            get {
+                return ResourceManager.GetString("PanelTitleMessages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message published.
+        /// </summary>
+        public static string Published {
+            get {
+                return ResourceManager.GetString("Published", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Re: .
         /// </summary>
         public static string ReplyToCorrelationIdPrefix {
             get {
                 return ResourceManager.GetString("ReplyToCorrelationIdPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PettingZoo message (*.pubmsg.json)|*.pubmsg.json.
+        /// </summary>
+        public static string StoredMessagesExportImportFilter {
+            get {
+                return ResourceManager.GetString("StoredMessagesExportImportFilter", resourceCulture);
             }
         }
         
@@ -192,6 +219,51 @@ namespace PettingZoo.UI.Tab.Publisher {
         public static string TabTitleEmpty {
             get {
                 return ResourceManager.GetString("TabTitleEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string ToolbarDelete {
+            get {
+                return ResourceManager.GetString("ToolbarDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export....
+        /// </summary>
+        public static string ToolbarExport {
+            get {
+                return ResourceManager.GetString("ToolbarExport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import....
+        /// </summary>
+        public static string ToolbarImport {
+            get {
+                return ResourceManager.GetString("ToolbarImport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string ToolbarSave {
+            get {
+                return ResourceManager.GetString("ToolbarSave", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save as....
+        /// </summary>
+        public static string ToolbarSaveAs {
+            get {
+                return ResourceManager.GetString("ToolbarSaveAs", resourceCulture);
             }
         }
     }

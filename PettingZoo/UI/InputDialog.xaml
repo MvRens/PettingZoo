@@ -1,0 +1,25 @@
+﻿<Window x:Class="PettingZoo.UI.InputDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PettingZoo.UI"
+        mc:Ignorable="d"
+        Width="400"
+        SizeToContent="Height"
+        ResizeMode="NoResize"
+        WindowStyle="ToolWindow"
+        WindowStartupLocation="CenterOwner"
+        Style="{StaticResource WindowStyle}"
+        Title="{Binding Title}" 
+        FocusManager.FocusedElement="{Binding ElementName=ValueTextBox}"
+        d:DataContext="{d:DesignInstance local:InputDialogViewModel}">
+    <StackPanel Margin="8">
+        <TextBox Name="ValueTextBox" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" />
+
+        <UniformGrid HorizontalAlignment="Right" Rows="1" Columns="2" Style="{StaticResource FooterPanel}">
+            <Button IsDefault="True" Content="{x:Static local:InputDialogStrings.ButtonOK}" Style="{StaticResource FooterButton}" Command="{Binding OkCommand}"/>
+            <Button IsCancel="True" Content="{x:Static local:InputDialogStrings.ButtonCancel}" Style="{StaticResource FooterButton}"/>
+        </UniformGrid>        
+    </StackPanel>
+</Window>

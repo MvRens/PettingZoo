@@ -8,6 +8,7 @@
              xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
              xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
              xmlns:connection="clr-namespace:PettingZoo.Core.Connection;assembly=PettingZoo.Core"
+             xmlns:controls="clr-namespace:PettingZoo.WPF.Controls;assembly=PettingZoo.WPF"
              mc:Ignorable="d" 
              d:DesignHeight="450" 
              d:DesignWidth="800"
@@ -36,8 +37,8 @@
             <ListBox.ItemsSource>
                 <CompositeCollection>
                     <CollectionContainer Collection="{Binding Source={StaticResource Messages}}" />
-                    <ListBoxItem HorizontalContentAlignment="Stretch" IsEnabled="False" IsHitTestVisible="False">
-                        <Grid Visibility="{Binding UnreadMessagesVisibility}">
+                    <ListBoxItem HorizontalContentAlignment="Stretch" IsEnabled="False" IsHitTestVisible="False" Visibility="{Binding UnreadMessagesVisibility}">
+                        <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition SharedSizeGroup="DateTime" />
                                 <ColumnDefinition Width="Auto" />
@@ -50,6 +51,17 @@
                         </Grid>                    
                     </ListBoxItem>
                     <CollectionContainer Collection="{Binding Source={StaticResource UnreadMessages}}" />
+                    <ListBoxItem HorizontalContentAlignment="Stretch" IsEnabled="False" IsHitTestVisible="False" Visibility="{Binding StatusVisibility}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition SharedSizeGroup="DateTime" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="1" Text="{Binding StatusText}" HorizontalAlignment="Center" Background="{Binding Background, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}" Foreground="{x:Static SystemColors.GrayTextBrush}" />
+                        </Grid>
+                    </ListBoxItem>
                 </CompositeCollection>
             </ListBox.ItemsSource>
             <ListBox.ItemTemplate>
@@ -82,14 +94,14 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="200"/>
             </Grid.RowDefinitions>
-            <ToolBar Grid.Column="0" Grid.Row="0" ToolBarTray.IsLocked="True" Margin="0,0,0,4" Background="Transparent" Loaded="Toolbar_Loaded">
+            <controls:AutoOverflowToolBar Grid.Column="0" Grid.Row="0" ToolBarTray.IsLocked="True" Margin="0,0,0,4" Background="Transparent">
                 <Button Command="{Binding CreatePublisherCommand}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{svgc:SvgImage Source=/Images/Publish.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
                         <TextBlock Margin="3,0,0,0" Text="{x:Static res:SubscriberViewStrings.ContextPublish}" />
                     </StackPanel>
                 </Button>
-            </ToolBar>
+            </controls:AutoOverflowToolBar>
 
             <Border Grid.Column="0" Grid.Row="1" Style="{StaticResource SidePanel}">
                 <DockPanel>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using PettingZoo.Core.Connection;
 
-namespace PettingZoo.Core.ExportImport
+namespace PettingZoo.Core.ExportImport.Subscriber
 {
     public class ImportSubscriber : ISubscriber
     {

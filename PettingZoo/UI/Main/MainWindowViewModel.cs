@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using PettingZoo.Core.Connection;
-using PettingZoo.Core.ExportImport;
+using PettingZoo.Core.ExportImport.Subscriber;
 using PettingZoo.UI.Connection;
 using PettingZoo.UI.Subscribe;
 using PettingZoo.UI.Tab;
@@ -43,7 +43,7 @@ namespace PettingZoo.UI.Main
         private readonly IExportImportFormatProvider exportImportFormatProvider;
 
         private SubscribeDialogParams? subscribeDialogParams;
-        private IConnection? connection;
+        private readonly DynamicConnection connection = new();
         private string connectionStatus;
         private ITab? activeTab;
         private readonly Dictionary<ITab, Window> undockedTabs = new();
@@ -141,15 +141,15 @@ namespace PettingZoo.UI.Main
             closeTabCommand = new DelegateCommand(CloseTabExecute, HasActiveTabCanExecute);
             undockTabCommand = new DelegateCommand(UndockTabExecute, HasActiveTabCanExecute);
             importCommand = new DelegateCommand(ImportExecute);
+
+            connection.StatusChanged += ConnectionStatusChanged;
         }
 
 
         public async ValueTask DisposeAsync()
         {
             GC.SuppressFinalize(this);
-
-            if (connection != null)
-                await connection.DisposeAsync();
+            await connection.DisposeAsync();
         }
 
         
@@ -159,13 +159,9 @@ namespace PettingZoo.UI.Main
             if (connectionSettings == null)
                 return;
 
-            if (connection != null)
-                await connection.DisposeAsync();
-
-            connection = connectionFactory.CreateConnection(new ConnectionParams(
+            connection.SetConnection(connectionFactory.CreateConnection(new ConnectionParams(
                 connectionSettings.Host, connectionSettings.VirtualHost, connectionSettings.Port,
-                connectionSettings.Username, connectionSettings.Password));
-            connection.StatusChanged += ConnectionStatusChanged;
+                connectionSettings.Username, connectionSettings.Password)));
 
             if (connectionSettings.Subscribe)
             {
@@ -173,40 +169,22 @@ namespace PettingZoo.UI.Main
                 tabFactory.CreateSubscriberTab(connection, subscriber);
             }
 
+            connection.Connect();
             ConnectionChanged();
         }
 
 
         private async void DisconnectExecute()
         {
-            Tabs.Clear();
-
-            var capturedUndockedTabs = undockedTabs.ToList();
-            undockedTabs.Clear();
-
-            foreach (var undockedTab in capturedUndockedTabs)
-                undockedTab.Value.Close();
-
-            RaisePropertyChanged(nameof(NoTabsVisibility));
-            undockTabCommand.RaiseCanExecuteChanged();
-
-            if (connection != null)
-            {
-                await connection.DisposeAsync();
-                connection = null;
-            }
-
-            ConnectionStatus = GetConnectionStatus(null);
-            ConnectionStatusType = ConnectionStatusType.Error;
-            ConnectionChanged();
+            await connection.Disconnect();
         }
 
 
         private void SubscribeExecute()
         {
-            if (connection == null)
+            if (connection.Status != Core.Connection.ConnectionStatus.Connected)
                 return;
-            
+
             var newParams = subscribeDialog.Show(subscribeDialogParams);
             if (newParams == null)
                 return;
@@ -220,16 +198,16 @@ namespace PettingZoo.UI.Main
 
         private void PublishExecute()
         {
-            if (connection == null)
+            if (connection.Status != Core.Connection.ConnectionStatus.Connected)
                 return;
-            
+
             tabFactory.CreatePublisherTab(connection);
         }
         
 
         private bool IsConnectedCanExecute()
         {
-            return connection != null;
+            return connection.Status == Core.Connection.ConnectionStatus.Connected;
         }
 
 
@@ -419,6 +397,8 @@ namespace PettingZoo.UI.Main
                 Core.Connection.ConnectionStatus.Connecting => ConnectionStatusType.Connecting,
                 _ => ConnectionStatusType.Error
             };
+
+            Application.Current.Dispatcher.BeginInvoke(ConnectionChanged);
         }
 
 
@@ -427,9 +407,9 @@ namespace PettingZoo.UI.Main
         {
             return args?.Status switch
             {
-                Core.Connection.ConnectionStatus.Connecting => string.Format(MainWindowStrings.StatusConnecting, args.Context),
-                Core.Connection.ConnectionStatus.Connected => string.Format(MainWindowStrings.StatusConnected, args.Context),
-                Core.Connection.ConnectionStatus.Error => string.Format(MainWindowStrings.StatusError, args.Context),
+                Core.Connection.ConnectionStatus.Connecting => string.Format(MainWindowStrings.StatusConnecting, args.ConnectionParams),
+                Core.Connection.ConnectionStatus.Connected => string.Format(MainWindowStrings.StatusConnected, args.ConnectionParams),
+                Core.Connection.ConnectionStatus.Error => string.Format(MainWindowStrings.StatusError, args.Exception?.Message),
                 Core.Connection.ConnectionStatus.Disconnected => MainWindowStrings.StatusDisconnected,
                 _ => MainWindowStrings.StatusDisconnected
             };

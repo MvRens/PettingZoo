@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PettingZoo.UI.Connection {
+namespace PettingZoo.UI.Tab.Publisher {
     using System;
     
     
@@ -22,24 +22,24 @@ namespace PettingZoo.UI.Connection {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class ConnectionDisplayNameStrings {
+    internal class StoredPublisherMessagesStrings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ConnectionDisplayNameStrings() {
+        internal StoredPublisherMessagesStrings() {
         }
         
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PettingZoo.UI.Connection.ConnectionDisplayNameStrings", typeof(ConnectionDisplayNameStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PettingZoo.UI.Tab.Publisher.StoredPublisherMessagesStrings", typeof(StoredPublisherMessagesStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace PettingZoo.UI.Connection {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,29 +61,29 @@ namespace PettingZoo.UI.Connection {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cancel.
+        ///   Looks up a localized string similar to Do you want to delete the saved message &apos;{0}&apos;?.
         /// </summary>
-        public static string ButtonCancel {
+        internal static string DeleteConfirmation {
             get {
-                return ResourceManager.GetString("ButtonCancel", resourceCulture);
+                return ResourceManager.GetString("DeleteConfirmation", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to OK.
+        ///   Looks up a localized string similar to Delete message.
         /// </summary>
-        public static string ButtonOK {
+        internal static string DeleteConfirmationTitle {
             get {
-                return ResourceManager.GetString("ButtonOK", resourceCulture);
+                return ResourceManager.GetString("DeleteConfirmationTitle", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Profile name.
+        ///   Looks up a localized string similar to Save as....
         /// </summary>
-        public static string WindowTitle {
+        internal static string DisplayNameDialogTitle {
             get {
-                return ResourceManager.GetString("WindowTitle", resourceCulture);
+                return ResourceManager.GetString("DisplayNameDialogTitle", resourceCulture);
             }
         }
     }

@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace PettingZoo.Core.ExportImport
+namespace PettingZoo.Core.ExportImport.Subscriber
 {
     public class StreamProgressDecorator : BaseProgressDecorator
     {

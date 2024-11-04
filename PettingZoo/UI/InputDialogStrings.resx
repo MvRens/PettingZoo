@@ -117,55 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CommandClear" xml:space="preserve">
-    <value>Clear</value>
+  <data name="ButtonCancel" xml:space="preserve">
+    <value>Cancel</value>
   </data>
-  <data name="CommandExport" xml:space="preserve">
-    <value>Export...</value>
-  </data>
-  <data name="ContextPublish" xml:space="preserve">
-    <value>Open in new Publisher tab</value>
-  </data>
-  <data name="DeliveryModeNonPersistent" xml:space="preserve">
-    <value>Non-persistent</value>
-  </data>
-  <data name="DeliveryModePersistent" xml:space="preserve">
-    <value>Persistent</value>
-  </data>
-  <data name="ExportError" xml:space="preserve">
-    <value>Error while exporting messages: {0}</value>
-  </data>
-  <data name="ExportProgressWindowTitle" xml:space="preserve">
-    <value>Exporting messages...</value>
-  </data>
-  <data name="ExportResultTitle" xml:space="preserve">
-    <value>Export</value>
-  </data>
-  <data name="ExportSuccess" xml:space="preserve">
-    <value>Exported {0} message(s) to {1}</value>
-  </data>
-  <data name="LabelNewMessages" xml:space="preserve">
-    <value>New messages</value>
-  </data>
-  <data name="PanelTitleBody" xml:space="preserve">
-    <value>Body</value>
-  </data>
-  <data name="PanelTitleProperties" xml:space="preserve">
-    <value>Properties</value>
-  </data>
-  <data name="PropertyName" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="PropertyValue" xml:space="preserve">
-    <value>Value</value>
-  </data>
-  <data name="ReplyTabTitle" xml:space="preserve">
-    <value>Replies</value>
-  </data>
-  <data name="StatusConnecting" xml:space="preserve">
-    <value>Connecting...</value>
-  </data>
-  <data name="StatusDisconnected" xml:space="preserve">
-    <value>Disconnected</value>
+  <data name="ButtonOK" xml:space="preserve">
+    <value>OK</value>
   </data>
 </root>

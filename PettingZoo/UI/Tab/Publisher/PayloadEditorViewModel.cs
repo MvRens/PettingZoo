@@ -2,10 +2,10 @@
 using System.ComponentModel;
 using System.Reactive.Linq;
 using System.Windows;
-using System.Windows.Input;
 using ICSharpCode.AvalonEdit.Highlighting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PettingZoo.Core.Macros;
 using PettingZoo.Core.Validation;
 using PettingZoo.WPF.ViewModel;
 
@@ -159,6 +159,7 @@ namespace PettingZoo.UI.Tab.Publisher
 
 
         public IPayloadValidator? Validator { get; set; }
+        public IPayloadMacroProcessor? MacroProcessor { get; set; }
 
 
         public PayloadEditorViewModel()
@@ -166,7 +167,7 @@ namespace PettingZoo.UI.Tab.Publisher
             var observable = Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
                 h => PropertyChanged += h,
                 h => PropertyChanged -= h)
-                .Where(e => e.EventArgs.PropertyName == nameof(Payload));
+                .Where(e => e.EventArgs.PropertyName is nameof(Payload) or nameof(EnableMacros));
 
             observable
                 .Subscribe(_ => ValidatingPayload());
@@ -204,14 +205,18 @@ namespace PettingZoo.UI.Tab.Publisher
             {
                 if (!string.IsNullOrEmpty(Payload))
                 {
+                    var validatePayload = EnableMacros && MacroProcessor != null
+                        ? MacroProcessor.Apply(Payload)
+                        : Payload;
+
                     if (Validator != null && Validator.CanValidate())
                     {
-                        Validator.Validate(payload);
+                        Validator.Validate(validatePayload);
                         ValidationInfo = new ValidationInfo(ValidationStatus.Ok);
                     }
                     else
                     {
-                        JToken.Parse(Payload);
+                        JToken.Parse(validatePayload);
                         ValidationInfo = new ValidationInfo(ValidationStatus.OkSyntax);
                     }
                 }

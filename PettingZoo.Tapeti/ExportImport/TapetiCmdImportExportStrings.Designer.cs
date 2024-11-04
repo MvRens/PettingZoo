@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PettingZoo.Tapeti.Export {
+namespace PettingZoo.Tapeti.ExportImport {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace PettingZoo.Tapeti.Export {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PettingZoo.Tapeti.Export.TapetiCmdImportExportStrings", typeof(TapetiCmdImportExportStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PettingZoo.Tapeti.ExportImport.TapetiCmdImportExportStrings", typeof(TapetiCmdImportExportStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

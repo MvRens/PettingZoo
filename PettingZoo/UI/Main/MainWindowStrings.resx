@@ -151,7 +151,7 @@
     <value>Importing messages...</value>
   </data>
   <data name="StatusConnected" xml:space="preserve">
-    <value>Connected</value>
+    <value>Connected to {0}</value>
   </data>
   <data name="StatusConnecting" xml:space="preserve">
     <value>Connecting to {0}...</value>

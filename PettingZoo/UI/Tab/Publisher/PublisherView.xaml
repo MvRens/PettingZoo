@@ -6,73 +6,168 @@
              xmlns:res="clr-namespace:PettingZoo.UI.Tab.Publisher"
              xmlns:controls="clr-namespace:PettingZoo.WPF.Controls;assembly=PettingZoo.WPF"
              xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+             xmlns:valueConverters="clr-namespace:PettingZoo.WPF.ValueConverters;assembly=PettingZoo.WPF"
              mc:Ignorable="d" 
-             d:DesignHeight="450" 
+             d:DesignHeight="1200" 
              d:DesignWidth="800"
              d:DataContext="{d:DesignInstance res:DesignTimePublisherViewModel, IsDesignTimeCreatable=True}"
              Background="White">
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <controls:GridLayout Style="{StaticResource Form}" Margin="4" Grid.IsSharedSizeScope="True">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="350" />
+        </Grid.ColumnDefinitions>
+
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+            <controls:GridLayout Style="{StaticResource Form}" Margin="4" Grid.IsSharedSizeScope="True">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="16"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="16" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
+                    <ToggleButton Style="{StaticResource TypeSelection}" IsChecked="{Binding MessageTypeRaw}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="{svgc:SvgImage Source=/Images/RabbitMQ.svg, AppName=PettingZoo}" Style="{StaticResource ButtonIcon}" />
+                            <TextBlock Text="{x:Static res:PublisherViewStrings.OptionMessageTypeRaw}" />
+                        </StackPanel>
+                    </ToggleButton>
+                    <ToggleButton Style="{StaticResource TypeSelection}" IsChecked="{Binding MessageTypeTapeti}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Images/Tapeti.png" Style="{StaticResource ButtonIcon}" />
+                            <TextBlock Text="{x:Static res:PublisherViewStrings.OptionMessageTypeTapeti}" />
+                        </StackPanel>
+                    </ToggleButton>
+                </StackPanel>
+
+                <Label Grid.Row="2" Grid.Column="1">
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Content="{x:Static res:PublisherViewStrings.LabelSendToExchange}" IsChecked="{Binding SendToExchange}" Style="{StaticResource TypeSelection}" />
+                        <RadioButton Content="{x:Static res:PublisherViewStrings.LabelSendToQueue}" IsChecked="{Binding SendToQueue}" Style="{StaticResource TypeSelection}" />
+                    </StackPanel>
+                </Label>
+
+                <Label Grid.Row="3" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelExchange}" Visibility="{Binding ExchangeVisibility}" />
+                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Exchange, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ExchangeVisibility}" />
+
+                <Label Grid.Row="4" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelRoutingKey}" Visibility="{Binding ExchangeVisibility}" />
+                <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding RoutingKey, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ExchangeVisibility}" />
+
+                <Label Grid.Row="5" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelQueue}" Visibility="{Binding QueueVisibility}" />
+                <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Queue, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding QueueVisibility}" />
+
+                <Label Grid.Row="7" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelReplyTo}" />
+                <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="1">
+                    <RadioButton Content="{x:Static res:PublisherViewStrings.LabelReplyToSpecified}" IsChecked="{Binding ReplyToSpecified}" Style="{StaticResource TypeSelection}" />
+                    <RadioButton Content="{x:Static res:PublisherViewStrings.LabelReplyToNewSubscriber}" IsChecked="{Binding ReplyToNewSubscriber}" Style="{StaticResource TypeSelection}" />
+                </StackPanel>
+                <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding ReplyTo}" IsEnabled="{Binding ReplyToSpecified}" />
+
+                <ContentControl Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 8 0 0" Content="{Binding MessageTypeControl}" />
+
+                <Button Grid.Row="11" Grid.Column="1" Command="{Binding PublishCommand}" Content="{x:Static res:PublisherViewStrings.CommandPublish}" HorizontalAlignment="Left" />
+                <TextBlock Grid.Row="12" Grid.Column="1" Text="{x:Static res:PublisherViewStrings.Published}" Visibility="{Binding PublishedVisibility}" />
+            </controls:GridLayout>
+        </ScrollViewer>
+
+        <GridSplitter Width="5" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch"/>
+
+        <Grid Grid.Column="2" Grid.Row="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="8"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="16"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="16" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
 
-            <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
-                <ToggleButton Style="{StaticResource TypeSelection}" IsChecked="{Binding MessageTypeRaw}">
+            <Label Grid.Row="0" Style="{StaticResource HeaderLabel}" Content="{x:Static res:PublisherViewStrings.PanelTitleMessages}"/>
+
+            <controls:AutoOverflowToolBar Grid.Row="1" ToolBarTray.IsLocked="True" Margin="0,0,0,4">
+                <!-- TODO load button in addition to double-click. I don't like hidden-only functionality -->
+                <Button Command="{Binding SaveCommand}">
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="{svgc:SvgImage Source=/Images/RabbitMQ.svg, AppName=PettingZoo}" Style="{StaticResource ButtonIcon}" />
-                        <TextBlock Text="{x:Static res:PublisherViewStrings.OptionMessageTypeRaw}" />
+                        <Image Source="{svgc:SvgImage Source=/Images/Save.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                        <TextBlock Margin="3,0,0,0" Text="{x:Static res:PublisherViewStrings.ToolbarSave}" />
                     </StackPanel>
-                </ToggleButton>
-                <ToggleButton Style="{StaticResource TypeSelection}" IsChecked="{Binding MessageTypeTapeti}">
+                </Button>
+                <Button Command="{Binding SaveAsCommand}">
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="/Images/Tapeti.png" Style="{StaticResource ButtonIcon}" />
-                        <TextBlock Text="{x:Static res:PublisherViewStrings.OptionMessageTypeTapeti}" />
+                        <Image Source="{svgc:SvgImage Source=/Images/SaveAs.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                        <TextBlock Margin="3,0,0,0" Text="{x:Static res:PublisherViewStrings.ToolbarSaveAs}" />
                     </StackPanel>
-                </ToggleButton>
-            </StackPanel>
+                </Button>
+                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                <Button Command="{Binding DeleteCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{svgc:SvgImage Source=/Images/Delete.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                        <TextBlock Margin="3,0,0,0" Text="{x:Static res:PublisherViewStrings.ToolbarDelete}" />
+                    </StackPanel>
+                </Button>
+                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                <Button Command="{Binding ExportCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{svgc:SvgImage Source=/Images/Export.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                        <TextBlock Margin="3,0,0,0" Text="{x:Static res:PublisherViewStrings.ToolbarExport}" />
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding ImportCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{svgc:SvgImage Source=/Images/Import.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
+                        <TextBlock Margin="3,0,0,0" Text="{x:Static res:PublisherViewStrings.ToolbarImport}" />
+                    </StackPanel>
+                </Button>
+                <!-- TODO export / import -->
+            </controls:AutoOverflowToolBar>
 
-            <Label Grid.Row="2" Grid.Column="1">
-                <StackPanel Orientation="Horizontal">
-                    <RadioButton Content="{x:Static res:PublisherViewStrings.LabelSendToExchange}" IsChecked="{Binding SendToExchange}" Style="{StaticResource TypeSelection}" />
-                    <RadioButton Content="{x:Static res:PublisherViewStrings.LabelSendToQueue}" IsChecked="{Binding SendToQueue}" Style="{StaticResource TypeSelection}" />
-                </StackPanel>
-            </Label>
-
-            <Label Grid.Row="3" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelExchange}" Visibility="{Binding ExchangeVisibility}" />
-            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Exchange, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ExchangeVisibility}" />
-
-            <Label Grid.Row="4" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelRoutingKey}" Visibility="{Binding ExchangeVisibility}" />
-            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding RoutingKey, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ExchangeVisibility}" />
-
-            <Label Grid.Row="5" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelQueue}" Visibility="{Binding QueueVisibility}" />
-            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Queue, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding QueueVisibility}" />
-
-            <Label Grid.Row="7" Grid.Column="0" Content="{x:Static res:PublisherViewStrings.LabelReplyTo}" />
-            <StackPanel Orientation="Horizontal" Grid.Row="7" Grid.Column="1">
-                <RadioButton Content="{x:Static res:PublisherViewStrings.LabelReplyToSpecified}" IsChecked="{Binding ReplyToSpecified}" Style="{StaticResource TypeSelection}" />
-                <RadioButton Content="{x:Static res:PublisherViewStrings.LabelReplyToNewSubscriber}" IsChecked="{Binding ReplyToNewSubscriber}" Style="{StaticResource TypeSelection}" />
-            </StackPanel>
-            <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding ReplyTo}" IsEnabled="{Binding ReplyToSpecified}" />
-
-            <ContentControl Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 8 0 0" Content="{Binding MessageTypeControl}" />
-
-            <Button Grid.Row="11" Grid.Column="1" Command="{Binding PublishCommand}" Content="{x:Static res:PublisherViewStrings.CommandPublish}" HorizontalAlignment="Left" />
-        </controls:GridLayout>
-    </ScrollViewer>
+            <ListBox Grid.Row="2" ItemsSource="{Binding StoredMessages}" SelectedValue="{Binding SelectedStoredMessage}">
+                <ListBox.Resources>
+                    <valueConverters:SameReferenceConverter x:Key="SameReferenceConverter" />
+                </ListBox.Resources>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding DisplayName}">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Style.Triggers>
+                                        <DataTrigger Value="True">
+                                            <DataTrigger.Binding>
+                                                <MultiBinding Converter="{StaticResource SameReferenceConverter}">
+                                                    <Binding RelativeSource="{RelativeSource AncestorType={x:Type ListBoxItem}}" Path="DataContext" />
+                                                    <Binding RelativeSource="{RelativeSource AncestorType={x:Type ListBox}}" Path="DataContext.ActiveStoredMessage" />
+                                                </MultiBinding>
+                                            </DataTrigger.Binding>
+                                            <Setter Property="FontWeight" Value="Bold" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                            <TextBlock.InputBindings>
+                                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DataContext.LoadStoredMessageCommand, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}" />
+                            </TextBlock.InputBindings>
+                        </TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </Grid>
 </UserControl>

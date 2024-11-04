@@ -5,7 +5,14 @@ namespace PettingZoo.Core.Connection
 {
     public interface IConnection : IAsyncDisposable
     {
+        Guid ConnectionId { get; }
+        ConnectionParams? ConnectionParams { get; }
+        ConnectionStatus Status { get; }
+
         event EventHandler<StatusChangedEventArgs> StatusChanged;
+
+
+        void Connect();
 
         ISubscriber Subscribe(string exchange, string routingKey);
         ISubscriber Subscribe();
@@ -25,14 +32,18 @@ namespace PettingZoo.Core.Connection
 
     public class StatusChangedEventArgs : EventArgs
     {
+        public Guid ConnectionId { get; }
         public ConnectionStatus Status { get; }
-        public string? Context { get; }
+        public ConnectionParams? ConnectionParams { get; }
+        public Exception? Exception { get; }
 
 
-        public StatusChangedEventArgs(ConnectionStatus status, string? context)
+        public StatusChangedEventArgs(Guid connectionId, ConnectionStatus status, ConnectionParams? connectionParams = null, Exception? exception = null)
         {
+            ConnectionId = connectionId;
             Status = status;
-            Context = context;
+            ConnectionParams = connectionParams;
+            Exception = exception;
         }
     }
 }

@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:undocked="clr-namespace:PettingZoo.UI.Tab.Undocked"
         xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+        xmlns:controls="clr-namespace:PettingZoo.WPF.Controls;assembly=PettingZoo.WPF"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance undocked:DesignTimeUndockedTabHostViewModel, IsDesignTimeCreatable=True}"
         Title="{Binding Title}" 
@@ -12,7 +13,7 @@
         Width="800"
         WindowStyle="ThreeDBorderWindow">
     <DockPanel>
-        <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True" Loaded="Toolbar_Loaded">
+        <controls:AutoOverflowToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
             <Button Command="{Binding DockCommand}">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="{svgc:SvgImage Source=/Images/Dock.svg, AppName=PettingZoo}" Width="16" Height="16" Style="{StaticResource ToolbarIcon}"/>
@@ -37,7 +38,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-        </ToolBar>
+        </controls:AutoOverflowToolBar>
 
         <ContentControl Content="{Binding Content}" />
     </DockPanel>
